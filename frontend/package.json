@@ -32,6 +32,7 @@
     "eslint-plugin-react-hooks": "^4.0.8",
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.0.5",
+    "react-refresh": "^0.8.3",
     "tailwindcss": "^1.6.2",
     "typescript": "^3.9.7"
   },
