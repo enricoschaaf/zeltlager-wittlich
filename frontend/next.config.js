@@ -5,7 +5,9 @@ module.exports = withPrefresh({
   reactStrictMode: true,
   experimental: {
     modern: true,
-    polyfillsOptimization: true
+    polyfillsOptimization: true,
+    optimizeFonts: true,
+    optimizeImages: true
   },
   webpack(config, { dev, isServer }) {
     const splitChunks = config.optimization && config.optimization.splitChunks
