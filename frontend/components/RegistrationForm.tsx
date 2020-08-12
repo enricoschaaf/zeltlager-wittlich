@@ -1,7 +1,9 @@
-export const RegistrationForm = () => {
-    return (
-        <div>
+import { Button } from "tailwindcss/ui"
 
-        </div>
-    )
-}
+export const RegistrationForm = () => (
+  <form className="grid-cols-12">
+    <Button type="submit" className="col-span-12">
+      Anmelden
+    </Button>
+  </form>
+)
