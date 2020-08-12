@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "0.1.0",
+  "bin": {
+    "backend": "bin/backend.js"
+  },
+  "scripts": {
+    "synth": "cdk synth --no-staging > template.yaml"
+  },
+  "devDependencies": {
+    "@types/node": "10.17.5",
+    "@types/source-map-support": "^0.5.2",
+    "aws-cdk": "1.53.0",
+    "typescript": "~3.7.2"
+  },
+  "dependencies": {
+    "@aws-cdk/core": "1.53.0",
+    "source-map-support": "^0.5.16"
+  }
+}
