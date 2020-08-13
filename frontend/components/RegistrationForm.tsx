@@ -2,17 +2,17 @@ import axios from "axios"
 import { AnimatePresence } from "framer-motion"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { Button, Input, Modal } from "tailwindcss/ui"
+import { Button, Checkbox, Input, Modal, Radio } from "tailwindcss/ui"
 import { Textarea } from "tailwindcss/ui/Textarea"
-import { emailRegex, mobilePhoneRegex, postalCodeRegex } from "utils/regex"
+import { emailRegex, postalCodeRegex } from "utils/regex"
 
 export const RegistrationForm = () => {
   const [status, setStatus] = useState<"success" | "waiting" | "closed">(
     "closed",
   )
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, errors } = useForm({ mode: "onBlur" })
 
-  const onSubmit = async (formData: any) => {
+  const onSubmit = async (formData: FormData) => {
     const { data } = await axios.post("/api/register", JSON.stringify(formData))
     setStatus(data.status)
   }
@@ -28,14 +28,20 @@ export const RegistrationForm = () => {
           label="Vorname"
           className="col-span-12 sm:col-span-6"
           autoComplete="given-name"
-          register={register({ required: true })}
+          errors={errors}
+          register={register({
+            required: "Bitte geben Sie den Vornamen Ihres Kindes an.",
+          })}
         />
         <Input
           name="lastName"
           label="Nachname"
           className="col-span-12 sm:col-span-6"
           autoComplete="family-name"
-          register={register({ required: true })}
+          errors={errors}
+          register={register({
+            required: "Bitte geben Sie den Nachnamen Ihres Kindes an.",
+          })}
         />
         <Input
           name="birthDate"
@@ -43,8 +49,9 @@ export const RegistrationForm = () => {
           className="col-span-12 sm:col-span-4"
           inputMode="decimal"
           autoComplete="bday"
+          errors={errors}
           register={register({
-            required: true,
+            required: "Bitte geben Sie das Geburtsdatum Ihres Kindes an.",
           })}
         />
         <Input
@@ -52,7 +59,11 @@ export const RegistrationForm = () => {
           label="Straße und Hausnummer"
           className="col-span-12 sm:col-span-8"
           autoComplete="address-line1"
-          register={register({ required: true })}
+          errors={errors}
+          register={register({
+            required:
+              "Bitte geben Sie die Straße und Hausnummer Ihres Kindes an.",
+          })}
         />
         <Input
           name="postalCode"
@@ -60,8 +71,9 @@ export const RegistrationForm = () => {
           className="col-span-12 sm:col-span-4"
           inputMode="decimal"
           autoComplete="postal-code"
+          errors={errors}
           register={register({
-            required: true,
+            required: "Bitte geben Sie die Postleitzahl Ihres Kindes an.",
             pattern: postalCodeRegex,
           })}
         />
@@ -70,7 +82,10 @@ export const RegistrationForm = () => {
           label="Stadt"
           className="col-span-12 sm:col-span-8"
           autoComplete="address-level2"
-          register={register({ required: true })}
+          errors={errors}
+          register={register({
+            required: "Bitte geben Sie die Stadt Ihres Kindes an.",
+          })}
         />
         <Input
           name="mobile"
@@ -78,29 +93,24 @@ export const RegistrationForm = () => {
           className="col-span-12 sm:col-span-4"
           inputMode="tel"
           autoComplete="tel-national"
+          errors={errors}
           register={register({
-            required: true,
-            pattern: mobilePhoneRegex,
+            required: "Bitte geben Sie Ihre Handynummer an.",
           })}
         />
         <Input
           name="email"
-          label="Email"
+          label="E-Mail"
           className="col-span-12 sm:col-span-8"
           inputMode="email"
           autoComplete="email"
+          errors={errors}
           register={register({
-            required: true,
+            required: "Bitte geben Sie Ihre E-Mail-Ad­res­se an.",
             pattern: emailRegex,
-            validate: async value => {
-              const {
-                data: { valid },
-              } = await axios.get("/api/validate/" + value)
-              return valid
-            },
           })}
         />
-        {/* <fieldset className="col-span-12">
+        <fieldset className="col-span-12">
           <legend className="text-base font-medium text-gray-900">
             Essensgewohnheiten
           </legend>
@@ -125,15 +135,15 @@ export const RegistrationForm = () => {
               register={register()}
             />
           </div>
-        </fieldset> */}
+        </fieldset>
         <Textarea
           label="Lebensmittelunterträglichkeiten"
-          description="Bitte listen Sie die Lebensmittelunterträglichkeiten ihres Kindes."
+          description="Bitte listen Sie die Lebensmittelunterträglichkeiten Ihres Kindes."
           name="foodIntolerances"
           className="col-span-12"
           register={register()}
         />
-        {/* <Checkbox
+        <Checkbox
           name="canSwim"
           label="Schwimmen"
           description="Unser Kind ist Schwimmer/in und kann ohne Aufsicht schwimmen."
@@ -146,17 +156,17 @@ export const RegistrationForm = () => {
           description=" Wir sind damit einverstanden, dass unser Kind in mit der Gruppe abgesprochenen Zeiträumen gelegentlich einige Stunden zur freien Verfügung hat, in der er/sie ohne Aufsicht ist."
           className="col-span-12"
           register={register()}
-        /> */}
+        />
         <Textarea
           label="Krankheiten"
-          description="Bitte listen Sie die Krankheiten ihres Kindes auf."
+          description="Bitte listen Sie die Krankheiten Ihres Kindes auf."
           name="diseases"
           className="col-span-12"
           register={register()}
         />
         <Textarea
           label="Allergien"
-          description="Bitte listen Sie die Allergien ihres Kindes auf."
+          description="Bitte listen Sie die Allergien Ihres Kindes auf."
           name="allergies"
           className="col-span-12"
           register={register()}
@@ -171,24 +181,35 @@ export const RegistrationForm = () => {
         <Input
           name="familyDoctorName"
           label="Name des Hausarztes"
-          className="self-end col-span-12 sm:col-span-8"
+          className="col-span-12 sm:col-span-7"
           autoComplete="nope"
-          register={register({ required: true })}
+          errors={errors}
+          register={register({
+            required:
+              "Bitte geben Sie den Name des Hausarztes Ihres Kindes an.",
+          })}
         />
         <Input
           name="familyDoctorPhone"
           label="Telefonnummer des Hausarztes"
-          className="col-span-12 sm:col-span-4"
+          className="col-span-12 sm:col-span-5"
           inputMode="tel"
           autoComplete="nope"
-          register={register({ required: true })}
+          errors={errors}
+          register={register({
+            required:
+              "Bitte geben Sie den Telefonnummer des Hausarztes Ihres Kindes an.",
+          })}
         />
         <Input
           name="healthInsurance"
           label="Unser Kind ist bei folgender Krankenkasse versichert"
           className="col-span-12"
           autoComplete="nope"
-          register={register({ required: true })}
+          errors={errors}
+          register={register({
+            required: "Bitte geben Sie den Krankenkasse Ihres Kindes an.",
+          })}
         />
         <Button type="submit" className="col-span-12">
           Anmelden
@@ -207,7 +228,7 @@ export const RegistrationForm = () => {
           <Modal
             status="warn"
             headline="Anmeldung auf der Warteliste"
-            description="Zur Zeit sind alle Plätze belegt, daher wurde ihre Anmeldung der Warteliste hinzugefügt. Sie erhalten weitere Informationen per Email."
+            description="Zur Zeit sind alle Plätze belegt, daher wurde Ihre Anmeldung der Warteliste hinzugefügt. Sie erhalten weitere Informationen per Email."
             buttonOnClick={() => setStatus("closed")}
             buttonText="Zurück zum Anmelden"
           />
@@ -215,4 +236,25 @@ export const RegistrationForm = () => {
       </AnimatePresence>
     </>
   )
+}
+
+interface FormData {
+  allergies: string
+  birthDate: string
+  canSwim: boolean
+  city: string
+  diseases: string
+  eatingHabits: string
+  email: string
+  familyDoctorName: string
+  familyDoctorPhone: string
+  firstName: string
+  foodIntolerances: string
+  health: string
+  healthInsurance: string
+  lastName: string
+  mobile: string
+  postalCode: string
+  streetAddress: string
+  supervision: boolean
 }
