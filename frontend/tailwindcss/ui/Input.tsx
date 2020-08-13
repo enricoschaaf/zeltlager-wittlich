@@ -15,7 +15,7 @@ export const Input = ({
       >
         {label}
       </label>
-      <div className="mt-1 relative rounded-md shadow-sm">
+      <div className="mt-1 rounded-md shadow-sm">
         <input
           name={name}
           className="form-input py-3 px-4 block w-full transition ease-in-out duration-150"
