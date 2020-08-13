@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "0.1.0",
   "bin": {
-    "backend": "bin/backend.js"
+    "tent-camp": "bin/tent-camp.js"
   },
   "scripts": {
     "synth": "cdk synth --no-staging > template.yaml"
