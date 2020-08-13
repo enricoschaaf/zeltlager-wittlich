@@ -6,7 +6,7 @@ import { Button, Modal } from "tailwindcss/ui"
 
 export const RegistrationForm = () => {
   const [status, setStatus] = useState<"success" | "waiting" | "closed">(
-    "closed"
+    "closed",
   )
   const { register, handleSubmit } = useForm()
 
