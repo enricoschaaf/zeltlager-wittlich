@@ -8,3 +8,5 @@ cdk.out
 
 # Parcel default cache directory
 .parcel-cache
+
+.vscode
