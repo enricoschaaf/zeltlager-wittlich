@@ -7,8 +7,18 @@ module.exports = withPrefresh({
     modern: true,
     polyfillsOptimization: true,
     optimizeFonts: true,
-    optimizeImages: true
+    optimizeImages: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination:
+          "/:path*",
+      },
+    ]
+  },
+
   webpack(config, { dev, isServer }) {
     // Move Preact into the framework chunk instead of duplicating in routes:
     const splitChunks = config.optimization && config.optimization.splitChunks
@@ -25,7 +35,7 @@ module.exports = withPrefresh({
     if (isServer) {
       // mark `preact` stuffs as external for server bundle to prevent duplicate copies of preact
       config.externals.push(
-        /^(preact|preact-render-to-string|preact-context-provider)([\\/]|$)/
+        /^(preact|preact-render-to-string|preact-context-provider)([\\/]|$)/,
       )
     }
 
@@ -44,5 +54,5 @@ module.exports = withPrefresh({
     }
 
     return config
-  }
+  },
 })
