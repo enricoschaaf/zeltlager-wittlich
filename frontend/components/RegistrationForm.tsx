@@ -198,7 +198,7 @@ export const RegistrationForm = () => {
           errors={errors}
           register={register({
             required:
-              "Bitte geben Sie den Telefonnummer des Hausarztes Ihres Kindes an.",
+              "Bitte geben Sie die Telefonnummer des Hausarztes Ihres Kindes an.",
           })}
         />
         <Input
@@ -208,7 +208,7 @@ export const RegistrationForm = () => {
           autoComplete="nope"
           errors={errors}
           register={register({
-            required: "Bitte geben Sie den Krankenkasse Ihres Kindes an.",
+            required: "Bitte geben Sie die Krankenkasse Ihres Kindes an.",
           })}
         />
         <Button type="submit" className="col-span-12">
