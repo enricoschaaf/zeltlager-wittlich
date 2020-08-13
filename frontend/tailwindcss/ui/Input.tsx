@@ -17,6 +17,7 @@ export const Input = ({
       </label>
       <div className="mt-1 rounded-md shadow-sm">
         <input
+          id={name}
           name={name}
           className="form-input py-3 px-4 block w-full transition ease-in-out duration-150"
           ref={register}
