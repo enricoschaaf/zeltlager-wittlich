@@ -23,7 +23,7 @@ export const Input = ({
           name={name}
           className={`form-input py-3 px-4 block w-full transition ease-in-out duration-150 ${
             errors[name] &&
-            "pr-10 border-red-300 placeholder-red-300 focus:border-red-300 focus:shadow-outline-red"
+            "pr-10 border-red-300 placeholder-red-300 text-red-900 focus:border-red-300 focus:shadow-outline-red"
           }`}
           aria-invalid="true"
           aria-describedby={`${name}-error`}
