@@ -1,5 +1,6 @@
 import * as apiGateway from "@aws-cdk/aws-apigatewayv2"
 import * as dynamo from "@aws-cdk/aws-dynamodb"
+import * as iam from "@aws-cdk/aws-iam"
 import * as lambda from "@aws-cdk/aws-lambda-nodejs"
 import * as cdk from "@aws-cdk/core"
 
@@ -27,6 +28,12 @@ export class TentCampStack extends cdk.Stack {
         MAX_PARTICIPANTS: "64",
       },
     })
+    registerLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        resources: ["*"],
+        actions: ["ses:SendEmail"],
+      }),
+    )
     tentCampTable.grant(
       registerLambda,
       "dynamodb:GetItem",
