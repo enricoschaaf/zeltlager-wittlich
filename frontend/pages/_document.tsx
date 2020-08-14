@@ -3,7 +3,7 @@ import Document, { Head, Html, Main, NextScript } from "next/document"
 class MyDocument extends Document {
   render() {
     return (
-      <Html lang="en">
+      <Html className="h-full" lang="en">
         <Head>
           <meta name="description" content="Meta description" />
           <meta name="theme-color" content="#f4f5f7" />
@@ -22,7 +22,7 @@ class MyDocument extends Document {
             crossOrigin="anonymous"
           />
         </Head>
-        <body className="bg-gray-50 text-gray-900">
+        <body className="h-full bg-gray-50 text-gray-900">
           <Main />
           <NextScript />
         </body>

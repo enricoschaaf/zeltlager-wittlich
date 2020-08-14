@@ -8,7 +8,6 @@ export const Input = ({
   errors,
   ...props
 }: InputProps) => {
-  console.log(errors)
   return (
     <div className={`self-start ${className}`}>
       <label
@@ -21,9 +20,10 @@ export const Input = ({
         <input
           id={name}
           name={name}
-          className={`form-input py-3 px-4 block w-full transition ease-in-out duration-150 ${
-            errors[name] &&
-            "pr-10 border-red-300 placeholder-red-300 text-red-900 focus:border-red-300 focus:shadow-outline-red"
+          className={`form-input py-3 px-4 block w-full transition ease-in-out duration-150${
+            errors[name]
+              ? " pr-10 border-red-300 placeholder-red-300 text-red-900 focus:border-red-300 focus:shadow-outline-red"
+              : ""
           }`}
           aria-invalid="true"
           aria-describedby={`${name}-error`}
