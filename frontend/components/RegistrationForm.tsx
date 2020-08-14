@@ -10,7 +10,7 @@ export const RegistrationForm = () => {
   const [status, setStatus] = useState<"success" | "waiting" | "closed">(
     "closed",
   )
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, reset } = useForm({
     mode: "onBlur",
   })
 
@@ -28,6 +28,7 @@ export const RegistrationForm = () => {
       ...data,
       birthDate,
     })
+    reset()
     setStatus(status)
   }
 
