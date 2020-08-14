@@ -7,6 +7,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@aws-cdk/aws-iam": "^1.58.0",
     "axios": "^0.19.2",
     "framer-motion": "^2.4.1",
     "next": "^9.5.2",
