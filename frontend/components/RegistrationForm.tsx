@@ -13,7 +13,7 @@ export const RegistrationForm = () => {
   const { register, handleSubmit, errors } = useForm({ mode: "onBlur" })
 
   const onSubmit = async (formData: FormData) => {
-    const { data } = await axios.post("/api/register", JSON.stringify(formData))
+    const { data } = await axios.post("/api/register", formData)
     setStatus(data.status)
   }
 
