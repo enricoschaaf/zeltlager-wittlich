@@ -3,9 +3,9 @@ const defaultTheme = require("tailwindcss/defaultTheme")
 
 module.exports = {
   purge: [
-    "./pages/**/*.{js,jsx,ts,tsx}",
-    "./components/**/*.{js,jsx,ts,tsx}",
-    "./tailwindcss/**/*.{js,jsx,ts,tsx}",
+    "./pages/**/*.tsx",
+    "./components/**/*.tsx",
+    "./tailwindcss/**/*.tsx",
   ],
   theme: {
     extend: {
@@ -14,5 +14,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/ui"), require("@tailwindcss/typography")],
+  plugins: [require("@tailwindcss/ui")],
 }
