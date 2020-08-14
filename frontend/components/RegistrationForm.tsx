@@ -10,11 +10,25 @@ export const RegistrationForm = () => {
   const [status, setStatus] = useState<"success" | "waiting" | "closed">(
     "closed",
   )
-  const { register, handleSubmit, errors } = useForm({ mode: "onBlur" })
+  const { register, handleSubmit, errors } = useForm({
+    mode: "onBlur",
+  })
 
   const onSubmit = async (formData: FormData) => {
-    const { data } = await axios.post("/api/register", formData)
-    setStatus(data.status)
+    const data = Object.fromEntries(
+      Object.entries(formData).map(([key, value]) =>
+        value === "" ? [key, undefined] : [key, value],
+      ),
+    )
+    const [day, month, year] = data.birthDate.split(".")
+    const birthDate = new Date(`${month}/${day}/${year}`)
+    const {
+      data: { status },
+    } = await axios.post("/api/register", {
+      ...data,
+      birthDate,
+    })
+    setStatus(status)
   }
 
   return (
@@ -52,6 +66,12 @@ export const RegistrationForm = () => {
           errors={errors}
           register={register({
             required: "Bitte geben Sie das Geburtsdatum Ihres Kindes an.",
+            validate: value => {
+              const [day, month, year] = value.split(".")
+              if (isNaN(new Date(`${month}/${day}/${year}`).getTime())) {
+                return "Das angegebene Geburtsdatum hat nicht das richtige Format."
+              }
+            },
           })}
         />
         <Input
@@ -61,8 +81,7 @@ export const RegistrationForm = () => {
           autoComplete="address-line1"
           errors={errors}
           register={register({
-            required:
-              "Bitte geben Sie die Straße und Hausnummer Ihres Kindes an.",
+            required: "Bitte geben Sie Ihre Straße und Hausnummer an.",
           })}
         />
         <Input
@@ -73,8 +92,11 @@ export const RegistrationForm = () => {
           autoComplete="postal-code"
           errors={errors}
           register={register({
-            required: "Bitte geben Sie die Postleitzahl Ihres Kindes an.",
-            pattern: postalCodeRegex,
+            required: "Bitte geben Sie Ihre Postleitzahl an.",
+            pattern: {
+              value: postalCodeRegex,
+              message: "Ihre Postleitzahl hat nicht das richtige Format.",
+            },
           })}
         />
         <Input
@@ -84,7 +106,7 @@ export const RegistrationForm = () => {
           autoComplete="address-level2"
           errors={errors}
           register={register({
-            required: "Bitte geben Sie die Stadt Ihres Kindes an.",
+            required: "Bitte geben Sie Ihre Stadt.",
           })}
         />
         <Input
@@ -107,7 +129,10 @@ export const RegistrationForm = () => {
           errors={errors}
           register={register({
             required: "Bitte geben Sie Ihre E-Mail-Ad­res­se an.",
-            pattern: emailRegex,
+            pattern: {
+              value: emailRegex,
+              message: "Ihre E-Mail-Ad­res­se hat nicht das richtige Format.",
+            },
           })}
         />
         <fieldset className="col-span-12">
@@ -117,7 +142,7 @@ export const RegistrationForm = () => {
           <div className="grid grid-flow-row sm:grid-flow-col gap-4 sm:gap-6 lg:gap-8 mt-2 sm:mt-3 lg:mt-4">
             <Radio
               name="eatingHabits"
-              id="noSpecialties"
+              id="none"
               label="Keine"
               register={register()}
               checked
