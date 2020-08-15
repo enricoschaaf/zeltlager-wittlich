@@ -5,6 +5,7 @@
     "tent-camp": "bin/tent-camp.js"
   },
   "scripts": {
+    "deploy": "npm run build && cdk deploy",
     "build": "tsc ./lambda/imageTransform/index.ts",
     "synth": "cdk synth --no-staging > template.yaml"
   },
