@@ -1,4 +1,4 @@
-import { S3EventRecord, S3Handler } from "aws-lambda"
+import { S3Handler } from "aws-lambda"
 import { DynamoDB, Rekognition } from "aws-sdk"
 
 const tableName = process.env.TABLE_NAME
@@ -7,65 +7,47 @@ const rekognition = new Rekognition()
 const dynamo = new DynamoDB.DocumentClient()
 
 const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
-  let createRecords: S3EventRecord[] = []
-  let deleteRecords: S3EventRecord[] = []
-
-  Records.map((record) => {
-    if (record.eventName.includes("ObjectCreated")) {
-      createRecords.push(record)
-    }
-    if (record.eventName.includes("ObjectRemoved")) {
-      deleteRecords.push(record)
-    }
-  })
-
-  const dataArray = await Promise.all(
-    createRecords.map(({ s3: { bucket, object } }) => {
-      const params = {
-        Image: {
-          S3Object: { Bucket: bucket.name, Name: object.key },
+  if (Records[0].eventName.includes("ObjectCreated")) {
+    const params = {
+      Image: {
+        S3Object: {
+          Bucket: Records[0].s3.bucket.name,
+          Name: Records[0].s3.object.key,
         },
-      }
-      return Promise.all([
-        rekognition.detectFaces(params).promise(),
-        rekognition.detectLabels(params).promise(),
-      ])
-    }),
-  )
+      },
+    }
 
-  const createRequests = dataArray.map(([{ FaceDetails }, { Labels }], i) => {
-    const [folder, key] = createRecords[i].s3.object.key.split("/")
-    return {
-      PutRequest: {
+    const [{ FaceRecords }, { Labels }] = await Promise.all([
+      rekognition.indexFaces({ ...params, CollectionId: "TentCamp" }).promise(),
+      rekognition.detectLabels(params).promise(),
+    ])
+
+    await dynamo
+      .put({
+        TableName: tableName,
         Item: {
-          PK: "FOLDER#" + folder,
-          SK: "KEY#" + key,
+          PK: "KEY#" + Records[0].s3.object.key,
+          SK: "KEY#" + Records[0].s3.object.key,
           alt: Labels?.map(({ Name }) => Name).join(" "),
-          boundingBoxes: FaceDetails?.map(({ BoundingBox }) => BoundingBox),
+          faces: FaceRecords?.map(({ Face }) => Face),
         },
-      },
-    }
-  })
+        ConditionExpression: "attribute_not_exists(PK)",
+      })
+      .promise()
+  }
 
-  const deleteRequests = deleteRecords.map(({ s3: { object } }) => {
-    const [folder, key] = object.key.split("/")
-    return {
-      DeleteRequest: {
+  if (Records[0].eventName.includes("ObjectRemoved")) {
+    await dynamo
+      .delete({
+        TableName: tableName,
         Key: {
-          PK: "FOLDER#" + folder,
-          SK: "KEY#" + key,
+          PK: "KEY#" + Records[0].s3.object.key,
+          SK: "KEY#" + Records[0].s3.object.key,
         },
-      },
-    }
-  })
-
-  await dynamo
-    .batchWrite({
-      RequestItems: {
-        [tableName]: [...createRequests, ...deleteRequests],
-      },
-    })
-    .promise()
+        ConditionExpression: "attribute_exists(PK)",
+      })
+      .promise()
+  }
 }
 
 exports.handler = tentCampBucketEventSource
