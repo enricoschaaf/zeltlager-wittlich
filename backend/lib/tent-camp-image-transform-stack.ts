@@ -44,7 +44,7 @@ export class TentCampImageTransformStack extends cdk.Stack {
     tentCampBucketEventSourceLambda.addToRolePolicy(
       new iam.PolicyStatement({
         resources: ["*"],
-        actions: ["rekognition:DetectFaces", "rekognition:DetectLabels"],
+        actions: ["rekognition:IndexFaces", "rekognition:DetectLabels"],
       }),
     )
     tentCampImageTransformTable.grant(
