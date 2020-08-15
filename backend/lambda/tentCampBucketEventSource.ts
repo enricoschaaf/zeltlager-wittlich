@@ -39,9 +39,9 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
       PutRequest: {
         Item: {
           PK: "FOLDER#" + folder,
-          SK: "KEY" + key,
+          SK: "KEY#" + key,
           alt: Labels?.map(({ Name }) => Name).join(" "),
-          boundingBox: FaceDetails?.map(({ BoundingBox }) => BoundingBox),
+          boundingBoxes: FaceDetails?.map(({ BoundingBox }) => BoundingBox),
         },
       },
     }
@@ -53,7 +53,7 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
       DeleteRequest: {
         Key: {
           PK: "FOLDER#" + folder,
-          SK: "KEY" + key,
+          SK: "KEY#" + key,
         },
       },
     }
