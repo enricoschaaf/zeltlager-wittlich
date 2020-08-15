@@ -9,6 +9,7 @@ const s3 = new S3()
 const schema = z
   .object({ q: z.string(), w: z.string(), h: z.string() })
   .partial()
+  .optional()
 
 const imageTransformHandler: APIGatewayProxyHandlerV2 = async ({
   queryStringParameters,
@@ -36,7 +37,7 @@ const imageTransformHandler: APIGatewayProxyHandlerV2 = async ({
       }
     }
 
-    const { q, w, h } = queryStringParameters
+    const { q, w, h } = queryStringParameters ?? {}
     const quality = q ? parseInt(q) : 75
     const width = w ? parseInt(w) : undefined
     const height = h ? parseInt(h) : undefined

@@ -16,6 +16,11 @@ module.exports = withPrefresh({
         destination:
           "https://ajvyehkrlf.execute-api.eu-central-1.amazonaws.com/:path*",
       },
+      {
+        source: "/:path*",
+        destination:
+          "https://96i6qjh1lk.execute-api.eu-central-1.amazonaws.com/:path*",
+      },
     ]
   },
 
