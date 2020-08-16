@@ -9,21 +9,6 @@ module.exports = withPrefresh({
     optimizeFonts: true,
     optimizeImages: true,
   },
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination:
-          "https://ajvyehkrlf.execute-api.eu-central-1.amazonaws.com/:path*",
-      },
-      {
-        source: "/:path*",
-        destination:
-          "https://96i6qjh1lk.execute-api.eu-central-1.amazonaws.com/:path*",
-      },
-    ]
-  },
-
   webpack(config, { dev, isServer }) {
     // Move Preact into the framework chunk instead of duplicating in routes:
     const splitChunks = config.optimization && config.optimization.splitChunks
