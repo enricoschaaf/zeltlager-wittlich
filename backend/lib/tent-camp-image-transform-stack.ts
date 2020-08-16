@@ -61,6 +61,7 @@ export class TentCampImageTransformStack extends cdk.Stack {
     )
     tentCampImageTransformTable.grant(
       tentCampBucketEventSourceLambda,
+      "dynamodb:BatchWriteItem",
       "dynamodb:PutItem",
       "dynamodb:DeleteItem",
     )
