@@ -7,6 +7,8 @@ const rekognition = new Rekognition()
 const dynamo = new DynamoDB.DocumentClient()
 
 const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
+  const key = Records[0].s3.object.key
+
   if (Records[0].eventName.includes("ObjectCreated")) {
     const params = {
       Image: {
@@ -26,8 +28,10 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
       .put({
         TableName: tableName,
         Item: {
-          PK: "KEY#" + Records[0].s3.object.key,
-          SK: "KEY#" + Records[0].s3.object.key,
+          PK: "KEY#" + key,
+          SK: "KEY#" + key,
+          GSI1PK: "OBJECTS",
+          GSI1SK: "KEY#" + key,
           alt: Labels?.map(({ Name }) => Name).join(" "),
           faces: FaceRecords?.map(({ Face }) => Face),
         },
@@ -41,8 +45,8 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
       .delete({
         TableName: tableName,
         Key: {
-          PK: "KEY#" + Records[0].s3.object.key,
-          SK: "KEY#" + Records[0].s3.object.key,
+          PK: "KEY#" + key,
+          SK: "KEY#" + key,
         },
         ConditionExpression: "attribute_exists(PK)",
       })
