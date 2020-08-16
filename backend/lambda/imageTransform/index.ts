@@ -1,15 +1,21 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda"
-import { S3 } from "aws-sdk"
+import { DynamoDB, S3 } from "aws-sdk"
 import * as sharp from "sharp"
 import * as z from "zod"
 
 const bucketName = process.env.BUCKET_NAME
+const tableName = process.env.TABLE_NAME
+
 const s3 = new S3()
+const dynamo = new DynamoDB.DocumentClient()
 
 const schema = z
-  .object({ q: z.string(), w: z.string(), h: z.string() })
+  .object({
+    w: z.string(),
+    h: z.string(),
+    q: z.string(),
+  })
   .partial()
-  .optional()
 
 const imageTransformHandler: APIGatewayProxyHandlerV2 = async ({
   queryStringParameters,
@@ -17,33 +23,40 @@ const imageTransformHandler: APIGatewayProxyHandlerV2 = async ({
   pathParameters,
 }) => {
   try {
-    if (!pathParameters) {
+    if (!pathParameters?.path) {
       return {
         statusCode: 404,
       }
     }
 
-    const params = {
-      Bucket: bucketName,
-      Key: pathParameters.image,
-    }
+    const { path } = pathParameters
 
-    let { ContentType: contentType } = await s3.headObject(params).promise()
-    if (!contentType) throw Error
+    const { Item } = await dynamo
+      .get({
+        TableName: tableName,
+        Key: { PK: "KEY#" + path, SK: "KEY#" + path },
+        ProjectionExpression: "ContentType",
+      })
+      .promise()
 
-    if (!schema.check(queryStringParameters)) {
+    if (!Item) {
       return {
-        statusCode: 400,
+        statusCode: 404,
       }
     }
 
-    const { q, w, h } = queryStringParameters ?? {}
+    const { w, h, q } = schema.parse(queryStringParameters ?? {})
     const quality = q ? parseInt(q) : 75
     const width = w ? parseInt(w) : undefined
     const height = h ? parseInt(h) : undefined
 
     let pipeline = sharp()
-    pipeline = pipeline.resize({ width, height })
+
+    if (width || height) {
+      pipeline = pipeline.resize({ width, height })
+    }
+
+    let contentType = Item.ContentType
 
     if (headers.accept.includes("image/webp") && contentType !== "image/webp") {
       pipeline = pipeline.webp({ quality })
@@ -54,14 +67,20 @@ const imageTransformHandler: APIGatewayProxyHandlerV2 = async ({
     }
 
     const image = await s3
-      .getObject(params)
+      .getObject({
+        Bucket: bucketName,
+        Key: path,
+      })
       .createReadStream()
       .pipe(pipeline)
       .toBuffer()
 
     return {
       statusCode: 200,
-      headers: { "Content-Type": contentType },
+      headers: {
+        "Content-Type": contentType,
+        "Cache-Control": "public, max-age=31536000, immutable",
+      },
       body: image.toString("base64"),
       isBase64Encoded: true,
     }

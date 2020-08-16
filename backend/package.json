@@ -21,11 +21,14 @@
     "@aws-cdk/aws-apigatewayv2": "1.56.0",
     "@aws-cdk/aws-dynamodb": "1.56.0",
     "@aws-cdk/aws-lambda": "1.56.0",
-    "@aws-cdk/aws-lambda-event-sources": "^1.56.0",
+    "@aws-cdk/aws-lambda-event-sources": "1.56.0",
     "@aws-cdk/aws-lambda-nodejs": "1.56.0",
     "@aws-cdk/aws-s3": "1.56.0",
     "@aws-cdk/core": "1.56.0",
+    "@azure/cognitiveservices-computervision": "^7.0.1",
+    "@azure/ms-rest-azure-js": "^2.0.1",
     "@types/aws-lambda": "^8.10.61",
+    "dotenv": "^8.2.0",
     "source-map-support": "^0.5.19",
     "zod": "^1.10.2"
   }

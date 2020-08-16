@@ -98,10 +98,12 @@ export class TentCampImageTransformStack extends cdk.Stack {
         memorySize: 3008,
         environment: {
           BUCKET_NAME: tentCampBucket.bucketName,
+          TABLE_NAME: tentCampImageTransformTable.tableName,
         },
       },
     )
     tentCampBucket.grantRead(imageTransformLambda)
+    tentCampImageTransformTable.grant(imageTransformLambda, "dynamodb:GetItem")
 
     const tentCampImageTransformApi = new apiGateway.HttpApi(
       this,
