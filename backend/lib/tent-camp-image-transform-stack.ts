@@ -6,6 +6,9 @@ import * as eventSource from "@aws-cdk/aws-lambda-event-sources"
 import * as nodejs from "@aws-cdk/aws-lambda-nodejs"
 import * as s3 from "@aws-cdk/aws-s3"
 import * as cdk from "@aws-cdk/core"
+import { config } from "dotenv"
+
+config()
 
 export class TentCampImageTransformStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -41,6 +44,14 @@ export class TentCampImageTransformStack extends cdk.Stack {
 
     const tentCampBucket = new s3.Bucket(this, "tentCampBucket")
 
+    if (!process.env.COMPUTER_VISION_KEY) {
+      throw new Error("COMPUTER_VISION_KEY environment variable missing.")
+    }
+
+    if (!process.env.COMPUTER_VISION_ENDPOINT) {
+      throw new Error("COMPUTER_VISION_ENDPOINT environment variable missing.")
+    }
+
     const tentCampBucketEventSourceLambda = new nodejs.NodejsFunction(
       this,
       "tentCampBucketEventSourceLambda",
@@ -49,6 +60,8 @@ export class TentCampImageTransformStack extends cdk.Stack {
         memorySize: 3008,
         environment: {
           TABLE_NAME: tentCampImageTransformTable.tableName,
+          COMPUTER_VISION_KEY: process.env.COMPUTER_VISION_KEY,
+          COMPUTER_VISION_ENDPOINT: process.env.COMPUTER_VISION_ENDPOINT,
         },
       },
     )
@@ -56,12 +69,11 @@ export class TentCampImageTransformStack extends cdk.Stack {
     tentCampBucketEventSourceLambda.addToRolePolicy(
       new iam.PolicyStatement({
         resources: ["*"],
-        actions: ["rekognition:IndexFaces", "rekognition:DetectLabels"],
+        actions: ["rekognition:IndexFaces", "translate:TranslateText"],
       }),
     )
     tentCampImageTransformTable.grant(
       tentCampBucketEventSourceLambda,
-      "dynamodb:BatchWriteItem",
       "dynamodb:PutItem",
       "dynamodb:DeleteItem",
     )
