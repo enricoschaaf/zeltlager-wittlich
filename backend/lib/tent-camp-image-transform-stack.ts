@@ -27,6 +27,18 @@ export class TentCampImageTransformStack extends cdk.Stack {
       },
     )
 
+    tentCampImageTransformTable.addGlobalSecondaryIndex({
+      indexName: "GSI1",
+      partitionKey: {
+        name: "GSI1PK",
+        type: dynamo.AttributeType.STRING,
+      },
+      sortKey: {
+        name: "GSI1SK",
+        type: dynamo.AttributeType.STRING,
+      },
+    })
+
     const tentCampBucket = new s3.Bucket(this, "tentCampBucket")
 
     const tentCampBucketEventSourceLambda = new nodejs.NodejsFunction(
