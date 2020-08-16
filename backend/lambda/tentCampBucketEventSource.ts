@@ -20,12 +20,13 @@ const computerVision = new ComputerVisionClient(
 )
 
 const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
+  const bucketName = Records[0].s3.bucket.name
   const key = Records[0].s3.object.key
   const eventName = Records[0].eventName
 
   if (eventName.includes("ObjectCreated")) {
     const params = {
-      Bucket: Records[0].s3.bucket.name,
+      Bucket: bucketName,
       Key: key,
     }
 
@@ -38,7 +39,10 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
       rekognition
         .indexFaces({
           Image: {
-            S3Object: params,
+            S3Object: {
+              Bucket: bucketName,
+              Name: key,
+            },
           },
           CollectionId: "TentCamp",
         })
