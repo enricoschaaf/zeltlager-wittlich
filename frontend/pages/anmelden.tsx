@@ -1,12 +1,10 @@
 import { RegistrationForm } from "components/RegistrationForm"
-import Head from "next/head"
+import { Title } from "components/Title"
 
 const Register = () => {
   return (
     <>
-      <Head>
-        <title>Anmelden | Zeltlager Wittlich</title>
-      </Head>
+      <Title title="Anmelden" />
       <RegistrationForm />
     </>
   )

@@ -1,10 +1,8 @@
-import Head from "next/head"
+import { Title } from "components/Title"
 
 const Index = () => (
   <>
-    <Head>
-      <title>Title</title>
-    </Head>
+    <Title />
     <div>Index</div>
   </>
 )
