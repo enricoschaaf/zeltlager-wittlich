@@ -57,7 +57,7 @@ export class TentCampImageTransformStack extends cdk.Stack {
       "objectCreatedLambda",
       {
         code: lambda.Code.fromAsset("lambda/objectCreated", {
-          exclude: ["index.ts", "package.json", "package-lock.json"],
+          exclude: ["index.ts"],
         }),
         handler: "index.handler",
         runtime: lambda.Runtime.NODEJS_12_X,
@@ -114,7 +114,7 @@ export class TentCampImageTransformStack extends cdk.Stack {
       "imageTransformLambda",
       {
         code: lambda.Code.fromAsset("lambda/imageTransform", {
-          exclude: ["index.ts", "package.json", "package-lock.json"],
+          exclude: ["index.ts"],
         }),
         handler: "index.handler",
         runtime: lambda.Runtime.NODEJS_12_X,
@@ -129,6 +129,23 @@ export class TentCampImageTransformStack extends cdk.Stack {
     tentCampBucket.grantRead(imageTransformLambda)
     tentCampImageTransformTable.grant(imageTransformLambda, "dynamodb:GetItem")
 
+    if (!process.env.BASE_URL) {
+      throw new Error("BASE_URL environment variable missing.")
+    }
+
+    const photosLambda = new nodejs.NodejsFunction(this, "photosLambda", {
+      entry: "lambda/photos.ts",
+      environment: {
+        TABLE_NAME: tentCampImageTransformTable.tableName,
+        BASE_URL: process.env.BASE_URL,
+      },
+    })
+    tentCampImageTransformTable.grant(
+      photosLambda,
+      "dynamodb:Query",
+      "dynamodb:GetItem",
+    )
+
     const tentCampImageTransformApi = new apiGateway.HttpApi(
       this,
       "tentCampImageTransformApi",
@@ -139,6 +156,14 @@ export class TentCampImageTransformStack extends cdk.Stack {
       methods: [apiGateway.HttpMethod.GET],
       integration: new apiGateway.LambdaProxyIntegration({
         handler: imageTransformLambda,
+      }),
+    })
+
+    tentCampImageTransformApi.addRoutes({
+      path: "/api/photos",
+      methods: [apiGateway.HttpMethod.GET],
+      integration: new apiGateway.LambdaProxyIntegration({
+        handler: photosLambda,
       }),
     })
   }

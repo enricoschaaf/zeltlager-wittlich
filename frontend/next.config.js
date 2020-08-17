@@ -12,14 +12,14 @@ module.exports = withPrefresh({
   async rewrites() {
     return [
       {
-        source: "/api/:path*",
+        source: "/api/register",
         destination:
-          "https://ajvyehkrlf.execute-api.eu-central-1.amazonaws.com/:path*",
+          "https://ajvyehkrlf.execute-api.eu-central-1.amazonaws.com/register",
       },
       {
-        source: "/api/:path*",
+        source: "/api/photos",
         destination:
-          "https://96i6qjh1lk.execute-api.eu-central-1.amazonaws.com/api/:path*",
+          "https://96i6qjh1lk.execute-api.eu-central-1.amazonaws.com/api/photos",
       },
       {
         source: "/photos/:path*",

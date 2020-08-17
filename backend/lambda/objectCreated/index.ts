@@ -89,7 +89,7 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
         PK: "ID#" + id,
         SK: "ID#" + id,
         GSI1PK: "OBJECTS",
-        GSI1SK: "KEY#" + key,
+        GSI1SK: "ID#" + id,
         Id: id,
         Key: key,
         Width: width,
