@@ -6,7 +6,7 @@
   },
   "scripts": {
     "deploy": "npm run build && cdk deploy",
-    "build": "tsc ./lambda/imageTransform/index.ts",
+    "build": "tsc ./lambda/imageTransform/index.ts && tsc ./lambda/objectCreated/index.ts",
     "synth": "cdk synth --no-staging > template.yaml"
   },
   "devDependencies": {
