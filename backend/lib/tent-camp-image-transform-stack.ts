@@ -135,7 +135,7 @@ export class TentCampImageTransformStack extends cdk.Stack {
     )
 
     tentCampImageTransformApi.addRoutes({
-      path: "/{id+}",
+      path: "/photos/{id+}",
       methods: [apiGateway.HttpMethod.GET],
       integration: new apiGateway.LambdaProxyIntegration({
         handler: imageTransformLambda,
