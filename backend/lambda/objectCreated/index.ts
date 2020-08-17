@@ -3,6 +3,7 @@ import { CognitiveServicesCredentials } from "@azure/ms-rest-azure-js"
 import { S3Handler } from "aws-lambda"
 import { DynamoDB, Rekognition, S3, Translate } from "aws-sdk"
 import { nanoid } from "nanoid"
+import sharp = require("sharp")
 
 const tableName = process.env.TABLE_NAME
 const computerVisionKey = process.env.COMPUTER_VISION_KEY
@@ -30,37 +31,56 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
     Key: key,
   }
 
-  const [{ ContentType: contentType }, url] = await Promise.all([
-    s3.headObject(params).promise(),
-    s3.getSignedUrlPromise("getObject", params),
-  ])
-
-  const [{ FaceRecords }, { captions }] = await Promise.all([
-    rekognition
-      .indexFaces({
-        Image: {
-          S3Object: {
-            Bucket: bucketName,
-            Name: key,
-          },
-        },
-        CollectionId: "TentCamp",
-      })
-      .promise(),
-    computerVision.describeImage(url, { language: "en" }),
-  ])
-
-  let caption: string | undefined
-  if (captions && captions[0].text) {
-    const { TranslatedText } = await translate
-      .translateText({
-        SourceLanguageCode: "en",
-        TargetLanguageCode: "de",
-        Text: captions[0].text,
-      })
+  const getMetadata = new Promise<{
+    contentType?: string
+    width?: number
+    height?: number
+  }>(async (resolve, reject) => {
+    const { Body: image, ContentType: contentType } = await s3
+      .getObject(params)
       .promise()
-    caption = TranslatedText
-  }
+    if ((Buffer.isBuffer(image) || typeof image === "string") && contentType) {
+      const { width, height } = await sharp(image).metadata()
+      resolve({ contentType, width, height })
+    }
+    reject()
+  })
+
+  const getCaption = new Promise<{ caption?: string }>(async (resolve) => {
+    const url = await s3.getSignedUrlPromise("getObject", params)
+    const { captions } = await computerVision.describeImage(url, {
+      language: "en",
+    })
+    if (captions && captions[0].text) {
+      const { TranslatedText } = await translate
+        .translateText({
+          SourceLanguageCode: "en",
+          TargetLanguageCode: "de",
+          Text: captions[0].text,
+        })
+        .promise()
+      resolve({ caption: TranslatedText })
+    }
+    resolve({ caption: undefined })
+  })
+
+  const getFaces = rekognition
+    .indexFaces({
+      Image: {
+        S3Object: {
+          Bucket: bucketName,
+          Name: key,
+        },
+      },
+      CollectionId: "TentCamp",
+    })
+    .promise()
+
+  const [
+    { contentType, width, height },
+    { caption },
+    { FaceRecords },
+  ] = await Promise.all([getMetadata, getCaption, getFaces])
 
   await dynamo
     .put({
@@ -72,6 +92,8 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
         GSI1SK: "KEY#" + key,
         Id: id,
         Key: key,
+        Width: width,
+        Height: height,
         ContentType: contentType,
         Caption: caption,
         Faces: FaceRecords?.map(({ Face }) => Face),

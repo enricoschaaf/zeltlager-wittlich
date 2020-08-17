@@ -57,7 +57,7 @@ export class TentCampImageTransformStack extends cdk.Stack {
       "objectCreatedLambda",
       {
         code: lambda.Code.fromAsset("lambda/objectCreated", {
-          exclude: ["index.ts"],
+          exclude: ["index.ts", "package.json", "package-lock.json"],
         }),
         handler: "index.handler",
         runtime: lambda.Runtime.NODEJS_12_X,
@@ -114,7 +114,7 @@ export class TentCampImageTransformStack extends cdk.Stack {
       "imageTransformLambda",
       {
         code: lambda.Code.fromAsset("lambda/imageTransform", {
-          exclude: ["index.ts"],
+          exclude: ["index.ts", "package.json", "package-lock.json"],
         }),
         handler: "index.handler",
         runtime: lambda.Runtime.NODEJS_12_X,
