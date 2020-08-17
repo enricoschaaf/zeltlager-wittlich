@@ -140,11 +140,7 @@ export class TentCampImageTransformStack extends cdk.Stack {
         BASE_URL: process.env.BASE_URL,
       },
     })
-    tentCampImageTransformTable.grant(
-      photosLambda,
-      "dynamodb:Query",
-      "dynamodb:GetItem",
-    )
+    tentCampImageTransformTable.grant(photosLambda, "dynamodb:Query")
 
     const tentCampImageTransformApi = new apiGateway.HttpApi(
       this,

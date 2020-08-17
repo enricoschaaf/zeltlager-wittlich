@@ -3,6 +3,7 @@ import { CognitiveServicesCredentials } from "@azure/ms-rest-azure-js"
 import { S3Handler } from "aws-lambda"
 import { DynamoDB, Rekognition, S3, Translate } from "aws-sdk"
 import { nanoid } from "nanoid"
+import { dirname } from "path"
 import sharp = require("sharp")
 
 const tableName = process.env.TABLE_NAME
@@ -24,6 +25,7 @@ const computerVision = new ComputerVisionClient(
 const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
   const bucketName = Records[0].s3.bucket.name
   const key = Records[0].s3.object.key
+  const path = dirname(Records[0].s3.object.key)
   const id = nanoid()
 
   const params = {
@@ -86,10 +88,10 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
     .put({
       TableName: tableName,
       Item: {
-        PK: "ID#" + id,
-        SK: "ID#" + id,
+        PK: `ID#${path}/${id}`,
+        SK: `ID#${path}/${id}`,
         GSI1PK: "OBJECTS",
-        GSI1SK: "ID#" + id,
+        GSI1SK: `ID#${path}/${id}`,
         Id: id,
         Key: key,
         Width: width,

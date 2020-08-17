@@ -21,18 +21,6 @@ const photosLambda: APIGatewayProxyHandlerV2 = async ({
     )
     const take = takeString ? parseInt(takeString) : 10
 
-    let item
-    if (cursor) {
-      const { Item } = await dynamo
-        .get({
-          TableName: tableName,
-          Key: { PK: "ID#" + cursor, SK: "ID#" + cursor },
-          ProjectionExpression: "PK, SK, GSI1PK, GSI1SK",
-        })
-        .promise()
-      item = Item
-    }
-
     const { Items } = await dynamo
       .query({
         TableName: tableName,
@@ -41,15 +29,17 @@ const photosLambda: APIGatewayProxyHandlerV2 = async ({
         KeyConditionExpression:
           "GSI1PK = :gsi1pk AND begins_with(GSI1SK, :prefix)",
         Limit: take,
-        ExclusiveStartKey: item && {
-          SK: item.SK,
-          PK: item.PK,
-          GSI1SK: item.GSI1SK,
-          GSI1PK: item.GSI1PK,
-        },
+        ExclusiveStartKey: cursor
+          ? {
+              SK: `ID#${year}/${cursor}`,
+              PK: `ID#${year}/${cursor}`,
+              GSI1PK: "OBJECTS",
+              GSI1SK: `ID#${year}/${cursor}`,
+            }
+          : undefined,
         ExpressionAttributeValues: {
           ":gsi1pk": "OBJECTS",
-          ":prefix": year ? `KEY#${year}/` : "KEY#",
+          ":prefix": year ? `ID#${year}/` : "ID#",
         },
       })
       .promise()
@@ -64,7 +54,7 @@ const photosLambda: APIGatewayProxyHandlerV2 = async ({
           height,
         }),
       ),
-      cursor: Items && Items[take - 1].Id,
+      cursor: Items && Items[take - 1]?.Id,
     }
   } catch (err) {
     console.error(err)
