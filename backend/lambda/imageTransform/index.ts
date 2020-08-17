@@ -23,23 +23,24 @@ const imageTransformHandler: APIGatewayProxyHandlerV2 = async ({
   pathParameters,
 }) => {
   try {
-    if (!pathParameters?.path) {
+    if (!pathParameters?.id) {
       return {
         statusCode: 404,
       }
     }
 
-    const { path } = pathParameters
+    const { id } = pathParameters
 
     const { Item } = await dynamo
       .get({
         TableName: tableName,
-        Key: { PK: "KEY#" + path, SK: "KEY#" + path },
-        ProjectionExpression: "ContentType",
+        Key: { PK: "ID#" + id, SK: "ID#" + id },
+        ProjectionExpression: "#key, ContentType",
+        ExpressionAttributeNames: { "#key": "Key" },
       })
       .promise()
 
-    if (!Item) {
+    if (!Item || !Item.ContentType || !Item.Key) {
       return {
         statusCode: 404,
       }
@@ -69,7 +70,7 @@ const imageTransformHandler: APIGatewayProxyHandlerV2 = async ({
     const image = await s3
       .getObject({
         Bucket: bucketName,
-        Key: path,
+        Key: Item.Key,
       })
       .createReadStream()
       .pipe(pipeline)

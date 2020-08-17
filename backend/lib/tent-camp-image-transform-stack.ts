@@ -52,11 +52,16 @@ export class TentCampImageTransformStack extends cdk.Stack {
       throw new Error("COMPUTER_VISION_ENDPOINT environment variable missing.")
     }
 
-    const tentCampBucketEventSourceLambda = new nodejs.NodejsFunction(
+    const objectCreatedLambda = new lambda.Function(
       this,
-      "tentCampBucketEventSourceLambda",
+      "objectCreatedLambda",
       {
-        entry: "lambda/tentCampBucketEventSource.ts",
+        code: lambda.Code.fromAsset("lambda/objectCreated", {
+          exclude: ["index.ts"],
+        }),
+        handler: "index.handler",
+        runtime: lambda.Runtime.NODEJS_12_X,
+        timeout: cdk.Duration.seconds(10),
         memorySize: 3008,
         environment: {
           TABLE_NAME: tentCampImageTransformTable.tableName,
@@ -65,26 +70,44 @@ export class TentCampImageTransformStack extends cdk.Stack {
         },
       },
     )
-    tentCampBucket.grantRead(tentCampBucketEventSourceLambda)
-    tentCampBucketEventSourceLambda.addToRolePolicy(
+    tentCampImageTransformTable.grant(objectCreatedLambda, "dynamodb:PutItem")
+    tentCampBucket.grantRead(objectCreatedLambda)
+    objectCreatedLambda.addToRolePolicy(
       new iam.PolicyStatement({
         resources: ["*"],
         actions: ["rekognition:IndexFaces", "translate:TranslateText"],
       }),
     )
-    tentCampImageTransformTable.grant(
-      tentCampBucketEventSourceLambda,
-      "dynamodb:PutItem",
-      "dynamodb:DeleteItem",
-    )
-
-    const tentCampBucketEventSource = new eventSource.S3EventSource(
+    const objectCreateddEventSource = new eventSource.S3EventSource(
       tentCampBucket,
       {
-        events: [s3.EventType.OBJECT_CREATED, s3.EventType.OBJECT_REMOVED],
+        events: [s3.EventType.OBJECT_CREATED],
       },
     )
-    tentCampBucketEventSource.bind(tentCampBucketEventSourceLambda)
+    objectCreateddEventSource.bind(objectCreatedLambda)
+
+    const objectRemovedLambda = new nodejs.NodejsFunction(
+      this,
+      "objectRemovedLambda",
+      {
+        entry: "lambda/objectRemoved.ts",
+        environment: {
+          TABLE_NAME: tentCampImageTransformTable.tableName,
+        },
+      },
+    )
+    tentCampImageTransformTable.grant(
+      objectRemovedLambda,
+      "dynamodb:Query",
+      "dynamodb:DeleteItem",
+    )
+    const objectRemovedEventSource = new eventSource.S3EventSource(
+      tentCampBucket,
+      {
+        events: [s3.EventType.OBJECT_REMOVED],
+      },
+    )
+    objectRemovedEventSource.bind(objectRemovedLambda)
 
     const imageTransformLambda = new lambda.Function(
       this,
@@ -95,6 +118,7 @@ export class TentCampImageTransformStack extends cdk.Stack {
         }),
         handler: "index.handler",
         runtime: lambda.Runtime.NODEJS_12_X,
+        timeout: cdk.Duration.seconds(10),
         memorySize: 3008,
         environment: {
           BUCKET_NAME: tentCampBucket.bucketName,
@@ -111,7 +135,7 @@ export class TentCampImageTransformStack extends cdk.Stack {
     )
 
     tentCampImageTransformApi.addRoutes({
-      path: "/{path+}",
+      path: "/{id+}",
       methods: [apiGateway.HttpMethod.GET],
       integration: new apiGateway.LambdaProxyIntegration({
         handler: imageTransformLambda,
