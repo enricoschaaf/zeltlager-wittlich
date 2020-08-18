@@ -84,7 +84,7 @@ export const PhotoGallery = () => {
     <>
       <Title title="Fotos" />
       {status === "success" ? (
-        <div className="px-4 sm:px-6 pb-4 sm:pb-6 grid sm:grid-cols-2 lg:grid-cols-3 col-gap-4 sm:col-gap-6">
+        <div className="sm:px-6 pb-4 sm:pb-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4 sm:gap-x-6">
           {firstColPhotos.length > 0 && (
             <div className="space-y-4 sm:space-y-6">
               {firstColPhotos.map(({ key, src, alt, width, height }, i) => (

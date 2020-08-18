@@ -2,6 +2,8 @@
 const defaultTheme = require("tailwindcss/defaultTheme")
 
 module.exports = {
+  future: "all",
+  experimental: "all",
   purge: [
     "./pages/**/*.tsx",
     "./components/**/*.tsx",
