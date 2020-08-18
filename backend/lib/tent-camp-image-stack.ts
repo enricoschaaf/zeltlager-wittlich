@@ -10,27 +10,23 @@ import { config } from "dotenv"
 
 config()
 
-export class TentCampImageTransformStack extends cdk.Stack {
+export class TentCampImageStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
-    const tentCampImageTransformTable = new dynamo.Table(
-      this,
-      "tentCampImageTransformTable",
-      {
-        partitionKey: {
-          name: "PK",
-          type: dynamo.AttributeType.STRING,
-        },
-        sortKey: {
-          name: "SK",
-          type: dynamo.AttributeType.STRING,
-        },
-        billingMode: dynamo.BillingMode.PAY_PER_REQUEST,
+    const tentCampImageTable = new dynamo.Table(this, "tentCampImageTable", {
+      partitionKey: {
+        name: "PK",
+        type: dynamo.AttributeType.STRING,
       },
-    )
+      sortKey: {
+        name: "SK",
+        type: dynamo.AttributeType.STRING,
+      },
+      billingMode: dynamo.BillingMode.PAY_PER_REQUEST,
+    })
 
-    tentCampImageTransformTable.addGlobalSecondaryIndex({
+    tentCampImageTable.addGlobalSecondaryIndex({
       indexName: "GSI1",
       partitionKey: {
         name: "GSI1PK",
@@ -64,13 +60,13 @@ export class TentCampImageTransformStack extends cdk.Stack {
         timeout: cdk.Duration.seconds(10),
         memorySize: 3008,
         environment: {
-          TABLE_NAME: tentCampImageTransformTable.tableName,
+          TABLE_NAME: tentCampImageTable.tableName,
           COMPUTER_VISION_KEY: process.env.COMPUTER_VISION_KEY,
           COMPUTER_VISION_ENDPOINT: process.env.COMPUTER_VISION_ENDPOINT,
         },
       },
     )
-    tentCampImageTransformTable.grant(objectCreatedLambda, "dynamodb:PutItem")
+    tentCampImageTable.grant(objectCreatedLambda, "dynamodb:PutItem")
     tentCampBucket.grantRead(objectCreatedLambda)
     objectCreatedLambda.addToRolePolicy(
       new iam.PolicyStatement({
@@ -78,13 +74,13 @@ export class TentCampImageTransformStack extends cdk.Stack {
         actions: ["rekognition:IndexFaces", "translate:TranslateText"],
       }),
     )
-    const objectCreateddEventSource = new eventSource.S3EventSource(
+    const objectCreatedEventSource = new eventSource.S3EventSource(
       tentCampBucket,
       {
         events: [s3.EventType.OBJECT_CREATED],
       },
     )
-    objectCreateddEventSource.bind(objectCreatedLambda)
+    objectCreatedEventSource.bind(objectCreatedLambda)
 
     const objectRemovedLambda = new nodejs.NodejsFunction(
       this,
@@ -92,11 +88,11 @@ export class TentCampImageTransformStack extends cdk.Stack {
       {
         entry: "lambda/objectRemoved.ts",
         environment: {
-          TABLE_NAME: tentCampImageTransformTable.tableName,
+          TABLE_NAME: tentCampImageTable.tableName,
         },
       },
     )
-    tentCampImageTransformTable.grant(
+    tentCampImageTable.grant(
       objectRemovedLambda,
       "dynamodb:Query",
       "dynamodb:DeleteItem",
@@ -122,12 +118,12 @@ export class TentCampImageTransformStack extends cdk.Stack {
         memorySize: 3008,
         environment: {
           BUCKET_NAME: tentCampBucket.bucketName,
-          TABLE_NAME: tentCampImageTransformTable.tableName,
+          TABLE_NAME: tentCampImageTable.tableName,
         },
       },
     )
     tentCampBucket.grantRead(imageTransformLambda)
-    tentCampImageTransformTable.grant(imageTransformLambda, "dynamodb:GetItem")
+    tentCampImageTable.grant(imageTransformLambda, "dynamodb:GetItem")
 
     if (!process.env.BASE_URL) {
       throw new Error("BASE_URL environment variable missing.")
@@ -136,18 +132,15 @@ export class TentCampImageTransformStack extends cdk.Stack {
     const photosLambda = new nodejs.NodejsFunction(this, "photosLambda", {
       entry: "lambda/photos.ts",
       environment: {
-        TABLE_NAME: tentCampImageTransformTable.tableName,
+        TABLE_NAME: tentCampImageTable.tableName,
         BASE_URL: process.env.BASE_URL,
       },
     })
-    tentCampImageTransformTable.grant(photosLambda, "dynamodb:Query")
+    tentCampImageTable.grant(photosLambda, "dynamodb:Query")
 
-    const tentCampImageTransformApi = new apiGateway.HttpApi(
-      this,
-      "tentCampImageTransformApi",
-    )
+    const tentCampImageApi = new apiGateway.HttpApi(this, "tentCampImageApi")
 
-    tentCampImageTransformApi.addRoutes({
+    tentCampImageApi.addRoutes({
       path: "/photos/{id+}",
       methods: [apiGateway.HttpMethod.GET],
       integration: new apiGateway.LambdaProxyIntegration({
@@ -155,7 +148,7 @@ export class TentCampImageTransformStack extends cdk.Stack {
       }),
     })
 
-    tentCampImageTransformApi.addRoutes({
+    tentCampImageApi.addRoutes({
       path: "/api/photos",
       methods: [apiGateway.HttpMethod.GET],
       integration: new apiGateway.LambdaProxyIntegration({
