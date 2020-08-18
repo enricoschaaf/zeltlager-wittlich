@@ -140,7 +140,7 @@ export const RegistrationForm = () => {
           <legend className="text-base font-medium text-gray-900">
             Essensgewohnheiten
           </legend>
-          <div className="grid grid-flow-row sm:grid-flow-col gap-4 sm:gap-6 lg:gap-8 mt-2 sm:mt-3 lg:mt-4">
+          <div className="grid grid-flow-row sm:grid-flow-col gap-4 sm:gap-6 mt-2 sm:mt-3">
             <Radio
               name="eatingHabits"
               id="none"

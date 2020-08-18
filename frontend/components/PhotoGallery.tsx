@@ -32,22 +32,30 @@ export const PhotoGallery = () => {
 
   useEffect(() => {
     if (data) {
-      data[data.length - 1].photos.map(photo => {
-        const threeColMinValue = Math.min(...threeColAspectRatios.current)
-        const threeColIndex = threeColAspectRatios.current.indexOf(
-          threeColMinValue,
-        )
-        threeCols.current[threeColIndex].push(photo)
-        threeColAspectRatios.current[threeColIndex] +=
-          photo.height / photo.width
+      oneCol.current = []
+      twoCols.current = [[], []]
+      twoColAspectRatios.current = [0, 0]
+      threeCols.current = [[], [], []]
+      threeColAspectRatios.current = [0, 0, 0]
+      data
+        .map(({ photos }) => photos)
+        .flat()
+        .map(photo => {
+          const threeColMinValue = Math.min(...threeColAspectRatios.current)
+          const threeColIndex = threeColAspectRatios.current.indexOf(
+            threeColMinValue,
+          )
+          threeCols.current[threeColIndex].push(photo)
+          threeColAspectRatios.current[threeColIndex] +=
+            photo.height / photo.width
 
-        const twoColMinValue = Math.min(...twoColAspectRatios.current)
-        const twoColIndex = twoColAspectRatios.current.indexOf(twoColMinValue)
-        twoCols.current[twoColIndex].push(photo)
-        twoColAspectRatios.current[twoColIndex] += photo.height / photo.width
+          const twoColMinValue = Math.min(...twoColAspectRatios.current)
+          const twoColIndex = twoColAspectRatios.current.indexOf(twoColMinValue)
+          twoCols.current[twoColIndex].push(photo)
+          twoColAspectRatios.current[twoColIndex] += photo.height / photo.width
 
-        oneCol.current.push(photo)
-      })
+          oneCol.current.push(photo)
+        })
       handleResize()
     }
 
@@ -56,7 +64,7 @@ export const PhotoGallery = () => {
         setFirstColPhotos(threeCols.current[0])
         setSecondColPhotos(threeCols.current[1])
         setThirdColPhotos(threeCols.current[2])
-      } else if (matchMedia("(min-width: 768px)").matches) {
+      } else if (matchMedia("(min-width: 640px)").matches) {
         setFirstColPhotos(twoCols.current[0])
         setSecondColPhotos(twoCols.current[1])
         setThirdColPhotos([])
@@ -76,7 +84,7 @@ export const PhotoGallery = () => {
     <>
       <Title title="Fotos" />
       {status === "success" ? (
-        <div className="px-4 sm:px-6 pb-4 sm:pb-6 grid md:grid-cols-2 lg:grid-cols-3 col-gap-4 sm:col-gap-6">
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6 grid sm:grid-cols-2 lg:grid-cols-3 col-gap-4 sm:col-gap-6">
           {firstColPhotos.length > 0 && (
             <div className="space-y-4 sm:space-y-6">
               {firstColPhotos.map(({ key, src, alt, width, height }, i) => (
