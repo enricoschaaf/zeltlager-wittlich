@@ -1,11 +1,11 @@
-import { ImageGallery } from "components/ImageGallery"
+import { PhotoGallery } from "components/PhotoGallery"
 import { Title } from "components/Title"
 
 const Fotos = () => {
   return (
     <>
       <Title title="Fotos" />
-      <ImageGallery />
+      <PhotoGallery />
     </>
   )
 }
