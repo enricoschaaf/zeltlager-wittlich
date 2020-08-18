@@ -31,10 +31,10 @@ const photosLambda: APIGatewayProxyHandlerV2 = async ({
         Limit: take,
         ExclusiveStartKey: cursor
           ? {
-              SK: `ID#${year}/${cursor}`,
-              PK: `ID#${year}/${cursor}`,
+              SK: `ID#${cursor}`,
+              PK: `ID#${cursor}`,
               GSI1PK: "OBJECTS",
-              GSI1SK: `ID#${year}/${cursor}`,
+              GSI1SK: `ID#${cursor}`,
             }
           : undefined,
         ExpressionAttributeValues: {

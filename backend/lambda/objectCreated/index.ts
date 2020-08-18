@@ -53,7 +53,7 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
     const { captions } = await computerVision.describeImage(url, {
       language: "en",
     })
-    if (captions && captions[0].text) {
+    if (captions && captions[0]?.text) {
       const { TranslatedText } = await translate
         .translateText({
           SourceLanguageCode: "en",
@@ -92,7 +92,7 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
         SK: `ID#${path}/${id}`,
         GSI1PK: "OBJECTS",
         GSI1SK: `ID#${path}/${id}`,
-        Id: id,
+        Id: `${path}/${id}`,
         Key: key,
         Width: width,
         Height: height,
