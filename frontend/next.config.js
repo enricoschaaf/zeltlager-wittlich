@@ -12,6 +12,10 @@ module.exports = withPrefresh({
   async rewrites() {
     return [
       {
+        source: "/",
+        destination: "/anmelden",
+      },
+      {
         source: "/api/register",
         destination:
           "https://ajvyehkrlf.execute-api.eu-central-1.amazonaws.com/register",
