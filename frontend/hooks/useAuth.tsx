@@ -17,7 +17,9 @@ export function useAuth() {
         .then(({ data }) => {
           setAccessToken(data.accessToken)
           if (pathname === "/login") {
-            push(query.redirect ? `${query.redirect}` : "/profile")
+            push(
+              typeof query.redirect === "string" ? query.redirect : "/profile",
+            )
           }
         })
         .catch(() => {
