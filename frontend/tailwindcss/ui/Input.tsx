@@ -9,7 +9,7 @@ export const Input = ({
   ...props
 }: InputProps) => {
   return (
-    <div className={`self-start ${className}`}>
+    <div className={className}>
       <label
         htmlFor={name}
         className="block text-sm font-medium leading-5 text-gray-700"
