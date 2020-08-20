@@ -3,12 +3,6 @@ const withPrefresh = require("@prefresh/next")
 
 module.exports = withPrefresh({
   reactStrictMode: true,
-  experimental: {
-    modern: true,
-    polyfillsOptimization: true,
-    optimizeFonts: true,
-    optimizeImages: true,
-  },
   async rewrites() {
     return [
       {
@@ -72,7 +66,7 @@ module.exports = withPrefresh({
     if (dev && !isServer) {
       const entry = config.entry
       config.entry = () =>
-        entry().then(entries => {
+        entry().then((entries) => {
           entries["main.js"] = ["preact/debug"].concat(entries["main.js"] || [])
           return entries
         })

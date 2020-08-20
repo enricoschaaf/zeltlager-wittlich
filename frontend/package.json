@@ -1,5 +1,5 @@
 {
-  "name": "template",
+  "name": "zeltlager-website",
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
@@ -42,5 +42,8 @@
     "react-refresh": "^0.8.3",
     "tailwindcss": "^1.7.3",
     "typescript": "^4.0.2"
+  },
+  "resolutions": {
+    "webpack": "^5.0.0-beta.28"
   }
 }

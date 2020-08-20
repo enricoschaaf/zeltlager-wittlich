@@ -21,7 +21,7 @@ export const LoginForm = () => {
       while (true) {
         const [{ data }] = await Promise.all([
           axios.get("/api/refresh/" + tokenId),
-          new Promise(resolve => {
+          new Promise((resolve) => {
             setTimeout(() => {
               resolve()
             }, 500)

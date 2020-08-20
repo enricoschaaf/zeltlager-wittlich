@@ -6,7 +6,7 @@ export const instance = axios.create({
   headers: { Authorization: `Bearer ${accessToken}` },
 })
 
-instance.interceptors.request.use(async config => {
+instance.interceptors.request.use(async (config) => {
   try {
     const { exp } = decode(accessToken)
     decode(accessToken)
@@ -20,7 +20,7 @@ instance.interceptors.request.use(async config => {
         ...config.headers,
         Authorization: `Bearer ${data.accessToken}`,
       }
-      return config
     }
+    return config
   }
 })

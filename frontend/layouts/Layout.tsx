@@ -1,8 +1,15 @@
 import { Footer } from "components/Footer"
 import { Header } from "components/Header"
 import { Title } from "components/Title"
+import { ReactNode } from "react"
 
-export const Layout = ({ children, title = undefined }) => {
+export const Layout = ({
+  children,
+  title,
+}: {
+  children: ReactNode
+  title?: string
+}) => {
   return (
     <>
       <Title>{title}</Title>

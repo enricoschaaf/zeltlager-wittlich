@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const App = ({ Component, pageProps }: AppProps) => {
-  const getLayout = Component.getLayout || (page => page)
+  const getLayout = Component.getLayout || ((page) => page)
   return <>{getLayout(<Component {...pageProps} />)}</>
 }
 

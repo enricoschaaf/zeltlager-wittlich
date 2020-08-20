@@ -11,13 +11,13 @@ async function getPhotos(_key: "photos", cursor: string) {
 }
 
 export const PhotoGallery = () => {
-  const [firstColPhotos, setFirstColPhotos] = useState([])
-  const [secondColPhotos, setSecondColPhotos] = useState([])
-  const [thirdColPhotos, setThirdColPhotos] = useState([])
-  const oneCol = useRef([])
-  const twoCols = useRef([[], []])
+  const [firstColPhotos, setFirstColPhotos] = useState<Photo[]>([])
+  const [secondColPhotos, setSecondColPhotos] = useState<Photo[]>([])
+  const [thirdColPhotos, setThirdColPhotos] = useState<Photo[]>([])
+  const oneCol = useRef<Photo[]>([])
+  const twoCols = useRef<[Photo[], Photo[]]>([[], []])
+  const threeCols = useRef<[Photo[], Photo[], Photo[]]>([[], [], []])
   const twoColAspectRatios = useRef([0, 0])
-  const threeCols = useRef([[], [], []])
   const threeColAspectRatios = useRef([0, 0, 0])
   const { status, data, fetchMore, canFetchMore } = useInfiniteQuery(
     "photos",
@@ -33,13 +33,13 @@ export const PhotoGallery = () => {
     if (data) {
       oneCol.current = []
       twoCols.current = [[], []]
-      twoColAspectRatios.current = [0, 0]
       threeCols.current = [[], [], []]
+      twoColAspectRatios.current = [0, 0]
       threeColAspectRatios.current = [0, 0, 0]
       data
-        .map(({ photos }) => photos)
+        .map(({ photos }: { photos: Photo }) => photos)
         .flat()
-        .map(photo => {
+        .map((photo) => {
           const threeColMinValue = Math.min(...threeColAspectRatios.current)
           const threeColIndex = threeColAspectRatios.current.indexOf(
             threeColMinValue,
@@ -133,4 +133,12 @@ export const PhotoGallery = () => {
       ) : null}
     </>
   )
+}
+
+interface Photo {
+  key: string
+  src: string
+  alt: string
+  width: number
+  height: number
 }

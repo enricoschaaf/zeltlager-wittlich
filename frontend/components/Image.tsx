@@ -1,13 +1,16 @@
-interface ImageProps {
-  key: string
-  src: string
-  alt: string
-  width: string
-  height: string
-  onLoad?: () => void
-}
+import { DetailedHTMLProps, ImgHTMLAttributes } from "react"
 
-export const Image = ({ key, src, alt, width, height, onLoad }: ImageProps) => {
+export const Image = ({
+  key,
+  src,
+  alt,
+  width,
+  height,
+  onLoad,
+}: DetailedHTMLProps<
+  ImgHTMLAttributes<HTMLImageElement>,
+  HTMLImageElement
+>) => {
   return (
     <div key={key} className="bg-gray-100">
       <img

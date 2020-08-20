@@ -8,6 +8,7 @@ export const Input = ({
   errors,
   ...props
 }: InputProps) => {
+  console.log(errors)
   return (
     <div className={className}>
       <label
@@ -64,6 +65,7 @@ interface InputProps
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
+  name: string
   label: string | { value: string; visibility: "visible" | "hidden" }
   register: any
   errors: any

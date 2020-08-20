@@ -8,6 +8,7 @@ module.exports = {
     "./pages/**/*.tsx",
     "./components/**/*.tsx",
     "./tailwindcss/**/*.tsx",
+    "./layouts/**/*.tsx",
   ],
   theme: {
     extend: {
