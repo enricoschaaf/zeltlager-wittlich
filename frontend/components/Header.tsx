@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useState } from "react"
+import { Logo } from "./Logo"
 
 export const Header = () => {
   const [status, setStatus] = useState<"open" | "closed">("closed")
@@ -11,11 +12,7 @@ export const Header = () => {
     <header className="flex justify-between items-center px-4 py-6 sm:px-6">
       <Link href="/">
         <a>
-          <img
-            className="h-8 w-auto sm:h-10"
-            src="/logo.svg"
-            alt="Zeltlager Wittlich"
-          />
+          <Logo className="h-8 w-auto sm:h-10" />
         </a>
       </Link>
       <div className="-mr-2 -my-2 md:hidden">
@@ -29,6 +26,7 @@ export const Header = () => {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
+            <title>Navigation öffnen</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -77,13 +75,7 @@ export const Header = () => {
                 aria-labelledby="main-menu"
               >
                 <div className="px-5 pt-4 flex items-center justify-between">
-                  <div>
-                    <img
-                      className="h-8 w-auto"
-                      src="/logo.svg"
-                      alt="Zeltlager Wittlich"
-                    />
-                  </div>
+                  <Logo className="h-8 w-auto" />
                   <div className="-mr-2">
                     <button
                       type="button"

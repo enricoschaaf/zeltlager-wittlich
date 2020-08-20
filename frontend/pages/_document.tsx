@@ -6,12 +6,8 @@ class MyDocument extends Document {
       <Html className="h-full" lang="de-DE">
         <Head>
           <meta name="description" content="Meta description" />
-          <meta name="theme-color" content="#f4f5f7" />
-          <link
-            rel="apple-touch-icon"
-            sizes="192x192"
-            href="/192x192.png"
-          ></link>
+          <meta name="theme-color" content="#f9fafb" />
+          <link rel="apple-touch-icon" href="/apple-touch-icon.png"></link>
           <link rel="manifest" href="/manifest.webmanifest" />
           <link rel="icon" type="image/svg+xml" href="favicon.svg" />
           <link
