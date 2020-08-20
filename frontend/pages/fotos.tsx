@@ -1,13 +1,16 @@
 import { PhotoGallery } from "components/PhotoGallery"
-import { Title } from "components/Title"
+import { useAuth } from "hooks/useAuth"
+import { Layout } from "layouts/Layout"
 
-const Fotos = () => {
-  return (
-    <>
-      <Title title="Fotos" />
-      <PhotoGallery />
-    </>
-  )
+const Photos = () => {
+  useAuth()
+  return <PhotoGallery />
 }
 
-export default Fotos
+Photos.getLayout = page => (
+  <Layout title="Fotos">
+    <main className="h-full">{page}</main>
+  </Layout>
+)
+
+export default Photos

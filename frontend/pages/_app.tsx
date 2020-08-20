@@ -1,14 +1,21 @@
-import { Layout } from "components/Layout"
 import LogRocket from "logrocket"
-import { AppProps } from "next/app"
+import { NextComponentType } from "next"
+import { AppProps as NextAppProps } from "next/app"
 import "../styles/index.css"
 
-LogRocket.init("pztxki/zeltlager-website")
+interface AppProps extends NextAppProps {
+  Component: NextComponentType & {
+    getLayout?: (component: JSX.Element) => JSX.Element
+  }
+}
 
-const App = ({ Component, pageProps }: AppProps) => (
-  <Layout>
-    <Component {...pageProps} />
-  </Layout>
-)
+if (process.env.NODE_ENV === "production") {
+  LogRocket.init("pztxki/zeltlager-website")
+}
+
+const App = ({ Component, pageProps }: AppProps) => {
+  const getLayout = Component.getLayout || (page => page)
+  return <>{getLayout(<Component {...pageProps} />)}</>
+}
 
 export default App

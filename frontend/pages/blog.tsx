@@ -1,11 +1,11 @@
-import { Title } from "components/Title"
+import { Layout } from "layouts/Layout"
 
-const Blog = () => {
-  return (
-    <>
-      <Title title="Blog" />
-    </>
-  )
-}
+const Blog = () => null
+
+Blog.getLayout = page => (
+  <Layout title="Blog">
+    <main className="h-full">{page}</main>
+  </Layout>
+)
 
 export default Blog

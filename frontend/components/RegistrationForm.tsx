@@ -36,7 +36,7 @@ export const RegistrationForm = () => {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-3xl mx-auto px-4 sm:px-6 pb-4 sm:pb-6 grid grid-cols-12 gap-4 sm:gap-6"
+        className="grid grid-cols-12 gap-4 sm:gap-6"
       >
         <Input
           name="firstName"

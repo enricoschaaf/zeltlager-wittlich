@@ -1,11 +1,11 @@
-import { Title } from "components/Title"
+import { Layout } from "layouts/Layout"
 
-const Datenschutz = () => {
-  return (
-    <>
-      <Title title="Datenschutz" />
-    </>
-  )
-}
+const Privacy = () => null
 
-export default Datenschutz
+Privacy.getLayout = page => (
+  <Layout title="Datenschutz">
+    <main className="h-full">{page}</main>
+  </Layout>
+)
+
+export default Privacy

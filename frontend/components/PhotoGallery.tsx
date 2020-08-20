@@ -2,7 +2,6 @@ import axios from "axios"
 import { Image } from "components/Image"
 import { useEffect, useRef, useState } from "react"
 import { useInfiniteQuery } from "react-query"
-import { Title } from "./Title"
 
 async function getPhotos(_key: "photos", cursor: string) {
   const { data } = await axios.get(
@@ -82,7 +81,6 @@ export const PhotoGallery = () => {
 
   return (
     <>
-      <Title title="Fotos" />
       {status === "success" ? (
         <div className="sm:px-6 pb-4 sm:pb-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4 sm:gap-x-6">
           {firstColPhotos.length > 0 && (

@@ -1,11 +1,11 @@
 import Head from "next/head"
 
-export const Title = ({ title }: { title?: string }) => {
+export const Title = ({ children }: { children?: string }) => {
   return (
     <Head>
       <title>
-        {title}
-        {title && " | "}Zeltlager Wittlich
+        {children}
+        {children && " | "}Zeltlager Wittlich
       </title>
     </Head>
   )

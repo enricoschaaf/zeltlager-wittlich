@@ -1,11 +1,11 @@
-import { Title } from "components/Title"
+import { Layout } from "layouts/Layout"
 
-const Impressum = () => {
-  return (
-    <>
-      <Title title="Impressum" />
-    </>
-  )
-}
+const LegalNotice = () => null
 
-export default Impressum
+LegalNotice.getLayout = page => (
+  <Layout title="Impressum">
+    <main className="h-full">{page}</main>
+  </Layout>
+)
+
+export default LegalNotice
