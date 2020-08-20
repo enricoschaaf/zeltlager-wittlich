@@ -5,41 +5,40 @@ import { Button, Input } from "tailwindcss/ui"
 import { setAccessToken } from "utils/accessToken"
 import { emailRegex } from "utils/regex"
 
-async function onSubmit({ email }, back) {
-  try {
-    const {
-      data: { tokenId },
-    } = await axios.post("/api/signin", {
-      email,
-    })
-
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const [{ data }] = await Promise.all([
-        axios.get("/api/refresh/" + tokenId),
-        new Promise(resolve => {
-          setTimeout(() => {
-            resolve()
-          }, 500)
-        }),
-      ])
-      if (data.accessToken) {
-        setAccessToken(data.accessToken)
-        return back()
-      }
-    }
-  } catch (err) {
-    console.error(err)
-  }
-}
-
 export const LoginForm = () => {
-  const { back } = useRouter()
+  const { push, query } = useRouter()
   const { register, handleSubmit, errors } = useForm()
+
+  async function onSubmit({ email }: { email: string }) {
+    try {
+      const {
+        data: { tokenId },
+      } = await axios.post("/api/signin", {
+        email,
+      })
+
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const [{ data }] = await Promise.all([
+          axios.get("/api/refresh/" + tokenId),
+          new Promise(resolve => {
+            setTimeout(() => {
+              resolve()
+            }, 500)
+          }),
+        ])
+        if (data.accessToken) {
+          setAccessToken(data.accessToken)
+          push(typeof query.redirect === "string" ? query.redirect : "/profile")
+        }
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   return (
-    <form
-      onSubmit={handleSubmit((data: { email: string }) => onSubmit(data, back))}
-    >
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="grid gap-4">
         <Input
           name="email"
