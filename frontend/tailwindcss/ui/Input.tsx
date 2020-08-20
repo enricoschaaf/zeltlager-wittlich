@@ -12,9 +12,13 @@ export const Input = ({
     <div className={className}>
       <label
         htmlFor={name}
-        className="block text-sm font-medium leading-5 text-gray-700"
+        className={
+          typeof label === "object" && label.visibility === "hidden"
+            ? "sr-only"
+            : "block text-sm font-medium leading-5 text-gray-700"
+        }
       >
-        {label}
+        {typeof label === "string" ? label : label.value}
       </label>
       <div className="mt-1 relative rounded-md shadow-sm">
         <input
@@ -60,7 +64,7 @@ interface InputProps
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
-  label: string
+  label: string | { value: string; visibility: "visible" | "hidden" }
   register: any
   errors: any
 }

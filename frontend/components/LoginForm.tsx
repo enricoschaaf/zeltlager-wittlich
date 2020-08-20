@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
-import { Input } from "tailwindcss/ui"
+import { Button, Input } from "tailwindcss/ui"
 import { setAccessToken } from "utils/accessToken"
 import { emailRegex } from "utils/regex"
 
@@ -40,22 +40,24 @@ export const LoginForm = () => {
     <form
       onSubmit={handleSubmit((data: { email: string }) => onSubmit(data, back))}
     >
-      <Input
-        name="email"
-        label="E-Mail"
-        className="col-span-12 sm:col-span-8"
-        inputMode="email"
-        autoComplete="email"
-        errors={errors}
-        register={register({
-          required: "Bitte geben Sie Ihre E-Mail-Ad­res­se an.",
-          pattern: {
-            value: emailRegex,
-            message: "Ihre E-Mail-Ad­res­se hat nicht das richtige Format.",
-          },
-        })}
-      />
-      <button type="submit">Sign in</button>
+      <div className="grid gap-4">
+        <Input
+          name="email"
+          label={{ value: "Email", visibility: "hidden" }}
+          inputMode="email"
+          autoComplete="email"
+          placeholder="Email Adresse"
+          errors={errors}
+          register={register({
+            required: "Bitte geben Sie Ihre Email Ad­res­se an.",
+            pattern: {
+              value: emailRegex,
+              message: "Ihre Email Ad­res­se hat nicht das richtige Format.",
+            },
+          })}
+        />
+        <Button type="submit">Anmelden</Button>
+      </div>
     </form>
   )
 }

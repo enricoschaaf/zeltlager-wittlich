@@ -123,16 +123,16 @@ export const RegistrationForm = () => {
         />
         <Input
           name="email"
-          label="E-Mail"
+          label="Email"
           className="col-span-12 sm:col-span-8"
           inputMode="email"
           autoComplete="email"
           errors={errors}
           register={register({
-            required: "Bitte geben Sie Ihre E-Mail-Ad­res­se an.",
+            required: "Bitte geben Sie Ihre Email Ad­res­se an.",
             pattern: {
               value: emailRegex,
-              message: "Ihre E-Mail-Ad­res­se hat nicht das richtige Format.",
+              message: "Ihre Email Ad­res­se hat nicht das richtige Format.",
             },
           })}
         />
