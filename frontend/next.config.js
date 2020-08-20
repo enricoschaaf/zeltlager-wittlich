@@ -16,6 +16,18 @@ module.exports = withPrefresh({
         destination: "/anmelden",
       },
       {
+        source: "/api/signin",
+        destination: "https://auth.enricoschaaf.com/api/signin",
+      },
+      {
+        source: "/api/access",
+        destination: "https://auth.enricoschaaf.com/api/access",
+      },
+      {
+        source: "/api/refresh/:path*",
+        destination: "https://auth.enricoschaaf.com/api/refresh/:path*",
+      },
+      {
         source: "/api/register",
         destination:
           "https://ajvyehkrlf.execute-api.eu-central-1.amazonaws.com/register",

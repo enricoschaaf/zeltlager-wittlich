@@ -9,7 +9,9 @@ const Login = () => {
 
 Login.getLayout = page => (
   <Layout title="Login">
-    <main className="h-full">{page}</main>
+    <main className="flex justify-center items-center h-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      {page}
+    </main>
   </Layout>
 )
 
