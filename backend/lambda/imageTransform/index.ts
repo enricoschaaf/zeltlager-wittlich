@@ -54,7 +54,7 @@ const imageTransformHandler: APIGatewayProxyHandlerV2 = async ({
     let pipeline = sharp()
 
     if (width || height) {
-      pipeline = pipeline.resize({ width, height })
+      pipeline = pipeline.resize({ width, height, withoutEnlargement: true })
     }
 
     let contentType = Item.ContentType
