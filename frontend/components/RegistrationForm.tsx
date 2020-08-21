@@ -276,25 +276,71 @@ export const RegistrationForm = () => {
           )}
         </Button>
       </form>
-      <AnimatePresence>
-        {status === "success" ? (
-          <Modal
-            status="success"
-            headline="Anmeldung erfolgreich"
-            description="Ihre Anmeldung war erfolgreich. Sie erhalten weitere Informationen per Email."
-            buttonOnClick={() => setStatus("closed")}
-            buttonText="Zurück zum Anmelden"
-          />
-        ) : status === "waiting" ? (
-          <Modal
-            status="warn"
-            headline="Anmeldung auf der Warteliste"
-            description="Zur Zeit sind alle Plätze belegt, daher wurde Ihre Anmeldung der Warteliste hinzugefügt. Sie erhalten weitere Informationen per Email."
-            buttonOnClick={() => setStatus("closed")}
-            buttonText="Zurück zum Anmelden"
-          />
-        ) : null}
-      </AnimatePresence>
+      {status !== "closed" && (
+        <AnimatePresence>
+          <Modal>
+            <div>
+              <div
+                className={`mx-auto flex items-center justify-center h-12 w-12 rounded-full ${
+                  status === "success" ? "bg-green-100" : "bg-yellow-100"
+                }`}
+              >
+                <svg
+                  className={`h-6 w-6 ${
+                    status === "success" ? "text-green-600" : "text-yellow-600"
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  {status === "success" ? (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  ) : (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  )}
+                </svg>
+              </div>
+              <div className="mt-3 text-center sm:mt-5">
+                <h3
+                  className="text-lg leading-6 font-medium text-gray-900"
+                  id="modal-headline"
+                >
+                  {status === "success"
+                    ? "Anmeldung erfolgreich"
+                    : "Anmeldung auf der Warteliste"}
+                </h3>
+                <div className="mt-2">
+                  <p className="text-sm leading-5 text-gray-500">
+                    {status === "success"
+                      ? "Ihre Anmeldung war erfolgreich. Sie erhalten weitere Informationen per Email."
+                      : "Zur Zeit sind alle Plätze belegt, daher wurde Ihre Anmeldung der Warteliste hinzugefügt. Sie erhalten weitere Informationen per Email."}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="mt-5 sm:mt-6">
+              <span className="flex w-fullddd rounded-md shadow-sm">
+                <button
+                  onClick={() => setStatus("closed")}
+                  className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                >
+                  Zurück zum Anmelden
+                </button>
+              </span>
+            </div>
+          </Modal>
+        </AnimatePresence>
+      )}
     </>
   )
 }
