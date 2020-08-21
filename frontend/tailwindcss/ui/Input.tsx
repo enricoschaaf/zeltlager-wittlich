@@ -8,7 +8,6 @@ export const Input = ({
   errors,
   ...props
 }: InputProps) => {
-  console.log(errors)
   return (
     <div className={className}>
       <label

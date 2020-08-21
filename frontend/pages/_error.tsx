@@ -4,9 +4,7 @@ import { GetServerSideProps, NextPage } from "next"
 
 const CustomError = (statusCode: number) => <Error statusCode={statusCode} />
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log(context)
-  const { res } = context
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const statusCode = res ? res.statusCode : 404
   return { props: { statusCode } }
 }

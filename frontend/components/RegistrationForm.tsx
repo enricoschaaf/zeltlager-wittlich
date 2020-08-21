@@ -1,6 +1,6 @@
 import axios from "axios"
 import { AnimatePresence } from "framer-motion"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useMutation } from "react-query"
 import { Button, Checkbox, Input, Modal, Radio } from "tailwindcss/ui"
@@ -17,9 +17,21 @@ export const RegistrationForm = () => {
     "closed",
   )
   const [mutate, { isLoading }] = useMutation(registerMutation)
-  const { register, handleSubmit, errors, reset } = useForm({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    reset,
+    formState: { isSubmitted },
+  } = useForm({
     mode: "onBlur",
   })
+
+  useEffect(() => {
+    if (isSubmitted) {
+      reset()
+    }
+  }, [isSubmitted, reset])
 
   async function onSubmit(formData: FormData) {
     const data = Object.fromEntries(
@@ -30,7 +42,6 @@ export const RegistrationForm = () => {
     const [day, month, year] = data.birthDate.split(".")
     const birthDate = new Date(`${month}/${day}/${year}`)
     const { status } = await mutate({ ...data, birthDate })
-    reset()
     setStatus(status)
   }
 
