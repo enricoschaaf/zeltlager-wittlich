@@ -1,10 +1,10 @@
-import axios from "axios"
 import { Image } from "components/Image"
 import { useEffect, useRef, useState } from "react"
 import { useInfiniteQuery } from "react-query"
+import { instance } from "utils/axios"
 
 async function getPhotos(_key: "photos", cursor: string) {
-  const { data } = await axios.get(
+  const { data } = await instance.get(
     "/api/photos" + (cursor ? `?cursor=${cursor}` : ""),
   )
   return data

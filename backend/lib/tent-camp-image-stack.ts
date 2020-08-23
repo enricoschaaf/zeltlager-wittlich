@@ -7,7 +7,7 @@ import * as nodejs from "@aws-cdk/aws-lambda-nodejs"
 import * as s3 from "@aws-cdk/aws-s3"
 import * as cdk from "@aws-cdk/core"
 import { config } from "dotenv"
-
+import { readFileSync } from "fs"
 config()
 
 export class TentCampImageStack extends cdk.Stack {
@@ -134,6 +134,7 @@ export class TentCampImageStack extends cdk.Stack {
       environment: {
         TABLE_NAME: tentCampImageTable.tableName,
         BASE_URL: process.env.BASE_URL,
+        PUBLIC_KEY: readFileSync("public.pem").toString(),
       },
     })
     tentCampImageTable.grant(photosLambda, "dynamodb:Query")

@@ -10,16 +10,9 @@ module.exports = withPrefresh({
         destination: "/anmelden",
       },
       {
-        source: "/api/signin",
-        destination: "https://auth.enricoschaaf.com/api/signin",
-      },
-      {
-        source: "/api/access",
-        destination: "https://auth.enricoschaaf.com/api/access",
-      },
-      {
-        source: "/api/refresh/:path*",
-        destination: "https://auth.enricoschaaf.com/api/refresh/:path*",
+        source: "/api/auth/:path*",
+        destination:
+          "https://596ogq4jvl.execute-api.eu-central-1.amazonaws.com/:path*",
       },
       {
         source: "/api/register",

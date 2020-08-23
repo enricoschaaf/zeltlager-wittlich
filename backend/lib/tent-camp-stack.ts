@@ -4,8 +4,13 @@ import * as iam from "@aws-cdk/aws-iam"
 import * as lambda from "@aws-cdk/aws-lambda-nodejs"
 import * as cdk from "@aws-cdk/core"
 
+interface TentCampStackProps extends cdk.StackProps {
+  authTable: dynamo.Table
+}
+
 export class TentCampStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  public table: dynamo.Table
+  constructor(scope: cdk.Construct, id: string, props: TentCampStackProps) {
     super(scope, id, props)
 
     const tentCampTable = new dynamo.Table(this, "tentCampTable", {
@@ -20,13 +25,28 @@ export class TentCampStack extends cdk.Stack {
       billingMode: dynamo.BillingMode.PAY_PER_REQUEST,
     })
 
+    this.table = tentCampTable
+    if (!process.env.MAX_PARTICIPANTS) {
+      throw new Error("MAX_PARTICIPANTS environment variable missing.")
+    }
+
+    if (!process.env.YEAR) {
+      throw new Error("YEAR environment variable missing.")
+    }
+
+    if (!process.env.BASE_URL) {
+      throw new Error("BASE_URL environment variable missing.")
+    }
+
     const registerLambda = new lambda.NodejsFunction(this, "registerLambda", {
       entry: "lambda/register.ts",
       memorySize: 3008,
       environment: {
         TABLE_NAME: tentCampTable.tableName,
-        YEAR: "2021",
-        MAX_PARTICIPANTS: "64",
+        AUTH_TABLE_NAME: props.authTable.tableName,
+        YEAR: process.env.YEAR,
+        MAX_PARTICIPANTS: process.env.MAX_PARTICIPANTS,
+        BASE_URL: process.env.BASE_URL,
       },
     })
     registerLambda.addToRolePolicy(
@@ -38,6 +58,12 @@ export class TentCampStack extends cdk.Stack {
     tentCampTable.grant(
       registerLambda,
       "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem",
+    )
+    props.authTable.grant(
+      registerLambda,
+      "dynamodb:Query",
       "dynamodb:PutItem",
       "dynamodb:UpdateItem",
     )

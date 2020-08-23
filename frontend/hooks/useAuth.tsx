@@ -13,7 +13,7 @@ export function useAuth() {
       if (Date.now() / 1000 > exp) throw Error
     } catch {
       axios
-        .get("/api/access")
+        .get("/api/auth/access")
         .then(({ data }) => {
           setAccessToken(data.accessToken)
           if (pathname === "/login") {

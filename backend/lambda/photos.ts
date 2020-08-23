@@ -1,9 +1,12 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda"
 import { DynamoDB } from "aws-sdk"
+import { verify } from "jsonwebtoken"
 import * as z from "zod"
+import { getAccessToken } from "../utils/getAccessToken"
 
 const tableName = process.env.TABLE_NAME
 const baseUrl = process.env.BASE_URL
+const publicKey = process.env.PUBLIC_KEY
 const dynamo = new DynamoDB.DocumentClient()
 
 const schema = z.object({
@@ -14,8 +17,12 @@ const schema = z.object({
 
 const photosLambda: APIGatewayProxyHandlerV2 = async ({
   queryStringParameters,
+  headers,
 }) => {
   try {
+    const { accessToken } = getAccessToken(headers)
+    if (!accessToken) return { statusCode: 401 }
+    const { role }: any = verify(accessToken, publicKey)
     const { cursor, take: takeString, year } = schema.parse(
       queryStringParameters ?? {},
     )
@@ -48,7 +55,7 @@ const photosLambda: APIGatewayProxyHandlerV2 = async ({
       photos: Items?.map(
         ({ Id: id, Caption: alt, Width: width, Height: height }) => ({
           key: id,
-          src: baseUrl + id,
+          src: baseUrl + "/fotos/" + id,
           alt,
           width,
           height,
