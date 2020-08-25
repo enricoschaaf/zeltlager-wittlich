@@ -213,7 +213,7 @@ export const RegistrationForm = () => {
         <Textarea
           label="Medikamente"
           description="Bitte listen Sie die Medikamente auf, die ihr Kind einnehmen muss."
-          name="health"
+          name="medication"
           className="col-span-12"
           register={register()}
         />
@@ -223,10 +223,7 @@ export const RegistrationForm = () => {
           className="col-span-12 sm:col-span-7"
           autoComplete="nope"
           errors={errors}
-          register={register({
-            required:
-              "Bitte geben Sie den Name des Hausarztes Ihres Kindes an.",
-          })}
+          register={register()}
         />
         <Input
           name="familyDoctorPhone"
@@ -235,10 +232,7 @@ export const RegistrationForm = () => {
           inputMode="tel"
           autoComplete="nope"
           errors={errors}
-          register={register({
-            required:
-              "Bitte geben Sie die Telefonnummer des Hausarztes Ihres Kindes an.",
-          })}
+          register={register()}
         />
         <Input
           name="healthInsurance"
@@ -246,9 +240,7 @@ export const RegistrationForm = () => {
           className="col-span-12"
           autoComplete="nope"
           errors={errors}
-          register={register({
-            required: "Bitte geben Sie die Krankenkasse Ihres Kindes an.",
-          })}
+          register={register()}
         />
         <Button type="submit" className="col-span-12" disabled={isLoading}>
           {isLoading ? (
@@ -329,7 +321,7 @@ export const RegistrationForm = () => {
               </div>
             </div>
             <div className="mt-5 sm:mt-6">
-              <span className="flex w-fullddd rounded-md shadow-sm">
+              <span className="flex w-full rounded-md shadow-sm">
                 <button
                   onClick={() => setStatus("closed")}
                   className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150 sm:text-sm sm:leading-5"

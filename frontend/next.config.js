@@ -6,10 +6,6 @@ module.exports = withPrefresh({
   async rewrites() {
     return [
       {
-        source: "/",
-        destination: "/anmelden",
-      },
-      {
         source: "/api/auth/:path*",
         destination:
           "https://596ogq4jvl.execute-api.eu-central-1.amazonaws.com/:path*",

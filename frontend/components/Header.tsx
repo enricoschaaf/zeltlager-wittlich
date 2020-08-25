@@ -1,13 +1,13 @@
-import { AnimatePresence, motion } from "framer-motion"
+// import { AnimatePresence, motion } from "framer-motion"
 import Link from "next/link"
-import { useRouter } from "next/router"
-import { useState } from "react"
+// import { useRouter } from "next/router"
+// import { useState } from "react"
 import { Logo } from "./Logo"
 
 export const Header = () => {
-  const [status, setStatus] = useState<"open" | "closed">("closed")
-  const { events } = useRouter()
-  events?.on("routeChangeStart", () => setStatus("closed"))
+  // const [status, setStatus] = useState<"open" | "closed">("closed")
+  // const { events } = useRouter()
+  // events?.on("routeChangeStart", () => setStatus("closed"))
   return (
     <header className="flex justify-between items-center px-4 py-6 sm:px-6">
       <Link href="/">
@@ -15,7 +15,7 @@ export const Header = () => {
           <Logo className="h-8 w-auto sm:h-10" />
         </a>
       </Link>
-      <div className="-mr-2 -my-2 md:hidden">
+      {/* <div className="-mr-2 -my-2 md:hidden">
         <button
           className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
           onClick={() => setStatus("open")}
@@ -35,8 +35,8 @@ export const Header = () => {
             />
           </svg>
         </button>
-      </div>
-      <nav className="hidden md:flex space-x-10">
+      </div> */}
+      {/* <nav className="hidden md:flex space-x-10">
         <Link href="/blog">
           <a className="text-base leading-6 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150">
             Blog
@@ -47,8 +47,8 @@ export const Header = () => {
             Fotos
           </a>
         </Link>
-      </nav>
-      <AnimatePresence>
+      </nav> */}
+      {/* <AnimatePresence>
         {status === "open" && (
           <motion.div
             initial={{
@@ -65,7 +65,7 @@ export const Header = () => {
               opacity: 0,
               scale: 0.95,
             }}
-            className="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden z-10"
+            className="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden z-50"
           >
             <div className="rounded-lg shadow-md">
               <div
@@ -117,7 +117,6 @@ export const Header = () => {
                     </a>
                   </Link>
                 </div>
-                <div>
                   <Link href="/anmelden">
                     <a
                       className="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100 hover:text-indigo-700 focus:outline-none focus:bg-gray-100 focus:text-indigo-700 transition duration-150 ease-in-out"
@@ -126,20 +125,19 @@ export const Header = () => {
                       Anmelden
                     </a>
                   </Link>
-                </div>
               </div>
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
 
-      <span className="rounded-md shadow-sm hidden md:inline-flex items-center">
+      {/* <span className="rounded-md shadow-sm hidden md:inline-flex items-center">
         <Link href="/anmelden">
           <a className="whitespace-no-wrap inline-flex items-center justify-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
             Anmelden
           </a>
         </Link>
-      </span>
+      </span> */}
     </header>
   )
 }
