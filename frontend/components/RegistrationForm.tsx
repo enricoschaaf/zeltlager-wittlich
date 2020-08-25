@@ -31,7 +31,7 @@ export const RegistrationForm = () => {
     if (isSubmitted) {
       reset()
     }
-  }, [isSubmitted, reset])
+  }, [isSubmitted])
 
   async function onSubmit(formData: FormData) {
     const data = Object.fromEntries(
