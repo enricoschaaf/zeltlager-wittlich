@@ -27,12 +27,6 @@ export const RegistrationForm = () => {
     mode: "onBlur",
   })
 
-  useEffect(() => {
-    if (isSubmitted) {
-      reset()
-    }
-  }, [isSubmitted, reset])
-
   async function onSubmit(formData: FormData) {
     const data = Object.fromEntries(
       Object.entries(formData).map(([key, value]) =>
