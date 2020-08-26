@@ -11,6 +11,10 @@ instance.interceptors.request.use(async (config) => {
     const { exp } = decode(accessToken)
     decode(accessToken)
     if (Date.now() / 1000 > exp) throw Error
+    config.headers = {
+      ...config.headers,
+      Authorization: `Bearer ${accessToken}`,
+    }
     return config
   } catch {
     const { data } = await axios.get("/api/auth/access")

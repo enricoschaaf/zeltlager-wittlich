@@ -43,7 +43,7 @@ export class TentCampMailingListsStack extends cdk.Stack {
         },
       },
     )
-    props.table.grant(mailingListsLambda, "dynamodb:Query")
+    props.table.grant(mailingListsLambda, "dynamodb:GetItem", "dynamodb:Query")
     mailingListsLambda.addToRolePolicy(
       new iam.PolicyStatement({
         resources: ["*"],

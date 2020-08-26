@@ -13,38 +13,49 @@ const dynamo = new DynamoDB.DocumentClient()
 const ses = new SES()
 
 const schema = z.object({
-  allergies: z.string().optional(),
-  birthDate: z.string().refine((value) => !isNaN(new Date(value).getTime())),
-  canSwim: z.boolean(),
-  city: z.string(),
-  diseases: z.string().optional(),
-  eatingHabits: z.string(),
-  email: z.string().email(),
-  familyDoctorName: z.string(),
-  familyDoctorPhone: z.string(),
   firstName: z.string(),
-  foodIntolerances: z.string().optional(),
-  health: z.string().optional(),
-  healthInsurance: z.string(),
   lastName: z.string(),
-  mobile: z.string(),
-  postalCode: z.string().length(5),
+  birthDate: z.string().refine((value) => {
+    const [day, month, year] = value.split(".")
+    if (new Date(`${month}/${day}/${year}`).getTime()) {
+      return true
+    }
+    return false
+  }),
   streetAddress: z.string(),
+  postalCode: z.string(),
+  city: z.string(),
+  mobile: z.string(),
+  email: z.string().email(),
+  eatingHabits: z.string(),
+  foodIntolerances: z.string().optional(),
+  canSwim: z.boolean(),
   supervision: z.boolean(),
+  diseases: z.string().optional(),
+  allergies: z.string().optional(),
+  medication: z.string().optional(),
+  familyDoctorName: z.string().optional(),
+  familyDoctorPhone: z.string().optional(),
+  healthInsurance: z.string().optional(),
 })
+
+function parseData(body: string | undefined) {
+  try {
+    if (!body) throw Error
+    const data = schema.parse(JSON.parse(body))
+    const [day, month, year] = data.birthDate.split(".")
+    const birthDate = new Date(`${month}/${day}/${year}`).toISOString()
+    return { ...data, birthDate }
+  } catch {
+    return undefined
+  }
+}
 
 const registerHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
   try {
-    let data
-    try {
-      if (!body) throw Error
-      data = JSON.parse(body)
-      schema.parse(data)
-    } catch {
-      return {
-        statusCode: 400,
-      }
-    }
+    const data = parseData(body)
+    console.log(data)
+    if (!data) return { statusCode: 400 }
 
     const [{ Item }, { Items }] = await Promise.all([
       dynamo
@@ -83,6 +94,9 @@ const registerHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
           Item: {
             PK: `REGISTRATIONS#${year}`,
             SK: `REGISTRATION#${count + 1}`,
+            id: count + 1,
+            year,
+            type: "REGISTRATION",
             ...data,
           },
           ConditionExpression: "attribute_not_exists(SK)",
@@ -105,7 +119,6 @@ const registerHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
         },
       },
     ]
-
     if (Items && Items[0]?.PK && Items[0].SK) {
       transactItems = [
         ...transactItems,
@@ -155,23 +168,18 @@ const registerHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
         })
         .promise(),
       ses
-        .sendEmail({
+        .sendTemplatedEmail({
           Destination: {
             ToAddresses: [data.email],
           },
-          Message: {
-            Body: {
-              Html: {
-                Data: count < parseInt(maxParticipants) ? "success" : "waiting",
-              },
-              Text: {
-                Data: count < parseInt(maxParticipants) ? "success" : "waiting",
-              },
-            },
-            Subject: {
-              Data: count < parseInt(maxParticipants) ? "success" : "waiting",
-            },
-          },
+          Template:
+            count < parseInt(maxParticipants)
+              ? "registrationSuccessful"
+              : "registrationWaitinglist",
+          TemplateData: JSON.stringify({
+            Vorname: data.firstName,
+            Nachname: data.lastName,
+          }),
           Source: `Zeltlager Wittlich <mail@${baseUrl}>`,
         })
         .promise(),

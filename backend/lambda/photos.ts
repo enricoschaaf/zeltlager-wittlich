@@ -55,7 +55,7 @@ const photosLambda: APIGatewayProxyHandlerV2 = async ({
       photos: Items?.map(
         ({ Id: id, Caption: alt, Width: width, Height: height }) => ({
           key: id,
-          src: baseUrl + "/fotos/" + id,
+          src: "https://" + baseUrl + "/fotos/" + id,
           alt,
           width,
           height,

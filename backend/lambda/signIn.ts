@@ -75,9 +75,6 @@ const signInHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
           },
           Message: {
             Body: {
-              Html: {
-                Data: `https://${baseUrl}/bestaetigen/${confirm}`,
-              },
               Text: {
                 Data: `https://${baseUrl}/bestaetigen/${confirm}`,
               },

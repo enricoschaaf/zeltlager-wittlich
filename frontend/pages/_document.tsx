@@ -5,7 +5,10 @@ class MyDocument extends Document {
     return (
       <Html className="h-full" lang="de-DE">
         <Head>
-          <meta name="description" content="Meta description" />
+          <meta
+            name="description"
+            content="Website des Zeltlagers Wittlich. Melde dich hier an um mit uns vom 08.08 - 18.08.21 nach Saarhölzbach zu fahren."
+          />
           <meta name="theme-color" content="#f9fafb" />
           <link rel="apple-touch-icon" href="/apple-touch-icon.png"></link>
           <link rel="manifest" href="/manifest.webmanifest" />
