@@ -13,7 +13,7 @@ module.exports = withPrefresh({
       {
         source: "/api/register",
         destination:
-          "https://ajvyehkrlf.execute-api.eu-central-1.amazonaws.com/register",
+          "https://0a6yerljme.execute-api.eu-central-1.amazonaws.com/register",
       },
       {
         source: "/api/photos",

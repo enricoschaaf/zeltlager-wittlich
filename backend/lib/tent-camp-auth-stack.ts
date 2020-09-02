@@ -62,7 +62,7 @@ export class TentCampAuthStack extends cdk.Stack {
         TABLE_NAME: tentCampAuthTable.tableName,
         BASE_URL: process.env.BASE_URL,
       },
-      memorySize: 3008,
+      memorySize: 1024,
     })
     tentCampAuthTable.grant(signInLambda, "dynamodb:Query", "dynamodb:PutItem")
     signInLambda.addToRolePolicy(
@@ -76,7 +76,7 @@ export class TentCampAuthStack extends cdk.Stack {
       environment: {
         TABLE_NAME: tentCampAuthTable.tableName,
       },
-      memorySize: 3008,
+      memorySize: 1024,
     })
     tentCampAuthTable.grant(signOutLambda, "dynamodb:DeleteItem")
 
@@ -86,7 +86,7 @@ export class TentCampAuthStack extends cdk.Stack {
         TABLE_NAME: tentCampAuthTable.tableName,
         PRIVAT_KEY: readFileSync("private.pem").toString(),
       },
-      memorySize: 3008,
+      memorySize: 1024,
     })
     tentCampAuthTable.grant(refreshLambda, "dynamodb:Query")
 
@@ -95,7 +95,7 @@ export class TentCampAuthStack extends cdk.Stack {
       environment: {
         TABLE_NAME: tentCampAuthTable.tableName,
       },
-      memorySize: 3008,
+      memorySize: 1024,
     })
     tentCampAuthTable.grant(
       confirmLambda,
@@ -109,7 +109,7 @@ export class TentCampAuthStack extends cdk.Stack {
         TABLE_NAME: tentCampAuthTable.tableName,
         PRIVAT_KEY: readFileSync("private.pem").toString(),
       },
-      memorySize: 3008,
+      memorySize: 1024,
     })
     tentCampAuthTable.grant(accessLambda, "dynamodb:GetItem")
 
@@ -119,7 +119,7 @@ export class TentCampAuthStack extends cdk.Stack {
         TABLE_NAME: tentCampAuthTable.tableName,
         PUBLIC_KEY: readFileSync("public.pem").toString(),
       },
-      memorySize: 3008,
+      memorySize: 1024,
     })
     tentCampAuthTable.grant(profileLambda, "dynamodb:GetItem")
 
@@ -132,6 +132,7 @@ export class TentCampAuthStack extends cdk.Stack {
           TABLE_NAME: tentCampAuthTable.tableName,
           BASE_URL: process.env.BASE_URL,
         },
+        memorySize: 1024,
       },
     )
     tentCampAuthTable.grant(asyncChangeEmailLambda, "dynamodb:PutItem")
@@ -152,6 +153,7 @@ export class TentCampAuthStack extends cdk.Stack {
           TABLE_NAME: tentCampAuthTable.tableName,
           PUBLIC_KEY: readFileSync("public.pem").toString(),
         },
+        memorySize: 1024,
       },
     )
     asyncChangeEmailLambda.grantInvoke(changeEmailLambda)
@@ -165,6 +167,7 @@ export class TentCampAuthStack extends cdk.Stack {
         environment: {
           TABLE_NAME: tentCampAuthTable.tableName,
         },
+        memorySize: 1024,
       },
     )
     tentCampAuthTable.grant(

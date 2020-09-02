@@ -41,6 +41,8 @@ export class TentCampMailingListsStack extends cdk.Stack {
           BASE_URL: process.env.BASE_URL,
           YEAR: process.env.YEAR,
         },
+        timeout: cdk.Duration.seconds(10),
+        memorySize: 1024,
       },
     )
     props.table.grant(mailingListsLambda, "dynamodb:GetItem", "dynamodb:Query")
@@ -67,6 +69,8 @@ export class TentCampMailingListsStack extends cdk.Stack {
           BUCKET_NAME: bucket.bucketName,
           BASE_URL: process.env.BASE_URL,
         },
+        timeout: cdk.Duration.seconds(10),
+        memorySize: 1024,
       },
     )
     props.table.grant(forwardEmailLambda, "dynamodb:GetItem")

@@ -14,24 +14,24 @@
     "@types/google-spreadsheet": "^3.0.1",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mailparser": "^2.7.3",
-    "@types/node": "14.6.0",
+    "@types/node": "14.6.2",
     "@types/nodemailer": "^6.4.0",
     "@types/sharp": "^0.25.1",
-    "@types/source-map-support": "^0.5.2",
-    "aws-cdk": "1.60.0",
-    "aws-sdk": "^2.737.0",
-    "typescript": "~3.9.7"
+    "@types/source-map-support": "^0.5.3",
+    "aws-cdk": "1.61.1",
+    "aws-sdk": "^2.744.0",
+    "typescript": "~4.0.2"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigatewayv2": "1.60.0",
-    "@aws-cdk/aws-dynamodb": "1.60.0",
-    "@aws-cdk/aws-lambda": "1.60.0",
-    "@aws-cdk/aws-lambda-event-sources": "1.60.0",
-    "@aws-cdk/aws-lambda-nodejs": "1.60.0",
-    "@aws-cdk/aws-s3": "1.60.0",
-    "@aws-cdk/aws-ses": "^1.60.0",
-    "@aws-cdk/aws-ses-actions": "^1.60.0",
-    "@aws-cdk/core": "1.60.0",
+    "@aws-cdk/aws-apigatewayv2": "1.61.1",
+    "@aws-cdk/aws-dynamodb": "1.61.1",
+    "@aws-cdk/aws-lambda": "1.61.1",
+    "@aws-cdk/aws-lambda-event-sources": "1.61.1",
+    "@aws-cdk/aws-lambda-nodejs": "1.61.1",
+    "@aws-cdk/aws-s3": "1.61.1",
+    "@aws-cdk/aws-ses": "^1.61.1",
+    "@aws-cdk/aws-ses-actions": "^1.61.1",
+    "@aws-cdk/core": "1.61.1",
     "@azure/cognitiveservices-computervision": "^7.0.1",
     "@azure/ms-rest-azure-js": "^2.0.1",
     "dotenv": "^8.2.0",
@@ -41,7 +41,7 @@
     "nanoid": "^3.1.12",
     "nodemailer": "^6.4.11",
     "source-map-support": "^0.5.19",
-    "zod": "^1.10.3"
+    "zod": "^1.11.4"
   },
   "targets": {
     "cdk-lambda": {

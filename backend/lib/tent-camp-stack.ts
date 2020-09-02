@@ -59,10 +59,12 @@ export class TentCampStack extends cdk.Stack {
           GOOGLE_SHEET_ID: process.env.GOOGLE_SHEET_ID,
           YEAR: process.env.YEAR,
         },
+        timeout: cdk.Duration.seconds(10),
+        memorySize: 1024,
       },
     )
     const dynamoEventSource = new eventSource.DynamoEventSource(tentCampTable, {
-      startingPosition: StartingPosition.LATEST,
+      startingPosition: StartingPosition.TRIM_HORIZON,
     })
     dynamoEventSource.bind(dynamoStreamLambda)
 
@@ -77,7 +79,7 @@ export class TentCampStack extends cdk.Stack {
 
     const registerLambda = new lambda.NodejsFunction(this, "registerLambda", {
       entry: "lambda/register.ts",
-      memorySize: 3008,
+      memorySize: 1024,
       environment: {
         TABLE_NAME: tentCampTable.tableName,
         AUTH_TABLE_NAME: props.authTable.tableName,

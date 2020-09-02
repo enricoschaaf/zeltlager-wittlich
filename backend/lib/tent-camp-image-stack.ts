@@ -58,7 +58,7 @@ export class TentCampImageStack extends cdk.Stack {
         handler: "index.handler",
         runtime: lambda.Runtime.NODEJS_12_X,
         timeout: cdk.Duration.seconds(10),
-        memorySize: 3008,
+        memorySize: 1024,
         environment: {
           TABLE_NAME: tentCampImageTable.tableName,
           COMPUTER_VISION_KEY: process.env.COMPUTER_VISION_KEY,
@@ -90,6 +90,7 @@ export class TentCampImageStack extends cdk.Stack {
         environment: {
           TABLE_NAME: tentCampImageTable.tableName,
         },
+        memorySize: 1024,
       },
     )
     tentCampImageTable.grant(
