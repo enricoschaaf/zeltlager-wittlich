@@ -1,4 +1,4 @@
-import { DynamoDBStreamHandler } from "aws-lambda"
+import { AttributeValue, DynamoDBStreamHandler } from "aws-lambda"
 import { DynamoDB } from "aws-sdk"
 import { GoogleSpreadsheet } from "google-spreadsheet"
 
@@ -9,6 +9,10 @@ const year = process.env.YEAR
 
 const doc = new GoogleSpreadsheet(googleSheetId)
 
+function output(value: AttributeValue) {
+  return DynamoDB.Converter.output(value)
+}
+
 const dynamoStreamHandler: DynamoDBStreamHandler = async ({ Records }) => {
   try {
     await doc.useServiceAccountAuth({
@@ -18,26 +22,56 @@ const dynamoStreamHandler: DynamoDBStreamHandler = async ({ Records }) => {
     await doc.loadInfo()
     const sheet = doc.sheetsByTitle[`Anmeldungen ${year}`]
 
-    let data: any
+    const data: any[] = []
     Records.forEach(({ eventName, dynamodb }) => {
       switch (eventName) {
         case "INSERT":
           if (!dynamodb?.NewImage) throw Error()
+          const newImage = dynamodb.NewImage
           if (
             !(
-              dynamodb?.Keys?.SK.S &&
-              dynamodb.Keys.SK.S.startsWith("REGISTRATION#")
+              dynamodb?.Keys?.SK &&
+              output(dynamodb.Keys.SK).startsWith("REGISTRATION#")
             )
           ) {
             break
           }
-          data = Object.entries(dynamodb.NewImage).map(([, value]) =>
-            DynamoDB.Converter.output(value),
-          )
+
+          data.push({
+            "Nr.": output(newImage.id),
+            Vorname: output(newImage.firstName),
+            Nachname: output(newImage.lastName),
+            Geburtsdatum: new Date(
+              output(newImage.birthDate),
+            ).toLocaleDateString("de-DE", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            }),
+            "Straße und Hausnummer": output(newImage.streetAddress),
+            Postleitzahl: output(newImage.postalCode),
+            Stadt: output(newImage.city),
+            Handy: output(newImage.mobile),
+            Email: output(newImage.email),
+            Essgewohnheiten:
+              output(newImage.eatingHabits) === "vegetarian"
+                ? "Vegetarisch"
+                : output(newImage.eatingHabits) === "vegan"
+                ? "Vegan"
+                : "Keine",
+            Lebensmittelunterträglichkeiten: output(newImage.foodIntolerances),
+            Schwimmen: output(newImage.canSwim) ? "Ja" : "Nein",
+            Aufsicht: output(newImage.supervision) ? "Ja" : "Nein",
+            Krankheiten: output(newImage.diseases),
+            Allergien: output(newImage.allergies),
+            Medikamente: output(newImage.medication),
+            Krankenkasse: output(newImage.healthInsurance),
+            "Name des Hausarztes": output(newImage.familiyDoctorName),
+            "Telefonnummer des Hausarztes": output(newImage.familyDoctorPhone),
+          })
           break
       }
     })
-    console.log(data)
     await sheet.addRows(data)
   } catch (err) {
     console.error(err)
