@@ -43,7 +43,7 @@ const changeEmailHandler: APIGatewayProxyHandlerV2 = async ({
       })
       .promise()
 
-    if (Items && Items.length > 0) {
+    if (!Items?.length) {
       return {
         statusCode: 400,
       }

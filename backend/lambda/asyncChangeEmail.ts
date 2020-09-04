@@ -20,7 +20,7 @@ function createConfirmationToken(
         PK: "CONFIRM#" + confirm,
         SK: "CREATED_AT#" + Date.now(),
         type: "CHANGE_EMAIL_TOKEN",
-        expiresAt: Date.now() + 600,
+        expiresAt: Math.round(Date.now() / 1000) + 600,
         userId,
         newEmail,
       },

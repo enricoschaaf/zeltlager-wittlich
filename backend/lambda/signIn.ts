@@ -61,7 +61,7 @@ const signInHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
             GSI2PK: "CONFIRM#" + confirm,
             GSI2SK: "CREATED_AT#" + Date.now(),
             type: "REFRESH_TOKEN",
-            expiresAt: Date.now() + 600,
+            expiresAt: Math.round(Date.now() / 1000) + 600,
             refreshToken: refreshToken,
             userId,
             confirmed: false,

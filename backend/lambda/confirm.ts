@@ -14,10 +14,10 @@ const confirmHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
         TableName: tableName,
         IndexName: "GSI2",
         ProjectionExpression: "PK, SK",
-        KeyConditionExpression: "GSI2PK = :pk AND GSI2SK < :sk",
+        KeyConditionExpression: "GSI2PK = :pk AND GSI2SK > :sk",
         ExpressionAttributeValues: {
           ":pk": "CONFIRM#" + confirm,
-          ":sk": "CREATED_AT#" + (Date.now() + 600),
+          ":sk": "CREATED_AT#" + (Date.now() - 600000),
         },
       })
       .promise()

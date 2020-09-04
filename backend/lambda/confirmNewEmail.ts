@@ -13,10 +13,10 @@ const confirmNewEmailHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
     const { Items: Tokens } = await dynamo
       .query({
         TableName: tableName,
-        KeyConditionExpression: "PK = :pk AND SK < :sk",
+        KeyConditionExpression: "PK = :pk AND SK > :sk",
         ExpressionAttributeValues: {
           ":pk": "CONFIRM#" + confirm,
-          ":sk": "CREATED_AT#" + (Date.now() + 600),
+          ":sk": "CREATED_AT#" + (Date.now() - 600000),
         },
       })
       .promise()
@@ -39,7 +39,7 @@ const confirmNewEmailHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
       })
       .promise()
 
-    if (User && User.length > 0) {
+    if (!User?.length) {
       return { statusCode: 400 }
     }
 

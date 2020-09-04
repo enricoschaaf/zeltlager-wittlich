@@ -57,7 +57,7 @@ const mailingListHandler: Handler = async ({ Records }) => {
     ])
     const emails: string[] = Item?.emails
     console.log(emails.find((email) => email === source))
-    if (Items && Items.length > 0 && emails.find((email) => email === source)) {
+    if (Items?.length && emails.find((email) => email === source)) {
       console.log("inside")
       await Promise.all(
         Items.map(({ email }) => {

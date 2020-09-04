@@ -49,7 +49,7 @@ const forwardEmailHandler: Handler = async ({ Records }) => {
       simpleParser(stream),
     ])
 
-    if (Item?.emails.length < 1) {
+    if (!Item?.emails.length) {
       throw new Error("No forward configured for this recipient.")
     }
 

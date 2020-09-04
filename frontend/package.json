@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "axios": "^0.20.0",
-    "framer-motion": "^2.6.5",
+    "framer-motion": "^2.6.6",
     "jwt-decode": "^2.2.0",
     "logrocket": "^1.0.12",
     "next": "^9.5.3",
@@ -17,16 +17,16 @@
     "react": "github:preact-compat/react#1.0.0",
     "react-dom": "github:preact-compat/react-dom#1.0.0",
     "react-error-boundary": "^2.3.1",
-    "react-hook-form": "^6.7.0",
-    "react-query": "^2.14.0",
-    "react-ssr-prepass": "npm:preact-ssr-prepass@^1.0.1"
+    "react-hook-form": "^6.7.1",
+    "react-query": "^2.14.1",
+    "react-ssr-prepass": "npm:preact-ssr-prepass@^1.1.1"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^9.5.3",
-    "@prefresh/next": "^1.0.0",
+    "@prefresh/next": "^1.1.0",
     "@tailwindcss/ui": "^0.5.0",
     "@types/jwt-decode": "^2.2.1",
-    "@types/node": "^14.6.2",
+    "@types/node": "^14.6.3",
     "@types/react": "^16.9.49",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",

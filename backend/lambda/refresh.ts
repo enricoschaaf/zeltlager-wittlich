@@ -21,17 +21,17 @@ const refreshHandler: APIGatewayProxyHandlerV2 = async ({ pathParameters }) => {
         TableName: tableName,
         IndexName: "GSI1",
         ProjectionExpression: "refreshToken, confirmed, userId",
-        KeyConditionExpression: "GSI1PK = :pk AND GSI1SK < :sk",
+        KeyConditionExpression: "GSI1PK = :pk AND GSI1SK > :sk",
         ExpressionAttributeValues: {
           ":pk": "ID#" + tokenId,
-          ":sk": "CREATED_AT#" + (Date.now() + 600),
+          ":sk": "CREATED_AT#" + (Date.now() - 600000),
         },
       })
       .promise()
 
     if (
       !(
-        Items &&
+        Items?.length &&
         Items[0].refreshToken &&
         typeof Items[0].confirmed === "boolean" &&
         Items[0].userId

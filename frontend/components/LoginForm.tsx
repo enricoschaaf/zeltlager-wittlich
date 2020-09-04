@@ -1,7 +1,7 @@
 import axios from "axios"
 import { AnimatePresence } from "framer-motion"
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useMutation, useQuery } from "react-query"
 import { Button, Input, Modal } from "tailwindcss/ui"
@@ -16,21 +16,27 @@ async function signInMutation(email: string) {
 }
 
 async function refreshQuery(tokenId: string) {
-  const { data } = await axios.get("/api/auth/refresh/" + tokenId)
-  return data
+  try {
+    const { data } = await axios.get("/api/auth/refresh/" + tokenId)
+    return data
+  } catch (err) {
+    if (err.response.status) return { expired: true }
+  }
 }
 
 export const LoginForm = () => {
   const [modal, setModal] = useState<"closed" | "open">("closed")
-  const [interval, setInterval] = useState<500 | undefined>(500)
+  const [interval, setInterval] = useState<500 | undefined>(undefined)
   const { push, query } = useRouter()
   const [email, setEmail] = useState<string>("")
   const { register, handleSubmit, errors, setError } = useForm()
   const [mutate, { data, isLoading }] = useMutation(signInMutation, {
-    onSuccess: () => setModal("open"),
+    onSuccess: () => {
+      setInterval(500)
+      setModal("open")
+    },
     onError: (err: any) => {
-      console.dir(err)
-      if (err.response.status === 404) {
+      if (err?.response.status === 404) {
         setError("email", {
           type: "validate",
           message: "Wir konnten kein Konto mit dieser Email Adresse finden.",
@@ -38,11 +44,13 @@ export const LoginForm = () => {
       }
     },
   })
-  const { status: queryStatus } = useQuery(data?.tokenId, refreshQuery, {
+
+  const { data: refreshData } = useQuery(data?.tokenId, refreshQuery, {
     refetchInterval: interval,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: interval ? true : false,
+    refetchOnReconnect: true,
     enabled: data,
+    useErrorBoundary: true,
     onSuccess: ({ accessToken }) => {
       if (accessToken) {
         setAccessToken(data.accessToken)
@@ -55,6 +63,10 @@ export const LoginForm = () => {
     setEmail(email)
     mutate(email)
   }
+
+  useEffect(() => {
+    if (refreshData?.expired) setInterval(undefined)
+  }, [refreshData])
 
   return (
     <>
@@ -106,7 +118,7 @@ export const LoginForm = () => {
       <AnimatePresence>
         {modal === "open" ? (
           <Modal>
-            {queryStatus === "error" ? (
+            {refreshData?.expired ? (
               <>
                 <div>
                   <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
