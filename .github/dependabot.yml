@@ -1,10 +1,16 @@
 version: 1
 update_configs:
   - package_manager: "javascript"
-    update_schedule: "daily"
+    directory: "/frontend"
+    update_schedule: "live"
     automerged_updates:
       - match:
           dependency_type: "all"
           update_type: "all"
-    directory: "/frontend"
+  - package_manager: "javascript"
     directory: "/backend"
+    update_schedule: "live"
+    automerged_updates:
+      - match:
+          dependency_type: "all"
+          update_type: "all"
