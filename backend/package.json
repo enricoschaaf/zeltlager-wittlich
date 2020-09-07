@@ -37,7 +37,7 @@
     "dotenv": "^8.2.0",
     "google-spreadsheet": "^3.0.13",
     "jsonwebtoken": "^8.5.1",
-    "mailparser": "^2.8.1",
+    "mailparser": "^3.0.0",
     "nanoid": "^3.1.12",
     "nodemailer": "^6.4.11",
     "source-map-support": "^0.5.19",
