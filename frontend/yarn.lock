@@ -5160,10 +5160,10 @@ randomfill@^1.0.3:
   version "1.0.0"
   resolved "https://codeload.github.com/preact-compat/react-dom/tar.gz/75804a834f55de5350c175f9646631dabac258ae"
 
-react-error-boundary@^2.3.2:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/react-error-boundary/-/react-error-boundary-2.3.2.tgz#4d629cf958202da722e49f624bfb5cf9710b52c6"
-  integrity sha512-ZMzi7s4pj/6A/6i9RS4tG7g1PdF2Rgr4/7FTQ8sbKHex19uNji0j+xq0OS//c6TUgQRKoL6P51BNNNFmYpRMhw==
+react-error-boundary@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-error-boundary/-/react-error-boundary-3.0.0.tgz#735c225f069d084a5476b6c6a526ef076df5eb92"
+  integrity sha512-kR5TRz0XJxTjQNrAMzuFDmFVYAuTzKer3evRAVI/sDhedlPAOt0t/H/Z8VEz25H4mjDibI7CvgCu4KE9rGT62w==
   dependencies:
     "@babel/runtime" "^7.11.2"
 
