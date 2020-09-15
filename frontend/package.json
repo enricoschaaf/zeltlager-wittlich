@@ -18,7 +18,7 @@
     "react-dom": "github:preact-compat/react-dom#1.0.0",
     "react-error-boundary": "^3.0.2",
     "react-hook-form": "^6.8.2",
-    "react-query": "^2.18.0",
+    "react-query": "^2.19.0",
     "react-ssr-prepass": "npm:preact-ssr-prepass@^1.1.1"
   },
   "devDependencies": {
