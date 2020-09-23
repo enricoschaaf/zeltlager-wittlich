@@ -41,7 +41,7 @@
     "nanoid": "^3.1.12",
     "nodemailer": "^6.4.11",
     "source-map-support": "^0.5.19",
-    "zod": "^1.11.8"
+    "zod": "^1.11.9"
   },
   "targets": {
     "cdk-lambda": {
