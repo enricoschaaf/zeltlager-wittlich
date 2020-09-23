@@ -126,7 +126,7 @@ export const RegistrationForm = () => {
                       autoComplete="address-level2"
                       errors={errors}
                       register={register({
-                        required: "Bitte geben Sie Ihre Stadt.",
+                        required: "Bitte geben Sie Ihre Stadt an.",
                       })}
                     />
                     <Input
