@@ -12,7 +12,7 @@
     "jwt-decode": "^2.2.0",
     "logrocket": "^1.0.13",
     "next": "^9.5.3",
-    "preact": "^10.5.0",
+    "preact": "^10.5.1",
     "preact-render-to-string": "^5.1.10",
     "react": "github:preact-compat/react#1.0.0",
     "react-dom": "github:preact-compat/react-dom#1.0.0",
