@@ -1146,22 +1146,22 @@
   dependencies:
     mkdirp "^1.0.4"
 
-"@prefresh/babel-plugin@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@prefresh/babel-plugin/-/babel-plugin-0.2.1.tgz#8be73cb6b105d174f1ede857dfd867157e84bce9"
-  integrity sha512-RcVk5guQA9Jet/bksV6kTdztiobX1wpnHJ2RTvQs8PFgpEwmo0aBEPjLG88iNcHfG9APNxLCQNSR14ExtGXwZg==
+"@prefresh/babel-plugin@0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@prefresh/babel-plugin/-/babel-plugin-0.2.2.tgz#b921f0a1350a9daa9106518378a4e5a49211e6f6"
+  integrity sha512-NDPMsDs5QncSdOX7zsATwypf1IWtYvOX23X3t4DOcZsVErRABqdlUTZ2RAf4KfOAIjSZhR9p0Htchqp8rQr14Q==
 
 "@prefresh/core@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@prefresh/core/-/core-1.0.0.tgz#4abab30594ce28968c62e1692f6e6941637fd95e"
   integrity sha512-oCqtJmc1HqarTmOYmXf7aQY1gKko0y42w8w7RaT6oqvaK862h7tSXlW/XTTsaUWHtjoHHjV2FimppGkvQ44RCw==
 
-"@prefresh/next@^1.2.3":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@prefresh/next/-/next-1.2.3.tgz#d6f76f9007f1a136b6bbd465ed56842e923d036f"
-  integrity sha512-9sbCpOkDOeNzLeeZ1mk974XDZme+tFpTz0xJnSD8sMOrbIwKsiO7+nkmzyDEea/e0WEhxxb/6sd0Ie0PgYnbVg==
+"@prefresh/next@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@prefresh/next/-/next-1.2.4.tgz#d52bbb0a9f880a9c8fa478784c52338fed28ce95"
+  integrity sha512-7I5mLu3U2dLTyngp+XhLFGfcWgRC3cKERAnwwVDHSG71EvW7mvI9ygrasBiNgVSC3hBIrabJHMNt6U5eMd6wcA==
   dependencies:
-    "@prefresh/babel-plugin" "0.2.1"
+    "@prefresh/babel-plugin" "0.2.2"
     "@prefresh/core" "^1.0.0"
     "@prefresh/utils" "^1.0.0"
 
