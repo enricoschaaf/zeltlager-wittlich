@@ -3,8 +3,7 @@ const defaultTheme = require("tailwindcss/defaultTheme")
 
 module.exports = {
   future: "all",
-  experimental: "all",
-  purge: ["{components,pages,tailwindcss,layouts}/**/*.{js,jsx,ts,tsx}"],
+  purge: ["{components,layouts,pages,tailwindcss}/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       fontFamily: {
@@ -12,5 +11,6 @@ module.exports = {
       },
     },
   },
+  variants: {},
   plugins: [require("@tailwindcss/ui")],
 }
