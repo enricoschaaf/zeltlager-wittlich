@@ -9,7 +9,7 @@
   "dependencies": {
     "axios": "^0.20.0",
     "framer-motion": "^2.7.6",
-    "jwt-decode": "^2.2.0",
+    "jwt-decode": "^3.0.0",
     "logrocket": "^1.0.13",
     "next": "^9.5.3",
     "preact": "10.5.3",
