@@ -22,17 +22,12 @@ const Index = () => {
             <b>08.08.21 - 18.08.21</b>
           </div>
           <p style={{ textAlign: "justify" }}>
-            In der Zeit von Montag, 29.07. bis Donnerstag, 08.08.2019 weht das
-            Löwenbanner dieses Mal auf dem Jugendzeltplatz im Tiefenbachtal bei
-            Simmerath. Wenn ihr zur Zeit des Zeltlagers zwischen 9 und 15 Jahre
-            alt seid und jede Menge Spaß und Gemeinschaft unter freiem Himmel
-            erleben möchtet, dann seid ihr hier richtig. Meldet euch so bald wie
-            möglich an! Der Teilnehmerbeitrag beträgt 165,- Euro. Werden mehrere
-            Kinder einer Familie angemeldet, so wird ab dem 2. Kind ein
-            reduzierter Teilnehmerbeitrag von 125,- Euro erhoben. Enthalten sind
-            sämtliche anfallenden Kosten für Anreise, Unterbringung,
-            Vollverpflegung, Eintritte, Fahrkarten etc. Die Unterbringung
-            erfolgt in pfarreieigenen Gruppenzelten.
+            In der Zeit von Sonntag, 08.08.2021 bis Mittwoch, 18.08.2021 weht
+            das Löwenbanner dieses Mal auf dem Jugendzeltplatz Saaarhölzbach.
+            Wenn ihr zur Zeit des Zeltlagers zwischen 9 und 15 Jahre alt seid
+            und jede Menge Spaß und Gemeinschaft unter freiem Himmel erleben
+            möchtet, dann seid ihr hier richtig. Meldet euch so bald wie möglich
+            an!
           </p>
         </div>
       </div>

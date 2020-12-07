@@ -73,7 +73,7 @@ export class TentCampMailingListsStack extends cdk.Stack {
         memorySize: 1024,
       },
     )
-    props.table.grant(forwardEmailLambda, "dynamodb:GetItem")
+    props.table.grant(forwardEmailLambda, "dynamodb:BatchGetItem")
     forwardEmailLambda.addToRolePolicy(
       new iam.PolicyStatement({
         resources: ["*"],
@@ -91,15 +91,16 @@ export class TentCampMailingListsStack extends cdk.Stack {
       rules: [
         {
           recipients: [`teilnehmende@${process.env.BASE_URL}`],
-          actions: [new actions.Lambda({ function: mailingListsLambda })],
+          actions: [
+            new actions.S3({ bucket }),
+            new actions.Lambda({ function: mailingListsLambda }),
+          ],
         },
         {
-          actions: [new actions.S3({ bucket })],
-          recipients: [process.env.BASE_URL, `.${process.env.BASE_URL}`],
-        },
-        {
-          actions: [new actions.Lambda({ function: forwardEmailLambda })],
-          recipients: [process.env.BASE_URL, `.${process.env.BASE_URL}`],
+          actions: [
+            new actions.S3({ bucket }),
+            new actions.Lambda({ function: forwardEmailLambda }),
+          ],
         },
       ],
     })

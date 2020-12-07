@@ -11,21 +11,25 @@ const s3 = new S3()
 const dynamo = new DynamoDB.DocumentClient({ region: "eu-central-1" })
 const ses = new SES()
 const transporter = createTransport({
-  SES: new SES({ region: "eu-central-1" }),
+  SES: new SES({ region: "eu-west-1" }),
 })
 
 const forwardEmailHandler: Handler = async ({ Records }) => {
   const {
-    source,
-    commonHeaders: { from },
-    destination,
-    messageId,
+    mail: {
+      source,
+      commonHeaders: { from },
+      messageId,
+    },
+    receipt: { recipients },
   }: {
-    source: string
-    commonHeaders: { from: string[] }
-    destination: string
-    messageId: string
-  } = Records[0].ses.mail
+    mail: {
+      source: string
+      commonHeaders: { from: string[] }
+      messageId: string
+    }
+    receipt: { recipients: string[] }
+  } = Records[0].ses
 
   try {
     const stream = s3
@@ -33,42 +37,46 @@ const forwardEmailHandler: Handler = async ({ Records }) => {
       .createReadStream()
 
     const [
-      { Item },
+      { Responses },
       { subject, text, html, attachments, inReplyTo },
     ] = await Promise.all([
       dynamo
-        .get({
-          TableName: tableName,
-          Key: {
-            PK: "FORWARD_EMAIL#" + destination,
-            SK: "FORWARD_EMAIL#" + destination,
+        .batchGet({
+          RequestItems: {
+            [tableName]: {
+              Keys: recipients.map((recipient) => ({
+                PK: `FORWARD_EMAIL#${recipient}`,
+                SK: `FORWARD_EMAIL#${recipient}`,
+              })),
+            },
           },
-          ProjectionExpression: "emails",
         })
         .promise(),
       simpleParser(stream),
     ])
 
-    if (!Item?.emails.length) {
+    if (!Responses?.[tableName]) {
       throw new Error("No forward configured for this recipient.")
     }
 
     await Promise.all(
-      Item?.emails.map((email: string) =>
-        transporter.sendMail({
-          from: `${from[0].split("<")[0]}<${createHash("sha256")
-            .update(source)
-            .digest("base64")}@${baseUrl}>`,
-          to: email,
-          subject,
-          text,
-          html: html || undefined,
-          // @ts-ignore
-          attachments: attachments,
-          replyTo: from[0],
-          inReplyTo,
-        }),
-      ),
+      Responses[tableName]
+        .flatMap(({ emails }) => emails)
+        .map((email: string) =>
+          transporter.sendMail({
+            from: `${from[0].split("<")[0]}<${createHash("sha256")
+              .update(source)
+              .digest("base64")}@${baseUrl}>`,
+            to: email,
+            subject,
+            text,
+            html: html || undefined,
+            // @ts-ignore
+            attachments: attachments,
+            replyTo: from[0],
+            inReplyTo,
+          }),
+        ),
     )
 
     await s3.deleteObject({ Bucket: bucketName, Key: messageId }).promise()
@@ -76,8 +84,15 @@ const forwardEmailHandler: Handler = async ({ Records }) => {
     console.error(err)
     await ses
       .sendBounce({
-        BounceSender: destination[0],
-        BouncedRecipientInfoList: [{ Recipient: source }],
+        BounceSender: `Mail Delivery Subsystem <mailer-daemon@${
+          recipients[0].split("@")[1]
+        }>`,
+        BouncedRecipientInfoList: [
+          ...recipients.map((recipient) => ({
+            Recipient: recipient,
+            BounceType: "Undefined",
+          })),
+        ],
         OriginalMessageId: messageId,
       })
       .promise()
