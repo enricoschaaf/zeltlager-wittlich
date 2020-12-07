@@ -18,7 +18,7 @@ const Index = () => {
         <br></br>
         <div className="prose sm:prose-lg">
           <div className="flex justify-between">
-            <b>Saaarhölzbach</b>
+            <b>Saarhölzbach</b>
             <b>08.08.21 - 18.08.21</b>
           </div>
           <p style={{ textAlign: "justify" }}>
