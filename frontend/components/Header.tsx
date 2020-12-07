@@ -46,6 +46,11 @@ export const Header = () => {
           <a className="text-base leading-6 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150">
             Fotos
           </a>
+        </Link>{" "}
+        <Link href="/anmelden">
+          <a className="text-base leading-6 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150">
+            Online Anmeldung
+          </a>
         </Link>
         <a
           href="/2021_Ausschreibung_Saarhölzbach.pdf"
@@ -137,7 +142,7 @@ export const Header = () => {
                     className="block w-full px-5 py-3 text-center font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:bg-gray-100 focus:text-gray-700 transition duration-150 ease-in-out"
                     role="menuitem"
                   >
-                    Anmelden
+                    Online Anmeldung
                   </a>
                 </Link>
               </div>

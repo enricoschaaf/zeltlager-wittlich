@@ -66,7 +66,7 @@ const dynamoStreamHandler: DynamoDBStreamHandler = async ({ Records }) => {
             Allergien: output(newImage.allergies),
             Medikamente: output(newImage.medication),
             Krankenkasse: output(newImage.healthInsurance),
-            "Name des Hausarztes": output(newImage.familiyDoctorName),
+            "Name des Hausarztes": output(newImage.familyDoctorName),
             "Telefonnummer des Hausarztes": output(newImage.familyDoctorPhone),
           })
           break
