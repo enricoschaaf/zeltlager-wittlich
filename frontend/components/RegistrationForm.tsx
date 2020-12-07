@@ -199,7 +199,7 @@ export const RegistrationForm = () => {
                     <Checkbox
                       name="supervision"
                       label="Aufsicht"
-                      description=" Wir sind damit einverstanden, dass unser Kind in mit der Gruppe abgesprochenen Zeiträumen gelegentlich einige Stunden zur freien Verfügung hat, in der er/sie ohne Aufsicht ist."
+                      description="Unser Kind darf mit der Gruppe in abgesprochenen Zeiträumen einige Stunden zur freien Verfügung haben, in denen er/sie ohne Aufsicht ist."
                       className="col-span-6"
                       register={register()}
                     />
