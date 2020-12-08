@@ -94,6 +94,7 @@ export class TentCampMailingListsStack extends cdk.Stack {
           actions: [
             new actions.S3({ bucket }),
             new actions.Lambda({ function: mailingListsLambda }),
+            new actions.Stop(),
           ],
         },
         {

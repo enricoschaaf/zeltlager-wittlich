@@ -6,32 +6,34 @@ import { createTransport } from "nodemailer"
 const tableName = process.env.TABLE_NAME
 const bucketName = process.env.BUCKET_NAME
 const baseUrl = process.env.BASE_URL
+const s3 = new S3()
 const year = process.env.YEAR
 const dynamo = new DynamoDB.DocumentClient({ region: "eu-central-1" })
 const ses = new SES()
-const s3 = new S3()
 const transporter = createTransport({
-  SES: new SES(),
+  SES: ses,
 })
 
 const mailingListHandler: Handler = async ({ Records }) => {
   const {
     source,
-    destination,
     messageId,
   }: {
     source: string
-    destination: string
+    destination: string[]
     messageId: string
   } = Records[0].ses.mail
 
   try {
-    console.log(source)
     const stream = s3
       .getObject({ Bucket: bucketName, Key: messageId })
       .createReadStream()
 
-    const [{ Items }, { Item }, { text, html }] = await Promise.all([
+    const [
+      { Items },
+      { Item },
+      { from, subject, text, html, attachments },
+    ] = await Promise.all([
       dynamo
         .query({
           TableName: tableName,
@@ -56,16 +58,20 @@ const mailingListHandler: Handler = async ({ Records }) => {
       simpleParser(stream),
     ])
     const emails: string[] = Item?.emails
-    console.log(emails.find((email) => email === source))
-    if (Items?.length && emails.find((email) => email === source)) {
-      console.log("inside")
+    if (
+      Items?.length &&
+      emails.find((email) => from?.value[0].address === email)
+    ) {
       await Promise.all(
-        Items.map(({ email }) => {
+        [...new Set(Items.map(({ email }) => email))].map((email) => {
           transporter.sendMail({
             from: `Zeltlager Wittlich <mail@${baseUrl}>`,
             to: email,
+            subject,
             text,
             html: html || undefined,
+            // @ts-ignore
+            attachments,
           })
         }),
       )
@@ -75,8 +81,13 @@ const mailingListHandler: Handler = async ({ Records }) => {
     console.error(err)
     await ses
       .sendBounce({
-        BounceSender: destination[0],
-        BouncedRecipientInfoList: [{ Recipient: source }],
+        BounceSender: `Mail Delivery Subsystem <mailer-daemon@${baseUrl}>`,
+        BouncedRecipientInfoList: [
+          {
+            Recipient: source,
+            BounceType: "Undefined",
+          },
+        ],
         OriginalMessageId: messageId,
       })
       .promise()

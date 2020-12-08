@@ -11,7 +11,7 @@ const s3 = new S3()
 const dynamo = new DynamoDB.DocumentClient({ region: "eu-central-1" })
 const ses = new SES()
 const transporter = createTransport({
-  SES: new SES({ region: "eu-west-1" }),
+  SES: ses,
 })
 
 const forwardEmailHandler: Handler = async ({ Records }) => {

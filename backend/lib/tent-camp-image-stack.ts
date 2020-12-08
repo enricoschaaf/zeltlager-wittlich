@@ -1,4 +1,5 @@
 import * as apiGateway from "@aws-cdk/aws-apigatewayv2"
+import { LambdaProxyIntegration } from "@aws-cdk/aws-apigatewayv2-integrations"
 import * as dynamo from "@aws-cdk/aws-dynamodb"
 import * as iam from "@aws-cdk/aws-iam"
 import * as lambda from "@aws-cdk/aws-lambda"
@@ -145,7 +146,7 @@ export class TentCampImageStack extends cdk.Stack {
     tentCampImageApi.addRoutes({
       path: "/photos/{id+}",
       methods: [apiGateway.HttpMethod.GET],
-      integration: new apiGateway.LambdaProxyIntegration({
+      integration: new LambdaProxyIntegration({
         handler: imageTransformLambda,
       }),
     })
@@ -153,7 +154,7 @@ export class TentCampImageStack extends cdk.Stack {
     tentCampImageApi.addRoutes({
       path: "/api/photos",
       methods: [apiGateway.HttpMethod.GET],
-      integration: new apiGateway.LambdaProxyIntegration({
+      integration: new LambdaProxyIntegration({
         handler: photosLambda,
       }),
     })

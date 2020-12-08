@@ -1,4 +1,5 @@
 import * as apiGateway from "@aws-cdk/aws-apigatewayv2"
+import { LambdaProxyIntegration } from "@aws-cdk/aws-apigatewayv2-integrations"
 import * as dynamo from "@aws-cdk/aws-dynamodb"
 import * as iam from "@aws-cdk/aws-iam"
 import * as lambda from "@aws-cdk/aws-lambda-nodejs"
@@ -181,7 +182,7 @@ export class TentCampAuthStack extends cdk.Stack {
     tentCampAuthApi.addRoutes({
       path: "/signin",
       methods: [apiGateway.HttpMethod.POST],
-      integration: new apiGateway.LambdaProxyIntegration({
+      integration: new LambdaProxyIntegration({
         handler: signInLambda,
       }),
     })
@@ -189,7 +190,7 @@ export class TentCampAuthStack extends cdk.Stack {
     tentCampAuthApi.addRoutes({
       path: "/signout",
       methods: [apiGateway.HttpMethod.POST],
-      integration: new apiGateway.LambdaProxyIntegration({
+      integration: new LambdaProxyIntegration({
         handler: signOutLambda,
       }),
     })
@@ -197,7 +198,7 @@ export class TentCampAuthStack extends cdk.Stack {
     tentCampAuthApi.addRoutes({
       path: "/refresh/{tokenId}",
       methods: [apiGateway.HttpMethod.GET],
-      integration: new apiGateway.LambdaProxyIntegration({
+      integration: new LambdaProxyIntegration({
         handler: refreshLambda,
       }),
     })
@@ -205,7 +206,7 @@ export class TentCampAuthStack extends cdk.Stack {
     tentCampAuthApi.addRoutes({
       path: "/confirm",
       methods: [apiGateway.HttpMethod.POST],
-      integration: new apiGateway.LambdaProxyIntegration({
+      integration: new LambdaProxyIntegration({
         handler: confirmLambda,
       }),
     })
@@ -213,7 +214,7 @@ export class TentCampAuthStack extends cdk.Stack {
     tentCampAuthApi.addRoutes({
       path: "/access",
       methods: [apiGateway.HttpMethod.GET],
-      integration: new apiGateway.LambdaProxyIntegration({
+      integration: new LambdaProxyIntegration({
         handler: accessLambda,
       }),
     })
@@ -221,7 +222,7 @@ export class TentCampAuthStack extends cdk.Stack {
     tentCampAuthApi.addRoutes({
       path: "/profile",
       methods: [apiGateway.HttpMethod.GET],
-      integration: new apiGateway.LambdaProxyIntegration({
+      integration: new LambdaProxyIntegration({
         handler: profileLambda,
       }),
     })
@@ -229,7 +230,7 @@ export class TentCampAuthStack extends cdk.Stack {
     tentCampAuthApi.addRoutes({
       path: "/email/change",
       methods: [apiGateway.HttpMethod.POST],
-      integration: new apiGateway.LambdaProxyIntegration({
+      integration: new LambdaProxyIntegration({
         handler: changeEmailLambda,
       }),
     })
@@ -237,7 +238,7 @@ export class TentCampAuthStack extends cdk.Stack {
     tentCampAuthApi.addRoutes({
       path: "/email/confirm",
       methods: [apiGateway.HttpMethod.POST],
-      integration: new apiGateway.LambdaProxyIntegration({
+      integration: new LambdaProxyIntegration({
         handler: confirmNewEmailLambda,
       }),
     })

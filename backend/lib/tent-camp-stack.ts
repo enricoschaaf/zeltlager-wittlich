@@ -1,4 +1,5 @@
 import * as apiGateway from "@aws-cdk/aws-apigatewayv2"
+import { LambdaProxyIntegration } from "@aws-cdk/aws-apigatewayv2-integrations"
 import * as dynamo from "@aws-cdk/aws-dynamodb"
 import { StreamViewType } from "@aws-cdk/aws-dynamodb"
 import * as iam from "@aws-cdk/aws-iam"
@@ -112,7 +113,7 @@ export class TentCampStack extends cdk.Stack {
     tentCampApi.addRoutes({
       path: "/register",
       methods: [apiGateway.HttpMethod.POST],
-      integration: new apiGateway.LambdaProxyIntegration({
+      integration: new LambdaProxyIntegration({
         handler: registerLambda,
       }),
     })
