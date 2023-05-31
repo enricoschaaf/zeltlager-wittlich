@@ -1,0 +1,250 @@
+Resources:
+  tentCampTable836CE828:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: TentCampStack/tentCampTable/Resource
+  dynamoStreamLambdaServiceRoleC4C1E26E:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: TentCampStack/dynamoStreamLambda/ServiceRole/Resource
+  dynamoStreamLambdaServiceRoleDefaultPolicy3837B766:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: dynamodb:ListStreams
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - dynamodb:DescribeStream
+              - dynamodb:GetRecords
+              - dynamodb:GetShardIterator
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - tentCampTable836CE828
+                - StreamArn
+        Version: "2012-10-17"
+      PolicyName: dynamoStreamLambdaServiceRoleDefaultPolicy3837B766
+      Roles:
+        - Ref: dynamoStreamLambdaServiceRoleC4C1E26E
+    Metadata:
+      aws:cdk:path: TentCampStack/dynamoStreamLambda/ServiceRole/DefaultPolicy/Resource
+  dynamoStreamLambda6248B644:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters4d280a43332770669ade250a26fb417caf008fa919e10aba8131a31edfb2042fS3BucketE3D7FBD8
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters4d280a43332770669ade250a26fb417caf008fa919e10aba8131a31edfb2042fS3VersionKeyF4E39407
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters4d280a43332770669ade250a26fb417caf008fa919e10aba8131a31edfb2042fS3VersionKeyF4E39407
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+          - dynamoStreamLambdaServiceRoleC4C1E26E
+          - Arn
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          GOOGLE_CLIENT_EMAIL: zeltlager@zeltlager.iam.gserviceaccount.com
+          GOOGLE_PRIVATE_KEY: -----BEGIN PRIVATE KEY----- MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDh2r9S/UKJaDHt LZCMcmKjWbLR5fEoLIw3NF4DK7Ff2+owuh3WgoXfCIkGQDkqVtAWZWpbmFBAcI45 scm7S1O6mdGtIBfOnSboUF4QYN94I2KI/S+nTOg7qbSGLyB8zqMf6HFBaiTZbpWy j20yeRkBr/UQXNqeqXbo4PUuyJuiV/GDOY1x+XkYZuBqInX4X5BCjTDqky1DyBaF xdX2LUJyxWHPlTVOUsv8+gCOo3mACIR+qbeXJwhdBtAPLep0z+/h04KKXqy/JJQ5 T3hWnTjspWSdWiwNhASUhpDydeFvL3rNu1vwYFwxcteyVlKf6xztqsHPLMruZWoh u++/XHh7AgMBAAECggEADn+LTpmBXu64XcBSCiIBoPjOGNlI7MpHSffrnQp9/WhR lUUtSyrfyxxyJ1uSD9y4yOdDt5OEe05+Yse96m8AdfcP1aw8uv+tkrYuA6EkV0L2 PVL7byLpuYLAWujFjh15rT+vnYJh0S9fHrJEUTwi1c/kzGMZiZvZTUO7mYA5NWeO 8yxEIEcKH8M+s1Vjz2Etq0Eh1KYePrFk3a8N3ooMoealUcqCHg4Req/zq9PMUWQR /xelFTZbY2bhi7XqLMCPIgUHQIvXP8tdbIW6nsj+1L494+1OlAFl5RrlXt3Dah8d WklZNjgMUmkKo9riy4Lal2eHlWEc935zwSuluarXcQKBgQDxqhwcyURhIbth3QKM LA+CmTLf5nByeD0GvQk2OmFNTN8gV68eQhYGYkdkoUQ0YDgG/CNyZyhKbLQ8GE+D g2+DC6t2C2PFTCebFL2X2a4a2TYVNueHQUI92sgDhGIHdLXGoPHIzxK6Wh6XIBZA 0PjNytncvbN491HIUfhIttcnowKBgQDvQIxp/kD3LUqm+2GQDpSB+3Pt9s/6lBGw 2hWN7dI2/edG24W1KklV5ZQ4/zvYjf3sIIPyf+0uKaC2vC4vSNXvcsbqBPffvkjH vR0n9OUKIflIFnpHvNzzyRdtQRm8p78qsC7M52sNF+5DUN1E1pMCoXCB8pR/3uSz a6PVcYPZSQKBgD8C29GlqO6qnPEnb0KdOm4TA/DdZPRz5XWcVIqPLk+5e3QzaLW7 BYMknPjgE6iUbgdkNtndi+Pb9CK3NARWgPzqTgq5bYpEEQ+emNC/MWZOvItLhZL+ sQbvxLcmDWlkRQFFdcWmOHveg5tkAmlkE3uVKLklvWYNFoXk2ZgcFH2BAoGBAKdT wqBitPbqUzqjt2E0AUNDJJo6Mszyf8jrTYXc3VeejgDtiP7iWzXbAaY3Q5i5/ewF 9aJFPBE8Be2ngLmLPCxiXqHO5bky8N3Y8qo+SW2jwx9asRy5BuLtMhg0HpblzvpB DAo8k48tvHKR/J6nX1vIotIPYTJpJhQh5Qxjfq4ZAoGAKPSN0Oqks/0rA/2OIDYt HGTuFflI7++do1HBb2b9UnfWiELYi5+w1gOoKLq6zslk98Tysxvu2ENWqDNFbU2O aiKBPKWXImbobj7Tg9lo0BZGyzIL8Kv52FngCrAit5Ikk8yy2oZpjbPugI8/enUv KuF5LEtF3EUS8JXhVY+j284= -----END PRIVATE KEY-----
+          GOOGLE_SHEET_ID: 1RDr4ejwxHzwNtz--BFl5chug3SrmcVUQ5vcU96Lhrjc
+          YEAR: "2022"
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      MemorySize: 1024
+      Timeout: 10
+    DependsOn:
+      - dynamoStreamLambdaServiceRoleDefaultPolicy3837B766
+      - dynamoStreamLambdaServiceRoleC4C1E26E
+    Metadata:
+      aws:cdk:path: TentCampStack/dynamoStreamLambda/Resource
+      aws:asset:path: /home/enrico/projects/zeltlager-wittlich/backend/cdk.out/asset.4d280a43332770669ade250a26fb417caf008fa919e10aba8131a31edfb2042f
+      aws:asset:property: Code
+  dynamoStreamLambdaDynamoDBEventSourceTentCampStacktentCampTable2D6DCF6CCF43F713:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      EventSourceArn:
+        Fn::GetAtt:
+          - tentCampTable836CE828
+          - StreamArn
+      FunctionName:
+        Ref: dynamoStreamLambda6248B644
+      BatchSize: 100
+      StartingPosition: TRIM_HORIZON
+    Metadata:
+      aws:cdk:path: TentCampStack/dynamoStreamLambda/DynamoDBEventSource:TentCampStacktentCampTable2D6DCF6C/Resource
+  registerLambdaServiceRole9DE496C5:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: TentCampStack/registerLambda/ServiceRole/Resource
+  registerLambdaServiceRoleDefaultPolicyD21FA372:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: ses:SendTemplatedEmail
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - tentCampTable836CE828
+                  - Arn
+              - Ref: AWS::NoValue
+          - Action:
+              - dynamodb:Query
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+            Effect: Allow
+            Resource:
+              - arn:aws:dynamodb:eu-central-1:411166291189:table/TentCampAuthStack-tentCampAuthTable8D573192-VF1MK5TUA5AP
+              - Ref: AWS::NoValue
+        Version: "2012-10-17"
+      PolicyName: registerLambdaServiceRoleDefaultPolicyD21FA372
+      Roles:
+        - Ref: registerLambdaServiceRole9DE496C5
+    Metadata:
+      aws:cdk:path: TentCampStack/registerLambda/ServiceRole/DefaultPolicy/Resource
+  registerLambda2E88F6E1:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters80cbf4510816ded3597941babb7beee7527c49ff2572e22f8c44602f12ef0844S3BucketD21446C3
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters80cbf4510816ded3597941babb7beee7527c49ff2572e22f8c44602f12ef0844S3VersionKeyFE905823
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters80cbf4510816ded3597941babb7beee7527c49ff2572e22f8c44602f12ef0844S3VersionKeyFE905823
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+          - registerLambdaServiceRole9DE496C5
+          - Arn
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: tentCampTable836CE828
+          AUTH_TABLE_NAME: TentCampAuthStack-tentCampAuthTable8D573192-VF1MK5TUA5AP
+          YEAR: "2022"
+          MAX_PARTICIPANTS: "64"
+          BASE_URL: zeltlager-wittlich.de
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      MemorySize: 1024
+    DependsOn:
+      - registerLambdaServiceRoleDefaultPolicyD21FA372
+      - registerLambdaServiceRole9DE496C5
+    Metadata:
+      aws:cdk:path: TentCampStack/registerLambda/Resource
+      aws:asset:path: /home/enrico/projects/zeltlager-wittlich/backend/cdk.out/asset.80cbf4510816ded3597941babb7beee7527c49ff2572e22f8c44602f12ef0844
+      aws:asset:property: Code
+  tentCampApiC72CEE13:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: tentCampApi
+      ProtocolType: HTTP
+    Metadata:
+      aws:cdk:path: TentCampStack/tentCampApi/Resource
+  tentCampApiDefaultStage70DFBC85:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId:
+        Ref: tentCampApiC72CEE13
+      StageName: $default
+      AutoDeploy: true
+    Metadata:
+      aws:cdk:path: TentCampStack/tentCampApi/DefaultStage/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=1.139.0,@aws-cdk/assets=1.77.0,@aws-cdk/aws-apigateway=1.77.0,@aws-cdk/aws-apigatewayv2=1.77.0,@aws-cdk/aws-applicationautoscaling=1.77.0,@aws-cdk/aws-autoscaling-common=1.77.0,@aws-cdk/aws-cloudwatch=1.77.0,@aws-cdk/aws-codeguruprofiler=1.77.0,@aws-cdk/aws-dynamodb=1.77.0,@aws-cdk/aws-ec2=1.77.0,@aws-cdk/aws-ecr=1.77.0,@aws-cdk/aws-ecr-assets=1.77.0,@aws-cdk/aws-events=1.77.0,@aws-cdk/aws-iam=1.77.0,@aws-cdk/aws-kms=1.77.0,@aws-cdk/aws-lambda=1.77.0,@aws-cdk/aws-lambda-event-sources=1.77.0,@aws-cdk/aws-lambda-nodejs=1.77.0,@aws-cdk/aws-logs=1.77.0,@aws-cdk/aws-s3=1.77.0,@aws-cdk/aws-s3-assets=1.77.0,@aws-cdk/aws-s3-notifications=1.77.0,@aws-cdk/aws-sns=1.77.0,@aws-cdk/aws-sns-subscriptions=1.77.0,@aws-cdk/aws-sqs=1.77.0,@aws-cdk/aws-ssm=1.77.0,@aws-cdk/cloud-assembly-schema=1.77.0,@aws-cdk/core=1.77.0,@aws-cdk/custom-resources=1.77.0,@aws-cdk/cx-api=1.77.0,@aws-cdk/region-info=1.77.0,jsii-runtime=node.js/v17.3.0
+    Metadata:
+      aws:cdk:path: TentCampStack/CDKMetadata/Default
+Parameters:
+  AssetParameters4d280a43332770669ade250a26fb417caf008fa919e10aba8131a31edfb2042fS3BucketE3D7FBD8:
+    Type: String
+    Description: S3 bucket for asset "4d280a43332770669ade250a26fb417caf008fa919e10aba8131a31edfb2042f"
+  AssetParameters4d280a43332770669ade250a26fb417caf008fa919e10aba8131a31edfb2042fS3VersionKeyF4E39407:
+    Type: String
+    Description: S3 key for asset version "4d280a43332770669ade250a26fb417caf008fa919e10aba8131a31edfb2042f"
+  AssetParameters4d280a43332770669ade250a26fb417caf008fa919e10aba8131a31edfb2042fArtifactHash780515D3:
+    Type: String
+    Description: Artifact hash for asset "4d280a43332770669ade250a26fb417caf008fa919e10aba8131a31edfb2042f"
+  AssetParameters80cbf4510816ded3597941babb7beee7527c49ff2572e22f8c44602f12ef0844S3BucketD21446C3:
+    Type: String
+    Description: S3 bucket for asset "80cbf4510816ded3597941babb7beee7527c49ff2572e22f8c44602f12ef0844"
+  AssetParameters80cbf4510816ded3597941babb7beee7527c49ff2572e22f8c44602f12ef0844S3VersionKeyFE905823:
+    Type: String
+    Description: S3 key for asset version "80cbf4510816ded3597941babb7beee7527c49ff2572e22f8c44602f12ef0844"
+  AssetParameters80cbf4510816ded3597941babb7beee7527c49ff2572e22f8c44602f12ef0844ArtifactHashC0163104:
+    Type: String
+    Description: Artifact hash for asset "80cbf4510816ded3597941babb7beee7527c49ff2572e22f8c44602f12ef0844"
+

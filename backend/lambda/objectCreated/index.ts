@@ -78,11 +78,8 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
     })
     .promise()
 
-  const [
-    { contentType, width, height },
-    { caption },
-    { FaceRecords },
-  ] = await Promise.all([getMetadata, getCaption, getFaces])
+  const [{ contentType, width, height }, { caption }, { FaceRecords }] =
+    await Promise.all([getMetadata, getCaption, getFaces])
 
   await dynamo
     .put({

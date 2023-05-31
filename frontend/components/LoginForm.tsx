@@ -20,7 +20,7 @@ async function refreshQuery(tokenId: string) {
     const { data } = await axios.get("/api/auth/refresh/" + tokenId)
     return data
   } catch (err) {
-    if (err.response.status) return { expired: true }
+    if ((err as any).response.status) return { expired: true }
   }
 }
 
@@ -71,7 +71,7 @@ export const LoginForm = () => {
   return (
     <>
       <form
-        className="grid gap-4 w-full max-w-sm"
+        className="grid w-full max-w-sm gap-4"
         onSubmit={handleSubmit(onSubmit)}
       >
         <Input
@@ -92,7 +92,7 @@ export const LoginForm = () => {
         <Button type="submit" disabled={isLoading}>
           {isLoading ? (
             <svg
-              className="animate-spin -mr-1 ml-3 h-5 w-5 text-white"
+              className="w-5 h-5 ml-3 -mr-1 text-white animate-spin"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -121,11 +121,11 @@ export const LoginForm = () => {
             {refreshData?.expired ? (
               <>
                 <div>
-                  <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+                  <div className="flex items-center justify-center w-12 h-12 mx-auto bg-yellow-100 rounded-full">
                     <svg
                       viewBox="0 0 20 20"
                       fill="currentColor"
-                      className="text-yellow-600 w-6 h-6"
+                      className="w-6 h-6 text-yellow-600"
                     >
                       <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                       <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
@@ -133,7 +133,7 @@ export const LoginForm = () => {
                   </div>
                   <div className="mt-3 text-center sm:mt-5">
                     <h3
-                      className="text-lg leading-6 font-medium text-gray-900"
+                      className="text-lg font-medium leading-6 text-gray-900"
                       id="modal-headline"
                     >
                       Magischer Link abgelaufen
@@ -141,7 +141,7 @@ export const LoginForm = () => {
                     <div className="mt-2">
                       <p className="text-sm leading-5 text-gray-500">
                         Wir senden Ihnen einen neuen magischen Link an{" "}
-                        <b className="text-indigo-600">{email}</b>. Klicken Sie
+                        <b className="text-emerald-600">{email}</b>. Klicken Sie
                         diesen um sich anzumelden.
                       </p>
                     </div>
@@ -152,19 +152,19 @@ export const LoginForm = () => {
                     <button
                       type="button"
                       onClick={() => mutate(email)}
-                      className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                      className="inline-flex justify-center w-full px-4 py-2 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-emerald-600 border border-transparent rounded-md shadow-sm hover:bg-emerald-500 focus:outline-none focus:border-emerald-700 focus:shadow-outline-emerald sm:text-sm sm:leading-5"
                     >
                       Erneut senden
                     </button>
                   </span>
-                  <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:col-start-1">
+                  <span className="flex w-full mt-3 rounded-md shadow-sm sm:mt-0 sm:col-start-1">
                     <button
                       type="button"
                       onClick={() => {
                         setInterval(undefined)
                         setModal("closed")
                       }}
-                      className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                      className="inline-flex justify-center w-full px-4 py-2 text-base font-medium leading-6 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue sm:text-sm sm:leading-5"
                     >
                       Abbrechen
                     </button>
@@ -174,11 +174,11 @@ export const LoginForm = () => {
             ) : (
               <>
                 <div>
-                  <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100">
+                  <div className="flex items-center justify-center w-12 h-12 mx-auto bg-emerald-100 rounded-full">
                     <svg
                       viewBox="0 0 20 20"
                       fill="currentColor"
-                      className="text-indigo-600 w-6 h-6"
+                      className="w-6 h-6 text-emerald-600"
                     >
                       <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                       <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
@@ -186,7 +186,7 @@ export const LoginForm = () => {
                   </div>
                   <div className="mt-3 text-center sm:mt-5">
                     <h3
-                      className="text-lg leading-6 font-medium text-gray-900"
+                      className="text-lg font-medium leading-6 text-gray-900"
                       id="modal-headline"
                     >
                       Bestätigen Sie Ihre Email
@@ -194,7 +194,7 @@ export const LoginForm = () => {
                     <div className="mt-2">
                       <p className="text-sm leading-5 text-gray-500">
                         Wir haben Ihnen einen magischen Link an{" "}
-                        <b className="text-indigo-600">{email}</b> gesendet.
+                        <b className="text-emerald-600">{email}</b> gesendet.
                         Klicken Sie diesen um sich anzumelden.
                       </p>
                     </div>
@@ -208,7 +208,7 @@ export const LoginForm = () => {
                         setInterval(undefined)
                         setModal("closed")
                       }}
-                      className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                      className="inline-flex justify-center w-full px-4 py-2 text-base font-medium leading-6 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue sm:text-sm sm:leading-5"
                     >
                       Abbrechen
                     </button>

@@ -1,9 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const defaultTheme = require("tailwindcss/defaultTheme")
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   future: "all",
-  purge: ["{components,layouts,pages,tailwindcss}/**/*.{js,jsx,ts,tsx}"],
+  content: ["{components,layouts,pages,tailwindcss}/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       fontFamily: {
@@ -12,5 +13,5 @@ module.exports = {
     },
   },
   variants: {},
-  plugins: [require("@tailwindcss/ui")],
+  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
 }

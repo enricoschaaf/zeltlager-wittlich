@@ -14,7 +14,7 @@ export const Checkbox = ({
         id={name}
         name={name}
         type="checkbox"
-        className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+        className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
         ref={register}
         {...props}
       />
@@ -23,7 +23,7 @@ export const Checkbox = ({
       <label htmlFor={name} className="font-medium text-gray-700">
         {label}
       </label>
-      <p className="text-gray-500">{description}</p>
+      {description && <p className="text-gray-500">{description}</p>}
     </div>
   </div>
 )
@@ -34,6 +34,6 @@ interface CheckboxProps
     HTMLInputElement
   > {
   label: string
-  description: string
+  description?: string
   register: any
 }

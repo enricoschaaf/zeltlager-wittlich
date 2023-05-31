@@ -3,7 +3,7 @@ import { AnimatePresence } from "framer-motion"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useMutation } from "react-query"
-import { Button, Checkbox, Input, Modal, Radio } from "tailwindcss/ui"
+import { Button, Checkbox, Input, Modal, Radio, Dropdown } from "tailwindcss/ui"
 import { Textarea } from "tailwindcss/ui/Textarea"
 import { emailRegex, postalCodeRegex } from "utils/regex"
 
@@ -22,7 +22,7 @@ export const RegistrationForm = () => {
   })
 
   async function onSubmit(data: FormData) {
-    const { status } = await mutate(data)
+    const { status } = await mutate({ ...data, acceptTerms: undefined })
     setStatus(status)
   }
 
@@ -35,266 +35,261 @@ export const RegistrationForm = () => {
     <>
       <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Benötigte Informationen
-                </h3>
-                <p className="mt-1 text-sm leading-5 text-gray-600">
-                  Diese Informationen sind benötigt um die Anmeldung erfolgreich
-                  abzuschließen.
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 md:mt-0 md:col-span-2">
-              <div className="shadow sm:rounded-md sm:overflow-hidden">
-                <div className="px-4 py-5 bg-white sm:p-6">
-                  <div className="grid grid-cols-6 gap-6">
-                    <Input
-                      name="firstName"
-                      label="Vorname"
-                      className="col-span-6 sm:col-span-3"
-                      autoComplete="given-name"
-                      errors={errors}
-                      register={register({
-                        required:
-                          "Bitte geben Sie den Vornamen Ihres Kindes an.",
-                      })}
-                    />
-                    <Input
-                      name="lastName"
-                      label="Nachname"
-                      className="col-span-6 sm:col-span-3"
-                      autoComplete="family-name"
-                      errors={errors}
-                      register={register({
-                        required:
-                          "Bitte geben Sie den Nachnamen Ihres Kindes an.",
-                      })}
-                    />
-                    <Input
-                      name="birthDate"
-                      label="Geburtsdatum"
-                      className="col-span-6 sm:col-span-2"
-                      autoComplete="bday"
-                      errors={errors}
-                      register={register({
-                        required:
-                          "Bitte geben Sie das Geburtsdatum Ihres Kindes an.",
-                        validate: (value) => {
-                          const [day, month, year] = value.split(".")
-                          if (
-                            isNaN(new Date(`${month}/${day}/${year}`).getTime())
-                          ) {
-                            return "Das angegebene Geburtsdatum hat nicht das richtige Format."
-                          }
-                        },
-                      })}
-                    />
-                    <Input
-                      name="streetAddress"
-                      label="Straße und Hausnummer"
-                      className="col-span-6 sm:col-span-4"
-                      autoComplete="address-line1"
-                      errors={errors}
-                      register={register({
-                        required:
-                          "Bitte geben Sie Ihre Straße und Hausnummer an.",
-                      })}
-                    />
-                    <Input
-                      name="postalCode"
-                      label="PLZ"
-                      className="col-span-6 sm:col-span-2"
-                      inputMode="decimal"
-                      autoComplete="postal-code"
-                      errors={errors}
-                      register={register({
-                        required: "Bitte geben Sie Ihre Postleitzahl an.",
-                        pattern: {
-                          value: postalCodeRegex,
-                          message:
-                            "Ihre Postleitzahl hat nicht das richtige Format.",
-                        },
-                      })}
-                    />
-                    <Input
-                      name="city"
-                      label="Stadt"
-                      className="col-span-6 sm:col-span-4"
-                      autoComplete="address-level2"
-                      errors={errors}
-                      register={register({
-                        required: "Bitte geben Sie Ihre Stadt an.",
-                      })}
-                    />
-                    <Input
-                      name="mobile"
-                      label="Handy"
-                      className="col-span-6 sm:col-span-3"
-                      inputMode="tel"
-                      autoComplete="tel-national"
-                      errors={errors}
-                      register={register({
-                        required: "Bitte geben Sie Ihre Handynummer an.",
-                      })}
-                    />
-                    <Input
-                      name="email"
-                      label="Email"
-                      className="col-span-6 sm:col-span-3"
-                      inputMode="email"
-                      autoComplete="email"
-                      errors={errors}
-                      register={register({
-                        required: "Bitte geben Sie Ihre Email Ad­res­se an.",
-                        pattern: {
-                          value: emailRegex,
-                          message:
-                            "Ihre Email Ad­res­se hat nicht das richtige Format.",
-                        },
-                      })}
-                    />
-                    <fieldset className="col-span-6">
-                      <legend className="text-base font-medium text-gray-900">
-                        Essensgewohnheiten
-                      </legend>
-                      <div className="grid grid-flow-row sm:grid-flow-col gap-4 sm:gap-6 mt-2 sm:mt-3">
-                        <Radio
-                          name="eatingHabits"
-                          id="none"
-                          label="Keine"
-                          register={register()}
-                          checked
-                        />
-                        <Radio
-                          name="eatingHabits"
-                          id="vegetarian"
-                          label="Vegetarisch"
-                          register={register()}
-                        />
-                        <Radio
-                          name="eatingHabits"
-                          id="vegan"
-                          label="Vegan"
-                          register={register()}
-                        />
-                      </div>
-                    </fieldset>
-                    <Textarea
-                      label="Lebensmittelunterträglichkeiten"
-                      description="Bitte listen Sie die Lebensmittelunterträglichkeiten Ihres Kindes."
-                      name="foodIntolerances"
-                      className="col-span-6"
-                      register={register()}
-                    />
-                    <Checkbox
-                      name="canSwim"
-                      label="Schwimmen"
-                      description="Unser Kind ist Schwimmer/in und kann ohne Aufsicht schwimmen."
-                      className="col-span-6"
-                      register={register()}
-                    />
-                    <Checkbox
-                      name="supervision"
-                      label="Aufsicht"
-                      description="Unser Kind darf mit der Gruppe in abgesprochenen Zeiträumen einige Stunden zur freien Verfügung haben, in denen er/sie ohne Aufsicht ist."
-                      className="col-span-6"
-                      register={register()}
-                    />
-                  </div>
+          <div className="mt-5">
+            <div className="shadow sm:rounded-md sm:overflow-hidden">
+              <div className="px-4 py-5 bg-white sm:p-6">
+                <div className="grid grid-cols-12 gap-6">
+                  <Input
+                    name="firstName"
+                    label="Vorname"
+                    className="col-span-5"
+                    autoComplete="given-name"
+                    errors={errors}
+                    register={register({
+                      required: "Bitte geben Sie den Vornamen Ihres Kindes an.",
+                    })}
+                  />
+                  <Input
+                    name="lastName"
+                    label="Nachname"
+                    className="col-span-5"
+                    autoComplete="family-name"
+                    errors={errors}
+                    register={register({
+                      required:
+                        "Bitte geben Sie den Nachnamen Ihres Kindes an.",
+                    })}
+                  />
+                  <Dropdown
+                    name="gender"
+                    label="Geschlecht"
+                    className="col-span-2"
+                    register={register({
+                      required:
+                        "Bitte geben Sie das Geschlect Ihres Kindes an.",
+                    })}
+                  />
+                  <Input
+                    name="birthDate"
+                    label="Geburtsdatum"
+                    className="col-span-12 sm:col-span-4"
+                    autoComplete="bday"
+                    errors={errors}
+                    register={register({
+                      required:
+                        "Bitte geben Sie das Geburtsdatum Ihres Kindes an.",
+                      validate: (value) => {
+                        const [day, month, year] = value.split(".")
+                        if (
+                          isNaN(new Date(`${month}/${day}/${year}`).getTime())
+                        ) {
+                          return "Das angegebene Geburtsdatum hat nicht das richtige Format."
+                        }
+                      },
+                    })}
+                  />
+                  <Input
+                    name="streetAddress"
+                    label="Straße und Hausnummer"
+                    className="col-span-12 sm:col-span-8"
+                    autoComplete="address-line1"
+                    errors={errors}
+                    register={register({
+                      required:
+                        "Bitte geben Sie Ihre Straße und Hausnummer an.",
+                    })}
+                  />
+                  <Input
+                    name="postalCode"
+                    label="PLZ"
+                    className="col-span-12 sm:col-span-6"
+                    inputMode="decimal"
+                    autoComplete="postal-code"
+                    errors={errors}
+                    register={register({
+                      required: "Bitte geben Sie Ihre Postleitzahl an.",
+                      pattern: {
+                        value: postalCodeRegex,
+                        message:
+                          "Ihre Postleitzahl hat nicht das richtige Format.",
+                      },
+                    })}
+                  />
+                  <Input
+                    name="city"
+                    label="Stadt"
+                    className="col-span-12 sm:col-span-6"
+                    autoComplete="address-level2"
+                    errors={errors}
+                    register={register({
+                      required: "Bitte geben Sie Ihre Stadt an.",
+                    })}
+                  />
+                  <Input
+                    name="mobile"
+                    label="Handy"
+                    className="col-span-12 sm:col-span-6"
+                    inputMode="tel"
+                    autoComplete="tel-national"
+                    errors={errors}
+                    register={register({
+                      required: "Bitte geben Sie Ihre Handynummer an.",
+                    })}
+                  />
+                  <Input
+                    name="email"
+                    label="Email"
+                    className="col-span-12 sm:col-span-6"
+                    inputMode="email"
+                    autoComplete="email"
+                    errors={errors}
+                    register={register({
+                      required: "Bitte geben Sie Ihre Email Ad­res­se an.",
+                      pattern: {
+                        value: emailRegex,
+                        message:
+                          "Ihre Email Ad­res­se hat nicht das richtige Format.",
+                      },
+                    })}
+                  />
+                  <fieldset className="col-span-6">
+                    <legend className="text-base font-medium text-gray-900">
+                      Essensgewohnheiten
+                    </legend>
+                    <div className="grid grid-flow-row gap-4 mt-2 sm:grid-flow-col sm:gap-12 sm:mt-6">
+                      <Radio
+                        name="eatingHabits"
+                        id="none"
+                        label="Keine"
+                        register={register()}
+                        defaultChecked
+                      />
+                      <Radio
+                        name="eatingHabits"
+                        id="vegetarian"
+                        label="Vegetarisch"
+                        register={register()}
+                      />
+                      <Radio
+                        name="eatingHabits"
+                        id="vegan"
+                        label="Vegan"
+                        register={register()}
+                      />
+                    </div>
+                  </fieldset>
+                  <Textarea
+                    label="Lebensmittelunterträglichkeiten"
+                    description="Bitte listen Sie die Lebensmittelunterträglichkeiten Ihres Kindes."
+                    name="foodIntolerances"
+                    className="col-span-12"
+                    register={register()}
+                  />
+                  <Checkbox
+                    name="canSwim"
+                    label="Schwimmen"
+                    description="Unser Kind ist Schwimmer/in und kann ohne Aufsicht schwimmen."
+                    className="col-span-12"
+                    register={register()}
+                  />
+                  <Checkbox
+                    name="supervision"
+                    label="Aufsicht"
+                    description="Unser Kind darf mit der Gruppe in abgesprochenen Zeiträumen einige Stunden zur freien Verfügung haben, in denen er/sie ohne Aufsicht ist."
+                    className="col-span-12"
+                    register={register()}
+                  />
+                  <Textarea
+                    label="Krankheiten"
+                    description="Bitte listen Sie die Krankheiten Ihres Kindes auf."
+                    name="diseases"
+                    className="col-span-12"
+                    register={register()}
+                  />
+                  <Textarea
+                    label="Allergien"
+                    description="Bitte listen Sie die Allergien Ihres Kindes auf."
+                    name="allergies"
+                    className="col-span-12"
+                    register={register()}
+                  />
+                  <Textarea
+                    label="Medikamente"
+                    description="Bitte listen Sie die Medikamente auf, die ihr Kind einnehmen muss."
+                    name="medication"
+                    className="col-span-12"
+                    register={register()}
+                  />
+                  <Input
+                    name="familyDoctorName"
+                    label="Name des Hausarztes"
+                    className="col-span-12 sm:col-span-6"
+                    autoComplete="nope"
+                    errors={errors}
+                    register={register({
+                      required:
+                        "Bitte geben Sie den Namen des Hausarztes ihres Kindes an.",
+                    })}
+                  />
+                  <Input
+                    name="familyDoctorPhone"
+                    label="Telefonnummer des Hausarztes"
+                    className="col-span-12 sm:col-span-6"
+                    inputMode="tel"
+                    autoComplete="nope"
+                    errors={errors}
+                    register={register({
+                      required:
+                        "Bitte geben Sie die Telefonummer des Hausarztes ihres Kindes an.",
+                    })}
+                  />
+                  <Input
+                    name="healthInsurance"
+                    label="Unser Kind ist bei folgender Krankenkasse versichert"
+                    className="col-span-12"
+                    autoComplete="nope"
+                    errors={errors}
+                    register={register({
+                      required:
+                        "Bitte geben Sie die Krankenkasse Ihres Kindes an.",
+                    })}
+                  />
+                  <Input
+                    name="groupWith"
+                    label="Unser Kind möchte mit diesen Kindern in eine Gruppe"
+                    description="Wir werden versuchen dies zu berücksichtigen."
+                    className="col-span-12"
+                    autoComplete="nope"
+                    errors={errors}
+                    register={register()}
+                  />
+                  <Checkbox
+                    name="acceptTerms"
+                    label="Hiermit melde ich mein Kind für das Zeltlager 2023 an und bestätige ich, dass die von mir gemachten Angaben korrekt sind."
+                    className="col-span-12"
+                    register={register({ required: true })}
+                  />
+                  <Checkbox
+                    name="kjgMember"
+                    label="KjG - Mitglied"
+                    className="col-span-12"
+                    register={register()}
+                  />
+                  <div className="grid grid-cols-6 gap-6"></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div className="hidden sm:block">
-          <div className="py-5">
-            <div className="border-t border-gray-200"></div>
-          </div>
-        </div>
-
-        <div className="mt-10 sm:mt-0">
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Weitere Informationen
-                </h3>
-                <p className="mt-1 text-sm leading-5 text-gray-600">
-                  Diese Informationen sind optional, Sie können Sie entweder
-                  jetzt angeben oder später in analoger Form mit dem
-                  Elternbrief.
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 md:mt-0 md:col-span-2">
-              <div className="shadow overflow-hidden sm:rounded-md">
-                <div className="px-4 py-5 bg-white sm:p-6">
-                  <div className="grid grid-cols-6 gap-6">
-                    <Textarea
-                      label="Krankheiten"
-                      description="Bitte listen Sie die Krankheiten Ihres Kindes auf."
-                      name="diseases"
-                      className="col-span-6"
-                      register={register()}
-                    />
-                    <Textarea
-                      label="Allergien"
-                      description="Bitte listen Sie die Allergien Ihres Kindes auf."
-                      name="allergies"
-                      className="col-span-6"
-                      register={register()}
-                    />
-                    <Textarea
-                      label="Medikamente"
-                      description="Bitte listen Sie die Medikamente auf, die ihr Kind einnehmen muss."
-                      name="medication"
-                      className="col-span-6"
-                      register={register()}
-                    />
-                    <Input
-                      name="familyDoctorName"
-                      label="Name des Hausarztes"
-                      className="col-span-6 sm:col-span-3"
-                      autoComplete="nope"
-                      errors={errors}
-                      register={register()}
-                    />
-                    <Input
-                      name="familyDoctorPhone"
-                      label="Telefonnummer des Hausarztes"
-                      className="col-span-6 sm:col-span-3"
-                      inputMode="tel"
-                      autoComplete="nope"
-                      errors={errors}
-                      register={register()}
-                    />
-                    <Input
-                      name="healthInsurance"
-                      label="Unser Kind ist bei folgender Krankenkasse versichert"
-                      className="col-span-6"
-                      autoComplete="nope"
-                      errors={errors}
-                      register={register()}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <span className="w-full sm:w-32 self-end">
+        <span className="self-end w-full sm:w-32">
           <Button
             type="submit"
-            className="mt-5 px-4 sm:px-0"
+            className="px-4 mt-5 sm:px-0"
             disabled={isLoading}
           >
             {isLoading ? (
               <svg
-                className="animate-spin ml-2 h-5 w-5 text-white"
+                className="w-5 h-5 ml-2 text-white animate-spin"
                 fill="none"
                 viewBox="0 0 24 24"
               >
@@ -354,7 +349,7 @@ export const RegistrationForm = () => {
               </div>
               <div className="mt-3 text-center sm:mt-5">
                 <h3
-                  className="text-lg leading-6 font-medium text-gray-900"
+                  className="text-lg font-medium leading-6 text-gray-900"
                   id="modal-headline"
                 >
                   {status === "success"
@@ -374,7 +369,7 @@ export const RegistrationForm = () => {
               <span className="flex w-full rounded-md shadow-sm">
                 <button
                   onClick={() => setStatus("closed")}
-                  className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                  className="inline-flex justify-center w-full px-4 py-2 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-emerald-600 border border-transparent rounded-md shadow-sm hover:bg-emerald-500 focus:outline-none focus:border-emerald-700 focus:shadow-outline-emerald sm:text-sm sm:leading-5"
                 >
                   Zurück zum Anmelden
                 </button>
@@ -406,4 +401,5 @@ interface FormData {
   postalCode: string
   streetAddress: string
   supervision: boolean
+  groupWith: string
 }

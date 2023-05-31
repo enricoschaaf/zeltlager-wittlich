@@ -6,6 +6,7 @@ export const Input = ({
   className,
   label,
   errors,
+  description,
   ...props
 }: InputProps) => {
   return (
@@ -15,16 +16,17 @@ export const Input = ({
         className={
           typeof label === "object" && label.visibility === "hidden"
             ? "sr-only"
-            : "block text-sm font-medium leading-5 text-gray-700"
+            : "block text-sm font-medium text-warm-gray-900"
         }
       >
         {typeof label === "string" ? label : label.value}
       </label>
-      <div className="mt-1 relative rounded-md shadow-sm">
+      <div className="mt-1">
         <input
+          type="text"
           id={name}
           name={name}
-          className={`form-input py-3 px-4 block w-full transition ease-in-out duration-150${
+          className={`block w-full rounded-md border-gray-300 py-3 px-4 text-gray-900 shadow-sm focus:border-emerald-500 focus:ring-emerald-500${
             errors[name]
               ? " pr-10 border-red-300 placeholder-red-300 text-red-900 focus:border-red-300 focus:shadow-outline-red"
               : ""
@@ -35,9 +37,9 @@ export const Input = ({
           {...props}
         />
         {errors[name] && (
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
             <svg
-              className="h-5 w-5 text-red-500"
+              className="w-5 h-5 text-red-500"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -50,6 +52,11 @@ export const Input = ({
           </div>
         )}
       </div>
+      {description && (
+        <p className="mt-2 text-sm text-gray-500" id="email-description">
+          {description}
+        </p>
+      )}
       {errors[name] && (
         <p className="mt-2 text-sm text-red-600" id={`${name}-error`}>
           {errors[name].message}
@@ -66,6 +73,7 @@ interface InputProps
   > {
   name: string
   label: string | { value: string; visibility: "visible" | "hidden" }
+  description?: string
   register: any
   errors: any
 }

@@ -12,7 +12,7 @@ export const Radio = ({
       id={id}
       value={id}
       type="radio"
-      className="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+      className="form-radio h-4 w-4 text-emerald-600 transition duration-150 ease-in-out"
       ref={register}
       {...props}
     />

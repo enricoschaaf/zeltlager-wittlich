@@ -1,5 +1,5 @@
+import { HttpLambdaIntegration } from "@aws-cdk/aws-apigatewayv2-integrations"
 import * as apiGateway from "@aws-cdk/aws-apigatewayv2"
-import { LambdaProxyIntegration } from "@aws-cdk/aws-apigatewayv2-integrations"
 import * as dynamo from "@aws-cdk/aws-dynamodb"
 import { StreamViewType } from "@aws-cdk/aws-dynamodb"
 import * as iam from "@aws-cdk/aws-iam"
@@ -10,15 +10,16 @@ import * as cdk from "@aws-cdk/core"
 import { config } from "dotenv"
 config()
 
-interface TentCampStackProps extends cdk.StackProps {
-  authTable: dynamo.Table
-}
-
 export class TentCampStack extends cdk.Stack {
   public table: dynamo.Table
-  constructor(scope: cdk.Construct, id: string, props: TentCampStackProps) {
+  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
+    const authTable = dynamo.Table.fromTableArn(
+      this,
+      "authTable",
+      "arn:aws:dynamodb:eu-central-1:411166291189:table/TentCampAuthStack-tentCampAuthTable8D573192-VF1MK5TUA5AP",
+    )
     const tentCampTable = new dynamo.Table(this, "tentCampTable", {
       partitionKey: {
         name: "PK",
@@ -83,39 +84,32 @@ export class TentCampStack extends cdk.Stack {
       memorySize: 1024,
       environment: {
         TABLE_NAME: tentCampTable.tableName,
-        AUTH_TABLE_NAME: props.authTable.tableName,
+        AUTH_TABLE_NAME: authTable.tableName,
         YEAR: process.env.YEAR,
         MAX_PARTICIPANTS: process.env.MAX_PARTICIPANTS,
         BASE_URL: process.env.BASE_URL,
       },
     })
+
     registerLambda.addToRolePolicy(
       new iam.PolicyStatement({
         resources: ["*"],
         actions: ["ses:SendTemplatedEmail"],
       }),
     )
-    tentCampTable.grant(
-      registerLambda,
-      "dynamodb:GetItem",
-      "dynamodb:PutItem",
-      "dynamodb:UpdateItem",
-    )
-    props.authTable.grant(
-      registerLambda,
-      "dynamodb:Query",
-      "dynamodb:PutItem",
-      "dynamodb:UpdateItem",
-    )
+        registerLambda.addToRolePolicy(
+          new iam.PolicyStatement({
+            resources: ["*"],
+            actions: ["dynamodb:*"],
+          }),
+        )
 
     const tentCampApi = new apiGateway.HttpApi(this, "tentCampApi")
 
     tentCampApi.addRoutes({
       path: "/register",
       methods: [apiGateway.HttpMethod.POST],
-      integration: new LambdaProxyIntegration({
-        handler: registerLambda,
-      }),
+      integration: new HttpLambdaIntegration("registerLambda", registerLambda),
     })
   }
 }

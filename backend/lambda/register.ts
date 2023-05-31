@@ -15,6 +15,7 @@ const ses = new SES()
 const schema = z.object({
   firstName: z.string(),
   lastName: z.string(),
+  gender: z.enum(["M", "W", "D"]),
   birthDate: z.string().refine((value) => {
     const [day, month, year] = value.split(".")
     if (new Date(`${month}/${day}/${year}`).getTime()) {
@@ -34,9 +35,11 @@ const schema = z.object({
   diseases: z.string().optional(),
   allergies: z.string().optional(),
   medication: z.string().optional(),
-  familyDoctorName: z.string().optional(),
-  familyDoctorPhone: z.string().optional(),
-  healthInsurance: z.string().optional(),
+  familyDoctorName: z.string(),
+  familyDoctorPhone: z.string(),
+  healthInsurance: z.string(),
+  groupWith: z.string().optional(),
+  kjgMember: z.boolean().optional(),
 })
 
 function parseData(body: string | undefined) {
@@ -46,7 +49,8 @@ function parseData(body: string | undefined) {
     const [day, month, year] = data.birthDate.split(".")
     const birthDate = new Date(`${month}/${day}/${year}`).toISOString()
     return { ...data, birthDate }
-  } catch {
+  } catch (error) {
+    console.log(error)
     return undefined
   }
 }
@@ -87,14 +91,16 @@ const registerHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
 
     const count = Item?.count ?? 0
 
+    const id = nanoid()
+
     let transactItems: any = [
       {
         Put: {
           TableName: tableName,
           Item: {
             PK: `REGISTRATIONS#${year}`,
-            SK: `REGISTRATION#${count + 1}`,
-            id: count + 1,
+            SK: `REGISTRATION#${id}`,
+            id,
             year,
             type: "REGISTRATION",
             ...data,
@@ -177,8 +183,9 @@ const registerHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
               ? "registrationSuccessful"
               : "registrationWaitinglist",
           TemplateData: JSON.stringify({
-            Vorname: data.firstName,
-            Nachname: data.lastName,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            year,
           }),
           Source: `Zeltlager Wittlich <mail@${baseUrl}>`,
         })

@@ -3,7 +3,7 @@ import LogRocket from "logrocket"
 import { NextComponentType } from "next"
 import { AppProps as NextAppProps } from "next/app"
 import { ErrorBoundary } from "react-error-boundary"
-import "../styles/index.css"
+import "styles/index.css"
 
 interface AppProps extends NextAppProps {
   Component: NextComponentType & {

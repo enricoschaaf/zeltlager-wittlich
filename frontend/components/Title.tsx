@@ -1,12 +1,11 @@
 import Head from "next/head"
 
 export const Title = ({ children }: { children?: string }) => {
+  const title = `${children ? `${children} | ` : ""}Zeltlager Wittlich`
+
   return (
     <Head>
-      <title>
-        {children}
-        {children && " | "}Zeltlager Wittlich
-      </title>
+      <title>{title}</title>
     </Head>
   )
 }

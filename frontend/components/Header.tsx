@@ -9,19 +9,17 @@ export const Header = () => {
   const { events } = useRouter()
   events?.on("routeChangeStart", () => setStatus("closed"))
   return (
-    <header className="flex justify-between items-center px-4 py-6 sm:px-6">
+    <header className="flex items-center justify-between px-4 py-6 sm:px-6">
       <Link href="/">
-        <a>
-          <Logo className="h-8 w-auto sm:h-10" />
-        </a>
+        <Logo className="w-auto h-8 sm:h-10" />
       </Link>
-      <div className="-mr-2 -my-2 md:hidden">
+      <div className="-my-2 -mr-2 md:hidden">
         <button
-          className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+          className="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500"
           onClick={() => setStatus("open")}
         >
           <svg
-            className="h-6 w-6"
+            className="w-6 h-6"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -36,29 +34,25 @@ export const Header = () => {
           </svg>
         </button>
       </div>
-      <nav className="hidden md:flex space-x-10 flex-grow justify-center">
-        <Link href="/blog">
-          <a className="text-base leading-6 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150">
-            Blog
-          </a>
-        </Link>
-        <Link href="/fotos">
-          <a className="text-base leading-6 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150">
-            Fotos
-          </a>
-        </Link>{" "}
-        <Link href="/anmelden">
-          <a className="text-base leading-6 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150">
-            Online Anmeldung
-          </a>
-        </Link>
-        <a
-          href="/2021_Ausschreibung_Saarhölzbach.pdf"
-          download="2021_Ausschreibung_Saarhölzbach.pdf"
-          className="text-base leading-6 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150"
+      <nav className="justify-center flex-grow hidden space-x-10 md:flex">
+        {/* <Link
+          href="/blog"
+          className="text-base font-medium leading-6 text-gray-500 transition duration-150 ease-in-out hover:text-gray-900 focus:outline-none focus:text-gray-900"
         >
-          Ausschreibung herunterladen
-        </a>
+          Blog
+        </Link>
+        <Link
+          href="/fotos"
+          className="text-base font-medium leading-6 text-gray-500 transition duration-150 ease-in-out hover:text-gray-900 focus:outline-none focus:text-gray-900"
+        >
+          Fotos
+        </Link> */}
+        <Link
+          href="/anmelden"
+          className="text-base font-medium leading-6 text-gray-500 transition duration-150 ease-in-out hover:text-gray-900 focus:outline-none focus:text-gray-900"
+        >
+          Anmeldung
+        </Link>
       </nav>
       <AnimatePresence>
         {status === "open" && (
@@ -77,26 +71,26 @@ export const Header = () => {
               opacity: 0,
               scale: 0.95,
             }}
-            className="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden z-50"
+            className="absolute inset-x-0 top-0 z-50 p-2 transition origin-top-right transform md:hidden"
           >
             <div className="rounded-lg shadow-md">
               <div
-                className="rounded-lg bg-white shadow-xs overflow-hidden"
+                className="overflow-hidden bg-white rounded-lg shadow-xs"
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="main-menu"
               >
-                <div className="px-5 pt-4 flex items-center justify-between">
-                  <Logo className="h-8 w-auto" />
+                <div className="flex items-center justify-between px-5 pt-4">
+                  <Logo className="w-auto h-8" />
                   <div className="-mr-2">
                     <button
                       type="button"
-                      className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+                      className="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500"
                       aria-label="Close menu"
                       onClick={() => setStatus("closed")}
                     >
                       <svg
-                        className="h-6 w-6"
+                        className="w-6 h-6"
                         stroke="currentColor"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -112,38 +106,27 @@ export const Header = () => {
                   </div>
                 </div>
                 <div className="px-2 pt-2 pb-3">
-                  <Link href="/blog">
-                    <a
-                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out"
-                      role="menuitem"
-                    >
-                      Blog
-                    </a>
-                  </Link>
-                  <Link href="/fotos">
-                    <a
-                      className="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out"
-                      role="menuitem"
-                    >
-                      Fotos
-                    </a>
-                  </Link>
-                  <a
-                    href="/2021_Ausschreibung_Saarhölzbach.pdf"
-                    download="2021_Ausschreibung_Saarhölzbach.pdf"
-                    className="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out"
+                  <Link
+                    href="/blog"
+                    className="block px-3 py-2 text-base font-medium text-gray-700 transition duration-150 ease-in-out rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50"
                     role="menuitem"
                   >
-                    Ausschreibung herunterladen
-                  </a>
+                    Blog
+                  </Link>
+                  <Link
+                    href="/fotos"
+                    className="block px-3 py-2 mt-1 text-base font-medium text-gray-700 transition duration-150 ease-in-out rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50"
+                    role="menuitem"
+                  >
+                    Fotos
+                  </Link>
                 </div>
-                <Link href="/anmelden">
-                  <a
-                    className="block w-full px-5 py-3 text-center font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:bg-gray-100 focus:text-gray-700 transition duration-150 ease-in-out"
-                    role="menuitem"
-                  >
-                    Online Anmeldung
-                  </a>
+                <Link
+                  href="/anmelden"
+                  className="block w-full px-5 py-3 font-medium text-center text-gray-600 transition duration-150 ease-in-out bg-gray-50 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:bg-gray-100 focus:text-gray-700"
+                  role="menuitem"
+                >
+                  Anmeldung
                 </Link>
               </div>
             </div>

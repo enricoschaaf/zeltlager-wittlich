@@ -1,10 +1,10 @@
 import { AttributeValue, DynamoDBStreamHandler } from "aws-lambda"
-import { DynamoDB } from "aws-sdk"
 import { GoogleSpreadsheet } from "google-spreadsheet"
+import { DynamoDB } from "aws-sdk"
 
 const googleSheetId = process.env.GOOGLE_SHEET_ID
 const googleClientEmail = process.env.GOOGLE_CLIENT_EMAIL
-const googlePrivatKey = process.env.GOOGLE_PRIVATE_KEY
+const googlePrivatKey = process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/gm, "\n")
 const year = process.env.YEAR
 
 const doc = new GoogleSpreadsheet(googleSheetId)
@@ -23,7 +23,7 @@ const dynamoStreamHandler: DynamoDBStreamHandler = async ({ Records }) => {
     const sheet = doc.sheetsByTitle[`Anmeldungen ${year}`]
 
     const data: any[] = []
-    Records.forEach(({ eventName, dynamodb }) => {
+    Records.forEach(async ({ eventName, dynamodb }, i) => {
       switch (eventName) {
         case "INSERT":
           if (!dynamodb?.NewImage) throw Error()
@@ -38,7 +38,6 @@ const dynamoStreamHandler: DynamoDBStreamHandler = async ({ Records }) => {
           }
 
           data.push({
-            "Nr.": output(newImage.id),
             Vorname: output(newImage.firstName),
             Nachname: output(newImage.lastName),
             Geburtsdatum: new Date(
@@ -68,6 +67,8 @@ const dynamoStreamHandler: DynamoDBStreamHandler = async ({ Records }) => {
             Krankenkasse: output(newImage.healthInsurance),
             "Name des Hausarztes": output(newImage.familyDoctorName),
             "Telefonnummer des Hausarztes": output(newImage.familyDoctorPhone),
+            "In eine Gruppe mit": output(newImage.groupWith),
+            "KjG - Mitglied": output(newImage.kjgMember) ? "Ja" : "Nein",
           })
           break
       }

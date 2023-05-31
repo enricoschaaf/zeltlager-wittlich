@@ -13,6 +13,10 @@ export const Layout = ({
   return (
     <>
       <Title>{title}</Title>
+      <div className="w-full p-4 bg-emerald-700 text-white text-center font-medium font-xl">
+        Das Zeltlager 2023 ist ausgebucht. 2024 geht es vom 04.08. - 14.08. nach
+        Wershofen.
+      </div>
       <Header />
       <div className="flex-grow">{children}</div>
       <Footer />

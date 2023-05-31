@@ -7,27 +7,57 @@ const Index = () => {
   return (
     <>
       <Title />
-      <div className="max-w-4xl z-10 grid gap-y-4 sm:gap-y-6 justify-center items-center">
-        <span className="w-full inline-flex rounded-md shadow-sm">
-          <Link href="/anmelden">
-            <a className="w-full inline-flex justify-center items-center px-8 py-4 border border-transparent text-xl leading-6 font-medium rounded-md text-white bg-gray-900 hover:bg-gray-500 focus:outline-none focus:border-gray-700 focus:shadow-outline-indigo active:bg-gray-700 transition ease-in-out duration-150">
-              Anmelden
-            </a>
+      <div className="z-10 grid items-center justify-center max-w-4xl gap-y-4 sm:gap-y-6">
+        <span className="inline-flex w-full rounded-md shadow-sm">
+          <Link
+            href="/anmelden"
+            className="inline-flex items-center justify-center w-full px-8 py-4 text-xl font-medium leading-6 text-white transition duration-150 ease-in-out bg-gray-900 border border-transparent rounded-md hover:bg-gray-500 focus:outline-none focus:border-gray-700 focus:shadow-outline-emerald active:bg-gray-700"
+          >
+            Anmelden
           </Link>
         </span>
         <br></br>
         <div className="prose sm:prose-lg">
+          <h1>Zeltlager der Löwen</h1>
           <div className="flex justify-between">
-            <b>Saarhölzbach</b>
-            <b>08.08.21 - 18.08.21</b>
+            <b>Körperich</b>
+            <b>06.08.2023 - 16.08.2023</b>
           </div>
           <p style={{ textAlign: "justify" }}>
-            In der Zeit von Sonntag, 08.08.2021 bis Mittwoch, 18.08.2021 weht
-            das Löwenbanner dieses Mal auf dem Jugendzeltplatz Saaarhölzbach.
-            Wenn ihr zur Zeit des Zeltlagers zwischen 9 und 15 Jahre alt seid
-            und jede Menge Spaß und Gemeinschaft unter freiem Himmel erleben
-            möchtet, dann seid ihr hier richtig. Meldet euch so bald wie möglich
-            an!
+            In der Zeit von Sonntag, 06.08., bis Mittwoch, 16.08.2023, weht das
+            Löwenbanner dieses Mal auf dem Jugendzeltplatz Körperich. Wenn ihr
+            zur Zeit des Zeltlagers zwischen 9 und 15 Jahre alt seid und jede
+            Menge Spaß und Gemeinschaft unter freiem Himmel erleben möchtet,
+            dann seid ihr hier richtig. Meldet euch so bald wie möglich an!
+            <br />
+            <br />
+            Der Teilnehmendenbeitrag beträgt zwischen 175€ und 210€. Familien
+            zeigen sich mit Familien solidarisch, deshalb bezahlen Sie, was Sie
+            geben können. Werden mehrere Kinder einer Familie angemeldet, so
+            wird ab dem zweiten Kind ein reduzierter Beitrag zwischen 135€ und
+            170€ erhoben. KjG - Mitglieder zahlen 11€ weniger. Enthalten sind
+            sämtliche anfallenden Kosten für Anreise, Unterbringung,
+            Vollverpflegung, Eintritte, Fahrkarten etc. Die Unterbringung
+            erfolgt in zeltlagereigenen Gruppenzelten.
+            <br />
+            <br />
+            Wir sind sehr dankbar für die zusätzliche Unterstützung, falls
+            Eltern den Teilnehmendenbeitrag mit einem freiwilligen solidarischen
+            Zusatzbeitrag aufstocken möchten. Bei finanziellen Schwierigkeiten
+            kann unsere Gemeindereferentin Heike Feldges angesprochen werden,
+            die Anfrage wird vertraulich behandelt.
+            <br />
+            <br />
+            Ihre Ansprechpartner für das Zeltlager sind Enrico Schaaf und Niklas
+            Sips. Weitere Informationen und Antworten auf Rückfragen gibt es per
+            E-Mail unter{" "}
+            <a
+              href="mailto:mail@zeltlager-wittlich.de"
+              rel="noreferrer"
+              target="_blank"
+            >
+              mail@zeltlager-wittlich.de
+            </a>
           </p>
         </div>
       </div>
@@ -37,7 +67,7 @@ const Index = () => {
 
 Index.getLayout = (page: NextPage) => (
   <Layout title="Fotos">
-    <main className="h-full px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+    <main className="flex items-center justify-center h-full px-4 sm:px-6 lg:px-8">
       {page}
     </main>
   </Layout>

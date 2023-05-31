@@ -19,7 +19,7 @@ export const Textarea = ({
       <textarea
         id={name}
         name={name}
-        className="form-textarea block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5 resize-none"
+        className="block w-full rounded-md border-gray-300 py-3 px-4 text-gray-900 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 resize-none"
         ref={register}
         {...props}
       />

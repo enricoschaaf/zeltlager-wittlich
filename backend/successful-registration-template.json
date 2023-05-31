@@ -1,0 +1,7 @@
+{
+  "Template": {
+    "TemplateName": "registrationSuccessful",
+    "SubjectPart": "Anmeldung für das Zeltlager {{year}} war erfolgreich",
+    "TextPart": "Vielen Dank für die Anmeldung!\n\n{{firstName}} ist jetzt bei uns auf der Anmeldeliste und wir freuen uns jetzt schon auf die gemeinsamen Tage im Zeltlager. Alle weiteren Informationen werden wir an diese Email-Adresse senden.\n\nUm die Anmeldung abzuschließen, überweist bitte den Teilnehmendenbeitrag von 175-210€ (135-170€ für Geschwisterkinder; 11€ weniger für KjG - Mitglieder) an:\n\nKirchengemeindeverband Wittlich\nIBAN: DE69 5875 1230 0032 7144 61\nBetreff: “Zeltlager {{firstName}} {{lastName}}”\n\nAls nächstes werden Sie voraussichtlich Anfang Juli {{year}} fehlende Informationen erhalten und zum Elternabend eingeladen werden.\n\nBis dahin noch eine gute Zeit und bleiben Sie gesund!\n\nNiklas Sips,\nEnrico Schaaf\nund das gesamte Zeltlagerteam"
+  }
+}
