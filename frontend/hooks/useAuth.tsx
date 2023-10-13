@@ -18,7 +18,9 @@ export function useAuth() {
           setAccessToken(data.accessToken)
           if (pathname === "/login") {
             push(
-              typeof query.redirect === "string" ? query.redirect : "/profile",
+              typeof query.redirect === "string"
+                ? query.redirect
+                : "/anmeldungen",
             )
           }
         })

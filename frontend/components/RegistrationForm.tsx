@@ -1,9 +1,12 @@
+import { PlusIcon, XMarkIcon } from "@heroicons/react/20/solid"
 import axios from "axios"
 import { AnimatePresence } from "framer-motion"
+import Link from "next/link"
 import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useFieldArray, useForm } from "react-hook-form"
 import { useMutation } from "react-query"
 import { Button, Checkbox, Input, Modal, Radio, Dropdown } from "tailwindcss/ui"
+import { InputWithButton } from "tailwindcss/ui/InputWithButton"
 import { Textarea } from "tailwindcss/ui/Textarea"
 import { emailRegex, postalCodeRegex } from "utils/regex"
 
@@ -16,66 +19,103 @@ export const RegistrationForm = () => {
   const [status, setStatus] = useState<"success" | "waiting" | "closed">(
     "closed",
   )
-  const [mutate, { isLoading }] = useMutation(registerMutation)
-  const { register, handleSubmit, errors, reset } = useForm({
+  const { mutateAsync, isLoading } = useMutation(registerMutation)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors: formErrors },
+    reset,
+    control,
+  } = useForm<FormData>({
     mode: "onBlur",
+    defaultValues: {
+      phoneNumbers: [{ value: "" }],
+      medications: [{ value: "" }],
+    },
+  })
+  const { fields: phoneNumbersFields, append: appendPhoneNumber, remove: removePhoneNumber } = useFieldArray({
+    control,
+    name: "phoneNumbers",
+    rules: { minLength: 1, required: true },
   })
 
-  async function onSubmit(data: FormData) {
-    const { status } = await mutate({ ...data, acceptTerms: undefined })
-    setStatus(status)
-  }
+    const {
+      fields: medicationsFields,
+      append: appendMedication,
+      remove: removeMedication,
+    } = useFieldArray({
+      control,
+      name: "medications",
+      rules: { minLength: 1, required: true },
+    })
 
   useEffect(() => {
     if (status !== "closed") {
       reset()
     }
   }, [reset, status])
+
+  const errors = Object.fromEntries(
+    Object.entries(formErrors)
+      .map(([key, value]) => {
+        if (Array.isArray(value)) {
+          return value.map((error, i) => [`${key}.${i}.value`, error?.value])
+        }
+
+        return [[key, value]]
+      })
+      .flat(),
+  )
+
   return (
     <>
-      <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="flex flex-col"
+        onSubmit={handleSubmit(async (data) => {
+          const { status } = await mutateAsync({
+            ...data,
+            acceptTerms: undefined,
+            phoneNumbers: data.phoneNumbers.map((p) => p.value).filter(Boolean),
+            medications: data.medications.map((m) => m.value).filter(Boolean),
+          })
+          setStatus(status)
+        })}
+      >
         <div>
           <div className="mt-5">
             <div className="shadow sm:rounded-md sm:overflow-hidden">
               <div className="px-4 py-5 bg-white sm:p-6">
                 <div className="grid grid-cols-12 gap-6">
                   <Input
-                    name="firstName"
                     label="Vorname"
                     className="col-span-5"
                     autoComplete="given-name"
                     errors={errors}
-                    register={register({
+                    {...register("firstName", {
                       required: "Bitte geben Sie den Vornamen Ihres Kindes an.",
                     })}
                   />
                   <Input
-                    name="lastName"
                     label="Nachname"
                     className="col-span-5"
                     autoComplete="family-name"
                     errors={errors}
-                    register={register({
+                    {...register("lastName", {
                       required:
                         "Bitte geben Sie den Nachnamen Ihres Kindes an.",
                     })}
                   />
                   <Dropdown
-                    name="gender"
                     label="Geschlecht"
                     className="col-span-2"
-                    register={register({
-                      required:
-                        "Bitte geben Sie das Geschlect Ihres Kindes an.",
-                    })}
+                    {...register("gender")}
                   />
                   <Input
-                    name="birthDate"
                     label="Geburtsdatum"
                     className="col-span-12 sm:col-span-4"
                     autoComplete="bday"
                     errors={errors}
-                    register={register({
+                    {...register("birthDate", {
                       required:
                         "Bitte geben Sie das Geburtsdatum Ihres Kindes an.",
                       validate: (value) => {
@@ -89,24 +129,22 @@ export const RegistrationForm = () => {
                     })}
                   />
                   <Input
-                    name="streetAddress"
                     label="Straße und Hausnummer"
                     className="col-span-12 sm:col-span-8"
                     autoComplete="address-line1"
                     errors={errors}
-                    register={register({
+                    {...register("streetAddress", {
                       required:
                         "Bitte geben Sie Ihre Straße und Hausnummer an.",
                     })}
                   />
                   <Input
-                    name="postalCode"
                     label="PLZ"
                     className="col-span-12 sm:col-span-6"
                     inputMode="decimal"
                     autoComplete="postal-code"
                     errors={errors}
-                    register={register({
+                    {...register("postalCode", {
                       required: "Bitte geben Sie Ihre Postleitzahl an.",
                       pattern: {
                         value: postalCodeRegex,
@@ -116,34 +154,63 @@ export const RegistrationForm = () => {
                     })}
                   />
                   <Input
-                    name="city"
                     label="Stadt"
                     className="col-span-12 sm:col-span-6"
                     autoComplete="address-level2"
                     errors={errors}
-                    register={register({
+                    {...register("city", {
                       required: "Bitte geben Sie Ihre Stadt an.",
                     })}
                   />
+                  <div className="col-span-12 sm:col-span-6 space-y-2">
+                    {phoneNumbersFields.map((field, index) => (
+                      <InputWithButton
+                        key={field.id}
+                        onClick={() =>
+                          phoneNumbersFields.length - index === 1
+                            ? appendPhoneNumber({ value: "" })
+                            : removePhoneNumber(index)
+                        }
+                        label={
+                          index === 0
+                            ? "Telefonnummern der Eltern"
+                            : {
+                                value: "Telefonnummern der Eltern",
+                                visibility: "hidden",
+                              }
+                        }
+                        icon={
+                          phoneNumbersFields.length - index === 1 ? (
+                            <PlusIcon
+                              className="-ml-0.5 h-5 w-5 text-gray-400"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <XMarkIcon
+                              className="-ml-0.5 h-5 w-5 text-gray-400"
+                              aria-hidden="true"
+                            />
+                          )
+                        }
+                        inputMode="tel"
+                        autoComplete="tel-national"
+                        errors={errors}
+                        {...register(`phoneNumbers.${index}.value`, {
+                          required:
+                            index === 0
+                              ? "Bitte geben Sie eine Telefonnumber an."
+                              : undefined,
+                        })}
+                      />
+                    ))}
+                  </div>
                   <Input
-                    name="mobile"
-                    label="Handy"
-                    className="col-span-12 sm:col-span-6"
-                    inputMode="tel"
-                    autoComplete="tel-national"
-                    errors={errors}
-                    register={register({
-                      required: "Bitte geben Sie Ihre Handynummer an.",
-                    })}
-                  />
-                  <Input
-                    name="email"
-                    label="Email"
+                    label="Email der Eltern"
                     className="col-span-12 sm:col-span-6"
                     inputMode="email"
                     autoComplete="email"
                     errors={errors}
-                    register={register({
+                    {...register("email", {
                       required: "Bitte geben Sie Ihre Email Ad­res­se an.",
                       pattern: {
                         value: emailRegex,
@@ -158,122 +225,157 @@ export const RegistrationForm = () => {
                     </legend>
                     <div className="grid grid-flow-row gap-4 mt-2 sm:grid-flow-col sm:gap-12 sm:mt-6">
                       <Radio
-                        name="eatingHabits"
                         id="none"
                         label="Keine"
-                        register={register()}
+                        {...register("eatingHabits")}
                         defaultChecked
                       />
                       <Radio
-                        name="eatingHabits"
                         id="vegetarian"
                         label="Vegetarisch"
-                        register={register()}
+                        {...register("eatingHabits")}
                       />
                       <Radio
-                        name="eatingHabits"
                         id="vegan"
                         label="Vegan"
-                        register={register()}
+                        {...register("eatingHabits")}
                       />
                     </div>
                   </fieldset>
                   <Textarea
                     label="Lebensmittelunterträglichkeiten"
                     description="Bitte listen Sie die Lebensmittelunterträglichkeiten Ihres Kindes."
-                    name="foodIntolerances"
                     className="col-span-12"
-                    register={register()}
+                    {...register("foodIntolerances")}
                   />
                   <Checkbox
-                    name="canSwim"
                     label="Schwimmen"
                     description="Unser Kind ist Schwimmer/in und kann ohne Aufsicht schwimmen."
                     className="col-span-12"
-                    register={register()}
+                    {...register("canSwim")}
                   />
                   <Checkbox
-                    name="supervision"
                     label="Aufsicht"
                     description="Unser Kind darf mit der Gruppe in abgesprochenen Zeiträumen einige Stunden zur freien Verfügung haben, in denen er/sie ohne Aufsicht ist."
                     className="col-span-12"
-                    register={register()}
+                    {...register("supervision")}
+                  />
+                  <Checkbox
+                    label="1. Hilfe"
+                    description="Die Betreuenden dürfen für die 1. Hilfe-Versorgung Pflaster, Desinfektionsmittel, Wundsalbe,
+                    Brandsalbe oder Zeckenzange verwenden."
+                    className="col-span-12"
+                    {...register("firstAid")}
                   />
                   <Textarea
                     label="Krankheiten"
                     description="Bitte listen Sie die Krankheiten Ihres Kindes auf."
-                    name="diseases"
                     className="col-span-12"
-                    register={register()}
+                    {...register("diseases")}
                   />
                   <Textarea
                     label="Allergien"
                     description="Bitte listen Sie die Allergien Ihres Kindes auf."
-                    name="allergies"
                     className="col-span-12"
-                    register={register()}
+                    {...register("allergies")}
                   />
-                  <Textarea
-                    label="Medikamente"
-                    description="Bitte listen Sie die Medikamente auf, die ihr Kind einnehmen muss."
-                    name="medication"
-                    className="col-span-12"
-                    register={register()}
-                  />
+                  <div className="col-span-12 space-y-2">
+                    {medicationsFields.map((field, index) => (
+                      <InputWithButton
+                        key={field.id}
+                        errors={errors}
+                        onClick={() =>
+                          medicationsFields.length - index === 1
+                            ? appendMedication({ value: "" })
+                            : removeMedication(index)
+                        }
+                        label={
+                          index === 0
+                            ? "Medikamente"
+                            : {
+                                value: "Medikamente",
+                                visibility: "hidden",
+                              }
+                        }
+                        icon={
+                          medicationsFields.length - index === 1 ? (
+                            <PlusIcon
+                              className="-ml-0.5 h-5 w-5 text-gray-400"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <XMarkIcon
+                              className="-ml-0.5 h-5 w-5 text-gray-400"
+                              aria-hidden="true"
+                            />
+                          )
+                        }
+                        description={index === 0 ? `Bitte listen Sie die Medikamente mit Einnahmefrequenz und -anweisungen auf, die ihr Kind einnehmen muss.
+                        `: undefined}
+                        {...register(`medications.${index}.value`)}
+                      />
+                    ))}
+                  </div>
                   <Input
-                    name="familyDoctorName"
                     label="Name des Hausarztes"
                     className="col-span-12 sm:col-span-6"
                     autoComplete="nope"
                     errors={errors}
-                    register={register({
+                    {...register("familyDoctorName", {
                       required:
                         "Bitte geben Sie den Namen des Hausarztes ihres Kindes an.",
                     })}
                   />
                   <Input
-                    name="familyDoctorPhone"
                     label="Telefonnummer des Hausarztes"
                     className="col-span-12 sm:col-span-6"
                     inputMode="tel"
                     autoComplete="nope"
                     errors={errors}
-                    register={register({
+                    {...register("familyDoctorPhone", {
                       required:
                         "Bitte geben Sie die Telefonummer des Hausarztes ihres Kindes an.",
                     })}
                   />
                   <Input
-                    name="healthInsurance"
                     label="Unser Kind ist bei folgender Krankenkasse versichert"
                     className="col-span-12"
                     autoComplete="nope"
                     errors={errors}
-                    register={register({
+                    {...register("healthInsurance", {
                       required:
                         "Bitte geben Sie die Krankenkasse Ihres Kindes an.",
                     })}
                   />
                   <Input
-                    name="groupWith"
                     label="Unser Kind möchte mit diesen Kindern in eine Gruppe"
                     description="Wir werden versuchen dies zu berücksichtigen."
                     className="col-span-12"
                     autoComplete="nope"
                     errors={errors}
-                    register={register()}
+                    {...register("groupWith")}
                   />
                   <Checkbox
-                    name="acceptTerms"
-                    label="Hiermit melde ich mein Kind für das Zeltlager 2023 an und bestätige ich, dass die von mir gemachten Angaben korrekt sind."
+                    label={
+                      <>
+                        Hiermit melde ich mein Kind für das Zeltlager 2024 an
+                        und akzeptiere damit die{" "}
+                        <Link
+                          href="/teilnahmebedingungen"
+                          className="underline font-bold"
+                        >
+                          Teilnahmebedingungen
+                        </Link>
+                        .
+                      </>
+                    }
                     className="col-span-12"
-                    register={register({ required: true })}
+                    {...register("acceptTerms", { required: true })}
                   />
                   <Checkbox
-                    name="kjgMember"
                     label="KjG - Mitglied"
                     className="col-span-12"
-                    register={register()}
+                    {...register("kjgMember")}
                   />
                   <div className="grid grid-cols-6 gap-6"></div>
                 </div>
@@ -369,7 +471,7 @@ export const RegistrationForm = () => {
               <span className="flex w-full rounded-md shadow-sm">
                 <button
                   onClick={() => setStatus("closed")}
-                  className="inline-flex justify-center w-full px-4 py-2 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-emerald-600 border border-transparent rounded-md shadow-sm hover:bg-emerald-500 focus:outline-none focus:border-emerald-700 focus:shadow-outline-emerald sm:text-sm sm:leading-5"
+                  className="inline-flex justify-center w-full px-4 py-2 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-500 focus:outline-none focus:border-primary-700 focus:shadow-outline-primary sm:text-sm sm:leading-5"
                 >
                   Zurück zum Anmelden
                 </button>
@@ -397,9 +499,14 @@ interface FormData {
   health: string
   healthInsurance: string
   lastName: string
-  mobile: string
   postalCode: string
   streetAddress: string
   supervision: boolean
   groupWith: string
+  acceptTerms: boolean
+  kjgMember: boolean
+  medications: { value: string }[]
+  firstAid: boolean
+  gender: "W" | "M" | "D"
+  phoneNumbers: { value: string }[]
 }

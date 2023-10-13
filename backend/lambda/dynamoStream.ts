@@ -50,7 +50,7 @@ const dynamoStreamHandler: DynamoDBStreamHandler = async ({ Records }) => {
             "Straße und Hausnummer": output(newImage.streetAddress),
             Postleitzahl: output(newImage.postalCode),
             Stadt: output(newImage.city),
-            Handy: output(newImage.mobile),
+            Telefon: output(newImage.phoneNumbers).join(", "),
             Email: output(newImage.email),
             Essgewohnheiten:
               output(newImage.eatingHabits) === "vegetarian"
@@ -61,9 +61,10 @@ const dynamoStreamHandler: DynamoDBStreamHandler = async ({ Records }) => {
             Lebensmittelunterträglichkeiten: output(newImage.foodIntolerances),
             Schwimmen: output(newImage.canSwim) ? "Ja" : "Nein",
             Aufsicht: output(newImage.supervision) ? "Ja" : "Nein",
+            "1. Hilfe": output(newImage.firstAid) ? "Ja" : "Nein",
             Krankheiten: output(newImage.diseases),
             Allergien: output(newImage.allergies),
-            Medikamente: output(newImage.medication),
+            Medikamente: output(newImage.medications).join(", "),
             Krankenkasse: output(newImage.healthInsurance),
             "Name des Hausarztes": output(newImage.familyDoctorName),
             "Telefonnummer des Hausarztes": output(newImage.familyDoctorPhone),

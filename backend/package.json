@@ -6,9 +6,9 @@
     "tent-camp": "bin/tent-camp.js"
   },
   "scripts": {
-    "deploy": "npm run build && cdk deploy",
+    "deploy": "npm run build && cdk deploy --all",
     "build": "tsc ./lambda/imageTransform/index.ts && tsc ./lambda/objectCreated/index.ts",
-    "ses-update-template": "aws ses update-template --cli-input-json file://successful-registration-template.json && aws ses update-template --cli-input-json file://waiting-list-registration-template.json",
+    "ses-update-template": "aws ses update-template --cli-input-json --region eu-central-1 file://successful-registration-template.json && aws ses update-template --cli-input-json --region eu-central-1 file://waiting-list-registration-template.json",
     "synth": "cdk synth --no-staging > template.yaml"
   },
   "devDependencies": {

@@ -3,13 +3,6 @@ import { useEffect, useRef, useState } from "react"
 import { useInfiniteQuery } from "react-query"
 import { instance } from "utils/axios"
 
-async function getPhotos(_key: "photos", cursor: string) {
-  const { data } = await instance.get(
-    "/api/photos" + (cursor ? `?cursor=${cursor}` : ""),
-  )
-  return data
-}
-
 export const PhotoGallery = () => {
   const [firstColPhotos, setFirstColPhotos] = useState<Photo[]>([])
   const [secondColPhotos, setSecondColPhotos] = useState<Photo[]>([])
@@ -19,11 +12,16 @@ export const PhotoGallery = () => {
   const threeCols = useRef<[Photo[], Photo[], Photo[]]>([[], [], []])
   const twoColAspectRatios = useRef([0, 0])
   const threeColAspectRatios = useRef([0, 0, 0])
-  const { status, data, fetchMore, canFetchMore } = useInfiniteQuery(
+  const { status, data, fetchNextPage, hasNextPage } = useInfiniteQuery(
     "photos",
-    getPhotos,
+    async ({queryKey}) => {
+        const { data } = await instance.get(
+          "/api/photos" + (queryKey ? `?cursor=${queryKey}` : ""),
+        )
+  return data
+    },
     {
-      getFetchMore: ({ cursor }) => cursor,
+      getNextPageParam: ({ cursor }) => cursor,
       refetchOnWindowFocus: false,
       refetchOnMount: false,
     },
@@ -36,7 +34,7 @@ export const PhotoGallery = () => {
       threeCols.current = [[], [], []]
       twoColAspectRatios.current = [0, 0]
       threeColAspectRatios.current = [0, 0, 0]
-      data
+      data.pages.flatMap(page => page)
         .map(({ photos }: { photos: Photo }) => photos)
         .flat()
         .map((photo) => {
@@ -93,9 +91,9 @@ export const PhotoGallery = () => {
                   width={width}
                   height={height}
                   onLoad={
-                    i === firstColPhotos.length - 1 && canFetchMore
+                    i === firstColPhotos.length - 1 && hasNextPage
                       ? () => {
-                          fetchMore()
+                          fetchNextPage()
                         }
                       : undefined
                   }

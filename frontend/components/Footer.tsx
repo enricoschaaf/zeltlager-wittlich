@@ -1,7 +1,8 @@
 import Link from "next/link"
 import Image from "next/image"
-import KjGLogo from "public/kjg-logo.png"
-import PfarreiLogo from "public/pfarrei-logo.png"
+import KjGLogo from "public/kjgLogo.png"
+import PfarreiLogo from "public/pfarreiLogo.png"
+import SparkasseLogo from "public/sparkasseLogo.png"
 
 export const Footer = () => {
   return (
@@ -22,6 +23,11 @@ export const Footer = () => {
           src={KjGLogo}
           className="grayscale sm:h-12 h-8 w-auto"
           alt="KjG Logo"
+        />
+        <Image
+          src={SparkasseLogo}
+          className="grayscale sm:h-12 h-8 w-auto"
+          alt="Sparkasse Logo"
         />
         <Link
           href="/impressum"

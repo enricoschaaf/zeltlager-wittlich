@@ -6,7 +6,7 @@ export default function Document() {
         <Head>
           <meta
             name="description"
-            content="Website des Zeltlagers Wittlich. Melde dich hier an um mit uns vom 06.08 - 16.08.21 nach Körperich zu fahren."
+            content="Website des Zeltlagers Wittlich. Melde dich hier an um mit uns vom 04.08. - 14.08.2024 nach Wershofen zu fahren."
           />
           <meta name="theme-color" content="#f9fafb" />
           <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

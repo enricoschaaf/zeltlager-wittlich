@@ -15,9 +15,9 @@ async function signInMutation(email: string) {
   return data
 }
 
-async function refreshQuery(tokenId: string) {
+async function refreshQuery({queryKey}: {queryKey: string}) {
   try {
-    const { data } = await axios.get("/api/auth/refresh/" + tokenId)
+    const { data } = await axios.get("/api/auth/refresh/" + queryKey)
     return data
   } catch (err) {
     if ((err as any).response.status) return { expired: true }
@@ -29,8 +29,8 @@ export const LoginForm = () => {
   const [interval, setInterval] = useState<500 | undefined>(undefined)
   const { push, query } = useRouter()
   const [email, setEmail] = useState<string>("")
-  const { register, handleSubmit, errors, setError } = useForm()
-  const [mutate, { data, isLoading }] = useMutation(signInMutation, {
+  const { register, handleSubmit, formState: {errors}, setError } = useForm<{email: string}>()
+  const { data, isLoading, mutate } = useMutation(signInMutation, {
     onSuccess: () => {
       setInterval(500)
       setModal("open")
@@ -49,12 +49,12 @@ export const LoginForm = () => {
     refetchInterval: interval,
     refetchOnWindowFocus: interval ? true : false,
     refetchOnReconnect: true,
-    enabled: data,
+    enabled: !!data,
     useErrorBoundary: true,
     onSuccess: ({ accessToken }) => {
       if (accessToken) {
         setAccessToken(data.accessToken)
-        push(typeof query.redirect === "string" ? query.redirect : "/profile")
+        push(typeof query.redirect === "string" ? query.redirect : "/anmeldungen")
       }
     },
   })
@@ -75,17 +75,16 @@ export const LoginForm = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Input
-          name="email"
           label={{ value: "Email", visibility: "hidden" }}
           inputMode="email"
           autoComplete="email"
           placeholder="Email Adresse"
           errors={errors}
-          register={register({
-            required: "Bitte geben Sie Ihre Email Ad­res­se an.",
+          {...register("email", {
+            required: "Bitte geben Sie Ihre Email Adresse an.",
             pattern: {
               value: emailRegex,
-              message: "Ihre Email Ad­res­se hat nicht das richtige Format.",
+              message: "Ihre Email Adresse hat nicht das richtige Format.",
             },
           })}
         />
@@ -141,7 +140,7 @@ export const LoginForm = () => {
                     <div className="mt-2">
                       <p className="text-sm leading-5 text-gray-500">
                         Wir senden Ihnen einen neuen magischen Link an{" "}
-                        <b className="text-emerald-600">{email}</b>. Klicken Sie
+                        <b className="text-primary-600">{email}</b>. Klicken Sie
                         diesen um sich anzumelden.
                       </p>
                     </div>
@@ -152,7 +151,7 @@ export const LoginForm = () => {
                     <button
                       type="button"
                       onClick={() => mutate(email)}
-                      className="inline-flex justify-center w-full px-4 py-2 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-emerald-600 border border-transparent rounded-md shadow-sm hover:bg-emerald-500 focus:outline-none focus:border-emerald-700 focus:shadow-outline-emerald sm:text-sm sm:leading-5"
+                      className="inline-flex justify-center w-full px-4 py-2 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-500 focus:outline-none focus:border-primary-700 focus:shadow-outline-primary sm:text-sm sm:leading-5"
                     >
                       Erneut senden
                     </button>
@@ -174,11 +173,11 @@ export const LoginForm = () => {
             ) : (
               <>
                 <div>
-                  <div className="flex items-center justify-center w-12 h-12 mx-auto bg-emerald-100 rounded-full">
+                  <div className="flex items-center justify-center w-12 h-12 mx-auto bg-primary-100 rounded-full">
                     <svg
                       viewBox="0 0 20 20"
                       fill="currentColor"
-                      className="w-6 h-6 text-emerald-600"
+                      className="w-6 h-6 text-primary-600"
                     >
                       <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                       <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
@@ -194,7 +193,7 @@ export const LoginForm = () => {
                     <div className="mt-2">
                       <p className="text-sm leading-5 text-gray-500">
                         Wir haben Ihnen einen magischen Link an{" "}
-                        <b className="text-emerald-600">{email}</b> gesendet.
+                        <b className="text-primary-600">{email}</b> gesendet.
                         Klicken Sie diesen um sich anzumelden.
                       </p>
                     </div>

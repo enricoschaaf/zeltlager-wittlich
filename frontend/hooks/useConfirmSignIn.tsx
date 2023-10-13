@@ -13,13 +13,13 @@ export function useConfirmSignIn() {
     query: { confirm },
   } = useRouter()
 
-  const [mutation, { status }] = useMutation(confirmSignIn)
+  const { mutate, status } = useMutation(confirmSignIn)
 
   useEffect(() => {
     if (typeof confirm === "string") {
-      mutation({ confirm })
+      mutate({ confirm })
     }
-  }, [confirm, mutation])
+  }, [confirm, mutate])
 
   return { status }
 }
