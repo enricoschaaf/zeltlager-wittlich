@@ -1,6 +1,8 @@
+"use client";
 import axios from "axios"
 import { AnimatePresence } from "framer-motion"
-import { useRouter } from "next/router"
+import { useAuth } from "hooks/useAuth";
+import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useMutation, useQuery } from "react-query"
@@ -25,9 +27,11 @@ async function refreshQuery({queryKey}: {queryKey: string}) {
 }
 
 export const LoginForm = () => {
+  useAuth()
   const [modal, setModal] = useState<"closed" | "open">("closed")
   const [interval, setInterval] = useState<500 | undefined>(undefined)
-  const { push, query } = useRouter()
+  const { push } = useRouter()
+  const params = useSearchParams()
   const [email, setEmail] = useState<string>("")
   const { register, handleSubmit, formState: {errors}, setError } = useForm<{email: string}>()
   const { data, isLoading, mutate } = useMutation(signInMutation, {
@@ -45,6 +49,8 @@ export const LoginForm = () => {
     },
   })
 
+  const redirect = params.get("redirect")
+
   const { data: refreshData } = useQuery(data?.tokenId, refreshQuery, {
     refetchInterval: interval,
     refetchOnWindowFocus: interval ? true : false,
@@ -54,7 +60,7 @@ export const LoginForm = () => {
     onSuccess: ({ accessToken }) => {
       if (accessToken) {
         setAccessToken(data.accessToken)
-        push(typeof query.redirect === "string" ? query.redirect : "/anmeldungen")
+        push(typeof redirect === "string" ? redirect : "/anmeldungen")
       }
     },
   })

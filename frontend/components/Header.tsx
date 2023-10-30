@@ -4,16 +4,15 @@ import { AnimatePresence, motion } from "framer-motion"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Logo } from "./Logo"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
 
 export const Header = () => {
   const [status, setStatus] = useState<"open" | "closed">("closed")
   const pathname = usePathname()
-  const searchParams = useSearchParams()
 
   useEffect(() => {
     setStatus("closed")
-  }, [pathname, searchParams])
+  }, [pathname])
 
   return (
     <header className="flex items-center justify-between px-4 py-6 sm:px-6">

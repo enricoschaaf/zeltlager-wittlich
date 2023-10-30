@@ -1,5 +1,4 @@
 import { LoginForm } from "components/LoginForm"
-import { useAuth } from "hooks/useAuth"
 import { formatTitle } from "utils/formatTitle"
 
 export const metadata = {
@@ -7,7 +6,6 @@ export const metadata = {
 }
 
 const Login = () => {
-  useAuth()
   return <LoginForm />
 }
 

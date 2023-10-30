@@ -1,11 +1,15 @@
 import axios from "axios"
 import decode from "jwt-decode"
-import { useRouter } from "next/router"
+import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { accessToken, setAccessToken } from "utils/accessToken"
 
 export function useAuth() {
-  const { push, pathname, query } = useRouter()
+  const { push } = useRouter()
+  const pathname = usePathname()
+  const params = useSearchParams()
+
+  const redirect = params.get("redirect")
 
   useEffect(() => {
     try {
@@ -17,11 +21,7 @@ export function useAuth() {
         .then(({ data }) => {
           setAccessToken(data.accessToken)
           if (pathname === "/login") {
-            push(
-              typeof query.redirect === "string"
-                ? query.redirect
-                : "/anmeldungen",
-            )
+            push(typeof redirect === "string" ? redirect : "/anmeldungen")
           }
         })
         .catch(() => {
@@ -30,6 +30,5 @@ export function useAuth() {
           }
         })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 }

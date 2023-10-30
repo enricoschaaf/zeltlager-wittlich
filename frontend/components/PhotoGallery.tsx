@@ -1,9 +1,13 @@
+"use client";
 import { Image } from "components/Image"
+import { useAuth } from "hooks/useAuth";
 import { useEffect, useRef, useState } from "react"
 import { useInfiniteQuery } from "react-query"
 import { instance } from "utils/axios"
 
 export const PhotoGallery = () => {
+  useAuth()
+
   const [firstColPhotos, setFirstColPhotos] = useState<Photo[]>([])
   const [secondColPhotos, setSecondColPhotos] = useState<Photo[]>([])
   const [thirdColPhotos, setThirdColPhotos] = useState<Photo[]>([])
