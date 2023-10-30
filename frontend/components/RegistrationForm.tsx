@@ -363,6 +363,7 @@ export const RegistrationForm = () => {
                         <Link
                           href="/teilnahmebedingungen"
                           className="underline font-bold"
+                          target="_blank"
                         >
                           Teilnahmebedingungen
                         </Link>

@@ -71,45 +71,5 @@ export class TentCampStack extends cdk.Stack {
     dynamoEventSource.bind(dynamoStreamLambda)
 
     this.table = tentCampTable
-    if (!process.env.MAX_PARTICIPANTS) {
-      throw new Error("MAX_PARTICIPANTS environment variable missing.")
-    }
-
-    if (!process.env.BASE_URL) {
-      throw new Error("BASE_URL environment variable missing.")
-    }
-
-    const registerLambda = new lambda.NodejsFunction(this, "registerLambda", {
-      entry: "lambda/register.ts",
-      memorySize: 1024,
-      environment: {
-        TABLE_NAME: tentCampTable.tableName,
-        AUTH_TABLE_NAME: authTable.tableName,
-        YEAR: process.env.YEAR,
-        MAX_PARTICIPANTS: process.env.MAX_PARTICIPANTS,
-        BASE_URL: process.env.BASE_URL,
-      },
-    })
-
-    registerLambda.addToRolePolicy(
-      new iam.PolicyStatement({
-        resources: ["*"],
-        actions: ["ses:SendTemplatedEmail"],
-      }),
-    )
-        registerLambda.addToRolePolicy(
-          new iam.PolicyStatement({
-            resources: ["*"],
-            actions: ["dynamodb:*"],
-          }),
-        )
-
-    const tentCampApi = new apiGateway.HttpApi(this, "tentCampApi")
-
-    tentCampApi.addRoutes({
-      path: "/register",
-      methods: [apiGateway.HttpMethod.POST],
-      integration: new HttpLambdaIntegration("registerLambda", registerLambda),
-    })
   }
 }
