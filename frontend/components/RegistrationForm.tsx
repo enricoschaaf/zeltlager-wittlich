@@ -1,3 +1,4 @@
+"use client"
 import { PlusIcon, XMarkIcon } from "@heroicons/react/20/solid"
 import axios from "axios"
 import { AnimatePresence } from "framer-motion"
@@ -33,21 +34,25 @@ export const RegistrationForm = () => {
       medications: [{ value: "" }],
     },
   })
-  const { fields: phoneNumbersFields, append: appendPhoneNumber, remove: removePhoneNumber } = useFieldArray({
+  const {
+    fields: phoneNumbersFields,
+    append: appendPhoneNumber,
+    remove: removePhoneNumber,
+  } = useFieldArray({
     control,
     name: "phoneNumbers",
     rules: { minLength: 1, required: true },
   })
 
-    const {
-      fields: medicationsFields,
-      append: appendMedication,
-      remove: removeMedication,
-    } = useFieldArray({
-      control,
-      name: "medications",
-      rules: { minLength: 1, required: true },
-    })
+  const {
+    fields: medicationsFields,
+    append: appendMedication,
+    remove: removeMedication,
+  } = useFieldArray({
+    control,
+    name: "medications",
+    rules: { minLength: 1, required: true },
+  })
 
   useEffect(() => {
     if (status !== "closed") {
@@ -310,8 +315,12 @@ export const RegistrationForm = () => {
                             />
                           )
                         }
-                        description={index === 0 ? `Bitte listen Sie die Medikamente mit Einnahmefrequenz und -anweisungen auf, die ihr Kind einnehmen muss.
-                        `: undefined}
+                        description={
+                          index === 0
+                            ? `Bitte listen Sie die Medikamente mit Einnahmefrequenz und -anweisungen auf, die ihr Kind einnehmen muss.
+                        `
+                            : undefined
+                        }
                         {...register(`medications.${index}.value`)}
                       />
                     ))}

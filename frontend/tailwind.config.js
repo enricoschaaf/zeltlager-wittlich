@@ -5,7 +5,7 @@ const colors = require("tailwindcss/colors")
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   future: "all",
-  content: ["{components,layouts,pages,tailwindcss}/**/*.{js,jsx,ts,tsx}"],
+  content: ["{components,layouts,app,tailwindcss}/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       fontFamily: {

@@ -1,5 +1,8 @@
-import { Layout } from "layouts/Layout"
-import { NextPage } from "next"
+import { formatTitle } from "utils/formatTitle"
+
+export const metadata = {
+  title: formatTitle("Impressum"),
+}
 
 const LegalNotice = () => (
   <div className="prose m-auto">
@@ -42,12 +45,6 @@ const LegalNotice = () => (
       ist nur im Rahmen der jeweiligen Lizenz der Urheber möglich.
     </p>
   </div>
-)
-
-LegalNotice.getLayout = (page: NextPage) => (
-  <Layout title="Impressum">
-    <main className="h-full">{page}</main>
-  </Layout>
 )
 
 export default LegalNotice

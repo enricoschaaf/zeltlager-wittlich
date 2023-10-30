@@ -1,6 +1,9 @@
-import { Layout } from "layouts/Layout"
-import { NextPage } from "next"
 import { config } from "project.config"
+import { formatTitle } from "utils/formatTitle"
+
+export const metadata = {
+  title: formatTitle("Teilnahmebedingungen"),
+}
 
 const ParticipationTermsConditions = () => (
   <div className="prose m-auto">
@@ -15,12 +18,6 @@ const ParticipationTermsConditions = () => (
       Teilnehmendenbeitrag in voller Höhe einzubehalten.
     </p>
   </div>
-)
-
-ParticipationTermsConditions.getLayout = (page: NextPage) => (
-  <Layout title="Teilnahmebedingungen">
-    <main className="h-full">{page}</main>
-  </Layout>
 )
 
 export default ParticipationTermsConditions
