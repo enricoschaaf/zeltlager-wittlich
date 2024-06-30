@@ -1,0 +1,21 @@
+export const config = {
+  shortName: "Zeltlager",
+  longName: "Zeltlager Wittlich",
+  location: "Wershofen",
+  // startDate: "2024-10-12",
+  // endDate: "2024-10-19",
+  minParticipationFee: 180,
+  maxParticipationFee: 220,
+  reducedMinParticipationFee: 140,
+  reducedMaxParticipationFee: 180,
+  maxParticipants: Infinity,
+  year: "2024",
+  iban: "DE69 5875 1230 0032 7144 61",
+  leadershipMembers: [
+    "Lena Ehlen",
+    "Eva Thiel",
+    "Niklas Sips",
+    "Enrico Schaaf",
+  ],
+  domain: "zeltlager-wittlich.de",
+} as const

@@ -1,11 +1,14 @@
-import { Title } from "components/Title"
 import { useConfirmSignIn } from "hooks/useConfirmSignIn"
+import { formatTitle } from "utils/formatTitle"
+
+export const metadata = {
+  title: formatTitle("Anmeldung bestätigen"),
+}
 
 const Confirm = () => {
   const { status } = useConfirmSignIn()
   return (
     <>
-      <Title>Anmeldung bestätigen</Title>
       <div className="h-full flex justify-center items-center px-4 sm:px-6 lg:px-8">
         <span className="text-center">
           <h1 className="text-4xl font-black">

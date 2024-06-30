@@ -2,7 +2,6 @@ declare namespace NodeJS {
   export interface ProcessEnv {
     TABLE_NAME: string
     YEAR: string
-    MAX_PARTICIPANTS: string
     BUCKET_NAME: string
     COMPUTER_VISION_KEY: string
     COMPUTER_VISION_ENDPOINT: string

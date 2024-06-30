@@ -1,13 +1,19 @@
+"use client"
+
 import { AnimatePresence, motion } from "framer-motion"
 import Link from "next/link"
-import { useRouter } from "next/router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Logo } from "./Logo"
+import { usePathname } from "next/navigation"
 
 export const Header = () => {
   const [status, setStatus] = useState<"open" | "closed">("closed")
-  const { events } = useRouter()
-  events?.on("routeChangeStart", () => setStatus("closed"))
+  const pathname = usePathname()
+
+  useEffect(() => {
+    setStatus("closed")
+  }, [pathname])
+
   return (
     <header className="flex items-center justify-between px-4 py-6 sm:px-6">
       <Link href="/">
@@ -106,7 +112,7 @@ export const Header = () => {
                   </div>
                 </div>
                 <div className="px-2 pt-2 pb-3">
-                  <Link
+                  {/* <Link
                     href="/blog"
                     className="block px-3 py-2 text-base font-medium text-gray-700 transition duration-150 ease-in-out rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50"
                     role="menuitem"
@@ -119,7 +125,7 @@ export const Header = () => {
                     role="menuitem"
                   >
                     Fotos
-                  </Link>
+                  </Link> */}
                 </div>
                 <Link
                   href="/anmelden"

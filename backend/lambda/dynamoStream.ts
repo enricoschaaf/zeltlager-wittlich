@@ -13,6 +13,12 @@ function output(value: AttributeValue) {
   return DynamoDB.Converter.output(value)
 }
 
+const gender = {
+  M: "männlich",
+  W: "weiblich",
+  D: "divers",
+} as const
+
 const dynamoStreamHandler: DynamoDBStreamHandler = async ({ Records }) => {
   try {
     await doc.useServiceAccountAuth({
@@ -47,6 +53,7 @@ const dynamoStreamHandler: DynamoDBStreamHandler = async ({ Records }) => {
               month: "2-digit",
               year: "numeric",
             }),
+            Geschlecht: gender[output(newImage.gender) as "M" | "W" | "D"],
             "Straße und Hausnummer": output(newImage.streetAddress),
             Postleitzahl: output(newImage.postalCode),
             Stadt: output(newImage.city),

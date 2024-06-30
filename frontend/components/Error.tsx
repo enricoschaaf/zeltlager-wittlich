@@ -1,12 +1,5 @@
-import { Title } from "components/Title"
-
 const Error = ({ statusCode }: { statusCode: number }) => (
   <>
-    <Title>
-      {statusCode === 404
-        ? "Seite nicht gefunden"
-        : "Unerwarteter Fehler aufgetreten"}
-    </Title>
     <div className="h-full flex justify-center items-center px-4 sm:px-6 lg:px-8">
       <span className="text-center">
         <h1 className="text-4xl font-black">{statusCode}</h1>

@@ -16,17 +16,17 @@ export const Footer = () => {
         </Link>
         <Image
           src={PfarreiLogo}
-          className="grayscale sm:h-12 h-8 w-auto"
+          className="grayscale sm:max-h-12 max-h-8 w-auto"
           alt="Pfarrei Im Wittlicher Tal St. Anna Logo"
         />
         <Image
           src={KjGLogo}
-          className="grayscale sm:h-12 h-8 w-auto"
+          className="grayscale sm:max-h-12 max-h-8 w-auto"
           alt="KjG Logo"
         />
         <Image
           src={SparkasseLogo}
-          className="grayscale sm:h-12 h-8 w-auto"
+          className="grayscale sm:max-h-12 max-h-8 w-auto"
           alt="Sparkasse Logo"
         />
         <Link

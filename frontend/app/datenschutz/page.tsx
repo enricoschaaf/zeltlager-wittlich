@@ -1,8 +1,11 @@
-import { Layout } from "layouts/Layout"
-import { NextPage } from "next"
+import { formatTitle } from "utils/formatTitle"
+
+export const metadata = {
+  title: formatTitle("Datenschutz"),
+}
 
 const Privacy = () => (
-  <div className="prose marker:prose-ul:text-primary-500 m-auto p-4">
+  <div className="prose marker:prose-ul:text-primary-500 m-auto px-4">
     <h1>Datenschutz</h1>
     <h2>
       Datenschutz Name und Kontakt des Verantwortlichen gemäß Artikel 4 Abs. 7
@@ -581,12 +584,6 @@ const Privacy = () => (
       personenbezogenen Daten verletzt wurden.
     </p>
   </div>
-)
-
-Privacy.getLayout = (page: NextPage) => (
-  <Layout title="Datenschutz">
-    <main className="h-full">{page}</main>
-  </Layout>
 )
 
 export default Privacy

@@ -1,5 +1,6 @@
+"use client";
 import axios from "axios"
-import { useRouter } from "next/router"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { useMutation } from "react-query"
 
@@ -10,10 +11,12 @@ async function confirmSignIn({ confirm }: { confirm: string }) {
 
 export function useConfirmSignIn() {
   const {
-    query: { confirm },
   } = useRouter()
 
   const { mutate, status } = useMutation(confirmSignIn)
+
+  const params = useSearchParams()
+  const confirm = params.get("confirm")
 
   useEffect(() => {
     if (typeof confirm === "string") {
