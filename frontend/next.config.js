@@ -1,6 +1,9 @@
 module.exports = {
   reactStrictMode: true,
   eslint: { ignoreDuringBuilds: true },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
