@@ -1,7 +1,7 @@
 "use server"
 
 import { verify } from "jsonwebtoken"
-import { authTableName, publicKey, tableName } from "utils/env"
+import { authTableName, privateKey, tableName } from "utils/env"
 import { dynamo } from "utils/dynamo"
 import { config } from "project.config"
 import { z } from "zod"
@@ -35,7 +35,7 @@ export async function updateRegistration(
   try {
     const data = schema.parse(registration)
 
-    const { userId }: any = verify(accessToken, publicKey, {
+    const { userId }: any = verify(accessToken, privateKey, {
       algorithms: ["RS256"],
     })
 
