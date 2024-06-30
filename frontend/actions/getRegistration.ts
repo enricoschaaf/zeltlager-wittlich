@@ -32,9 +32,9 @@ export async function getRegistration(
 
     if (!registration) return { error: "NOT_FOUND" }
 
-    // if (registration.email.toLowerCase() !== Item.email.toLowerCase()) {
-    //   return { error: "PERMISSION_ERROR" }
-    // }
+    if (registration.email.toLowerCase() !== Item.email.toLowerCase()) {
+      return { error: "PERMISSION_ERROR" }
+    }
 
     return {
       data: registration,

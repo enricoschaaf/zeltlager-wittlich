@@ -28,13 +28,11 @@ export async function getRegistrations(accessToken: string) {
       },
     })
 
-    // .filter((r) => {
-    //   return r.email.toLowerCase() === Item.email.toLowerCase()
-    // })
-
     return {
       data:
-        Items?.map((item) => ({
+        Items?.filter((r) => {
+          return r.email.toLowerCase() === Item.email.toLowerCase()
+        }).map((item) => ({
           id: item.registrationId,
           name: `${item.firstName} ${item.lastName}`,
           email: item.email,
