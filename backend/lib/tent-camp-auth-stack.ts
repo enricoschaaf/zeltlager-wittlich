@@ -91,19 +91,6 @@ export class TentCampAuthStack extends cdk.Stack {
     })
     tentCampAuthTable.grant(refreshLambda, "dynamodb:Query")
 
-    const confirmLambda = new lambda.NodejsFunction(this, "confirmLambda", {
-      entry: "lambda/confirm.ts",
-      environment: {
-        TABLE_NAME: tentCampAuthTable.tableName,
-      },
-      memorySize: 1024,
-    })
-    tentCampAuthTable.grant(
-      confirmLambda,
-      "dynamodb:Query",
-      "dynamodb:UpdateItem",
-    )
-
     const accessLambda = new lambda.NodejsFunction(this, "accessLambda", {
       entry: "lambda/access.ts",
       environment: {

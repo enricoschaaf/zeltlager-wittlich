@@ -1,14 +1,14 @@
-import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses"
+import { SendEmailCommand } from "@aws-sdk/client-ses"
 import {
-  DynamoDBDocument,
   GetCommand,
   QueryCommand,
   TransactWriteCommand,
 } from "@aws-sdk/lib-dynamodb"
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb"
 import * as z from "zod"
 import { id } from "utils/id"
 import { config } from "project.config"
+import { dynamo } from "utils/dynamo"
+import { ses } from "utils/ses"
 
 const tableName = process.env.TABLE_NAME
 const authTableName = process.env.AUTH_TABLE_NAME
@@ -35,22 +35,11 @@ const successfulRegistration = ({
 })
 
 const waitingList = () => ({
-    subject: `Anmeldung für das Zeltlager ${config.year} auf der Warteliste`,
-    body:
-      `Vielen Dank für dein Interesse!\n\nLeider sind wir für dieses Jahr schon ausgebucht und können keine Anmeldungen mehr entgegennehmen. Wir haben dich aber trotzdem auf die Warteliste gesetzt. Falls jemand abspringt oder wir doch noch mehr Teilnehmende mitnehmen können, melden wir uns bei dir.\n\nFalls es trotzdem nicht klappt, hier ein paar Ideen für’s Zeltlager zu Hause:\n-Schlafe eine Nacht mit offenem Fenster und im Schlafsack. Wenn die Augen erstmal zu sind, kannst du dir einfach vorstellen, dass du im Zelt liegst.\n-Überrede deine Eltern ein Feuer zu machen – Perfekt zu kombinieren mit einem schönen Grillabend\n-Spiele mit ein paar Freunden das Chaosspiel nach oder trefft euch mit alten Songbooks zum Singen...\n\nWir hoffen euch noch Bescheid sagen zu können und wünschen bis dahin alles Gute!\n\n${config.leadershipMembers.join(
+  subject: `Anmeldung für das Zeltlager ${config.year} auf der Warteliste`,
+  body: `Vielen Dank für dein Interesse!\n\nLeider sind wir für dieses Jahr schon ausgebucht und können keine Anmeldungen mehr entgegennehmen. Wir haben dich aber trotzdem auf die Warteliste gesetzt. Falls jemand abspringt oder wir doch noch mehr Teilnehmende mitnehmen können, melden wir uns bei dir.\n\nFalls es trotzdem nicht klappt, hier ein paar Ideen für’s Zeltlager zu Hause:\n-Schlafe eine Nacht mit offenem Fenster und im Schlafsack. Wenn die Augen erstmal zu sind, kannst du dir einfach vorstellen, dass du im Zelt liegst.\n-Überrede deine Eltern ein Feuer zu machen – Perfekt zu kombinieren mit einem schönen Grillabend\n-Spiele mit ein paar Freunden das Chaosspiel nach oder trefft euch mit alten Songbooks zum Singen...\n\nWir hoffen euch noch Bescheid sagen zu können und wünschen bis dahin alles Gute!\n\n${config.leadershipMembers.join(
     ",\n",
   )}\nund das gesamte Zeltlagerteam`,
 })
-
-const credentials = {
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-  },
-}
-
-const dynamo = DynamoDBDocument.from(new DynamoDBClient(credentials))
-const ses = new SESClient(credentials)
 
 const schema = z.object({
   firstName: z.string(),
@@ -96,14 +85,12 @@ function parseData(body: unknown) {
   }
 }
 
-export async function POST(
-  request: Request,
-) {
+export async function POST(request: Request) {
   try {
     const data = parseData(await request.json())
     console.log(data)
 
-    if (!data) return new Response(undefined, {status: 400})
+    if (!data) return new Response(undefined, { status: 400 })
 
     const [{ Item }, { Items }] = await Promise.all([
       dynamo.send(
