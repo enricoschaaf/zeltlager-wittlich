@@ -93,7 +93,7 @@ export const RegistrationForm = () => {
                 <div className="grid grid-cols-12 gap-6">
                   <Input
                     label="Vorname"
-                    className="col-span-5"
+                    className="col-span-6 sm:col-span-5"
                     autoComplete="given-name"
                     errors={errors}
                     {...register("firstName", {
@@ -102,7 +102,7 @@ export const RegistrationForm = () => {
                   />
                   <Input
                     label="Nachname"
-                    className="col-span-5"
+                    className="col-span-6 sm:col-span-5"
                     autoComplete="family-name"
                     errors={errors}
                     {...register("lastName", {
@@ -112,12 +112,12 @@ export const RegistrationForm = () => {
                   />
                   <Dropdown
                     label="Geschlecht"
-                    className="col-span-2"
+                    className="col-span-3 sm:col-span-2"
                     {...register("gender")}
                   />
                   <Input
                     label="Geburtsdatum"
-                    className="col-span-12 sm:col-span-4"
+                    className="col-span-9 sm:col-span-4"
                     autoComplete="bday"
                     errors={errors}
                     {...register("birthDate", {
@@ -176,11 +176,13 @@ export const RegistrationForm = () => {
                             ? appendPhoneNumber({ value: "" })
                             : removePhoneNumber(index)
                         }
+description=""
                         label={
                           index === 0
-                            ? "Telefonnummern der Eltern"
+                            ? "Telefonnummer zur Erreichbarkeit während des Zeltlagers (gerne mehrere angeben)"
                             : {
-                                value: "Telefonnummern der Eltern",
+                                value:
+                                  "Telefonnummer zur Erreichbarkeit während des Zeltlagers (gerne mehrere angeben)",
                                 visibility: "hidden",
                               }
                         }
@@ -317,7 +319,7 @@ export const RegistrationForm = () => {
                         }
                         description={
                           index === 0
-                            ? `Bitte listen Sie die Medikamente mit Einnahmefrequenz und -anweisungen auf, die ihr Kind einnehmen muss.
+                            ? `Bitte listen Sie alle Medikamente mit Einnahmefrequenz und -anweisungen auf, die ihr Kind einnehmen muss.
                         `
                             : undefined
                         }

@@ -12,10 +12,10 @@ export const config = {
   year: "2024",
   iban: "DE69 5875 1230 0032 7144 61",
   leadershipMembers: [
-    "Niklas Sips",
-    "Enrico Schaaf",
     "Lena Ehlen",
     "Eva Thiel",
+    "Niklas Sips",
+    "Enrico Schaaf",
   ],
   domain: "zeltlager-wittlich.de",
 } as const

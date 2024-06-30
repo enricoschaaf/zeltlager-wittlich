@@ -5,7 +5,7 @@ export const metadata = {
 }
 
 const Privacy = () => (
-  <div className="prose marker:prose-ul:text-primary-500 m-auto p-4">
+  <div className="prose marker:prose-ul:text-primary-500 m-auto px-4">
     <h1>Datenschutz</h1>
     <h2>
       Datenschutz Name und Kontakt des Verantwortlichen gemäß Artikel 4 Abs. 7

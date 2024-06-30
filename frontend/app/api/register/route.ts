@@ -1,5 +1,3 @@
-import { isValidNumberForRegion, parsePhoneNumber } from "libphonenumber-js"
-import type { NextApiRequest, NextApiResponse } from "next"
 import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses"
 import {
   DynamoDBDocument,
@@ -24,12 +22,14 @@ const successfulRegistration = ({
 }) => ({
   subject: `Anmeldung für das Zeltlager ${config.year} war erfolgreich`,
   body: `Vielen Dank für die Anmeldung!\n\n${firstName} ist jetzt bei uns auf der Anmeldeliste und wir freuen uns jetzt schon auf die gemeinsamen Tage im Zeltlager. Alle weiteren Informationen werden wir an diese Email-Adresse senden.\n\nUm die Anmeldung abzuschließen, überweist bitte den Teilnehmendenbeitrag von ${
-    config.maxParticipationFee
+    config.minParticipationFee
   }-${config.maxParticipationFee}€ (${config.reducedMinParticipationFee}-${
     config.reducedMaxParticipationFee
   }€ für Geschwisterkinder; 11€ weniger für KjG - Mitglieder) an:\n\nZeltlager Wittlich\nIBAN: ${
     config.iban
-  }\nBetreff: “Zeltlager ${firstName} ${lastName}”\n\nAls nächstes werden Sie voraussichtlich Anfang Juli {{year}} fehlende Informationen erhalten und zum Elternabend eingeladen werden.\n\nBis dahin noch eine gute Zeit und bleiben Sie gesund!\n\n${config.leadershipMembers.join(
+  }\nBetreff: “Zeltlager ${firstName} ${lastName}”\n\nAls nächstes werden Sie voraussichtlich Anfang Juli ${
+    config.year
+  } fehlende Informationen erhalten und zum Elternabend eingeladen werden.\n\nBis dahin noch eine gute Zeit und bleiben Sie gesund!\n\n${config.leadershipMembers.join(
     ",\n",
   )}\nund das gesamte Zeltlagerteam`,
 })
@@ -96,18 +96,14 @@ function parseData(body: unknown) {
   }
 }
 
-type ResponseData = {
-  status: "success" | "waiting"
-}
-
-export default async (
-  { body }: NextApiRequest,
-  res: NextApiResponse<ResponseData>,
-) => {
+export async function POST(
+  request: Request,
+) {
   try {
-    const data = parseData(body)
+    const data = parseData(await request.json())
     console.log(data)
-    if (!data) return res.status(400).end()
+
+    if (!data) return new Response(undefined, {status: 400})
 
     const [{ Item }, { Items }] = await Promise.all([
       dynamo.send(
@@ -216,7 +212,9 @@ export default async (
     }
 
     const status =
-      count < config.maxParticipants ? "success" : ("waiting" as const)
+      data.gender === "W" || data.gender === "D"
+        ? "success"
+        : ("waiting" as const)
 
     const email =
       status === "success" ? successfulRegistration(data) : waitingList()
@@ -241,9 +239,9 @@ export default async (
         }),
       ),
     ])
-    return res.json({ status })
+    return Response.json({ status })
   } catch (err) {
     console.error(err)
-    return res.status(500).end()
+    return new Response(undefined, { status: 500 })
   }
 }

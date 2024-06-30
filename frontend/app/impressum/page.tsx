@@ -5,7 +5,7 @@ export const metadata = {
 }
 
 const LegalNotice = () => (
-  <div className="prose m-auto">
+  <div className="prose m-auto px-4">
     <h1>Impressum</h1>
     <h2>Inhaltlich Verantwortlich</h2>
     <p>
