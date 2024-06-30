@@ -1,31 +1,54 @@
 "use client"
+
 import { PlusIcon, XMarkIcon } from "@heroicons/react/20/solid"
-import axios from "axios"
+import { getRegistration } from "actions/getRegistration"
+import { updateRegistration } from "actions/updateRegistration"
 import { AnimatePresence } from "framer-motion"
-import Link from "next/link"
+import { useAuth } from "hooks/useAuth"
 import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { useMutation } from "react-query"
-import { Button, Checkbox, Input, Modal, Radio, Dropdown } from "tailwindcss/ui"
-import { InputWithButton } from "tailwindcss/ui/InputWithButton"
-import { Textarea } from "tailwindcss/ui/Textarea"
+import { Button, Checkbox, Input, Modal, Radio, Dropdown } from "tailwindcssUi"
+import { InputWithButton } from "tailwindcssUi/InputWithButton"
+import { Textarea } from "tailwindcssUi/Textarea"
 import { emailRegex, postalCodeRegex } from "utils/regex"
 
-async function registerMutation(body: any) {
-  const { data } = await axios.post("/public/res/test.json", body)
-  return data
+async function registerMutation(data: {
+  accessToken: string
+  registrationId: string
+  data: any
+}) {
+  console.log(data)
+  await updateRegistration(data.accessToken, data.registrationId, data.data)
 }
 
-const getData = async () => { const { data } = await axios.get<FormData>('/test.json'); return data; }
-export const UpdateForm = () => {
+export const UpdateForm = ({ registrationId }: { registrationId: string }) => {
   const [status, setStatus] = useState<"success" | "waiting" | "closed">(
     "closed",
   )
   const [values, setValues] = useState<FormData>()
 
-  getData().then(e => {
-    setValues(e)
-  });
+  const accessToken = useAuth()
+
+  useEffect(() => {
+    if (accessToken) {
+      getRegistration(accessToken, registrationId).then((registration) => {
+        if (registration.data) {
+          registration.data.medications = registration.data.medications.length
+            ? registration.data.medications.map((m: string) => ({ value: m }))
+            : [{ value: "" }]
+          registration.data.phoneNumbers = registration.data.phoneNumbers.map(
+            (p: string) => ({ value: p }),
+          )
+          registration.data.birthDate = new Date(
+            registration.data.birthDate,
+          ).toLocaleDateString("de-DE")
+
+          setValues(registration.data as any)
+        }
+      })
+    }
+  }, [accessToken, registrationId])
 
   const { mutateAsync, isLoading } = useMutation(registerMutation)
   const {
@@ -36,11 +59,7 @@ export const UpdateForm = () => {
     control,
   } = useForm<FormData>({
     mode: "onBlur",
-    defaultValues: {
-      phoneNumbers: [{ value: "" }],
-      medications: [{ value: "" }],
-    },
-    values
+    values,
   })
   const {
     fields: phoneNumbersFields,
@@ -85,13 +104,19 @@ export const UpdateForm = () => {
       <form
         className="flex flex-col"
         onSubmit={handleSubmit(async (data) => {
-          const { status } = await mutateAsync({
-            ...data,
-            acceptTerms: undefined,
-            phoneNumbers: data.phoneNumbers.map((p) => p.value).filter(Boolean),
-            medications: data.medications.map((m) => m.value).filter(Boolean),
+          await mutateAsync({
+            data: {
+              ...data,
+              acceptTerms: undefined,
+              phoneNumbers: data.phoneNumbers
+                .map((p) => p.value)
+                .filter(Boolean),
+              medications: data.medications.map((m) => m.value).filter(Boolean),
+            },
+            accessToken: accessToken as string,
+            registrationId,
           })
-          setStatus(status)
+          setStatus("success")
         })}
       >
         <div>
@@ -185,10 +210,10 @@ export const UpdateForm = () => {
                           index === 0
                             ? "Telefonnummer zur Erreichbarkeit während des Zeltlagers (gerne mehrere angeben)"
                             : {
-                              value:
-                                "Telefonnummer zur Erreichbarkeit während des Zeltlagers (gerne mehrere angeben)",
-                              visibility: "hidden",
-                            }
+                                value:
+                                  "Telefonnummer zur Erreichbarkeit während des Zeltlagers (gerne mehrere angeben)",
+                                visibility: "hidden",
+                              }
                         }
                         icon={
                           phoneNumbersFields.length - index === 1 ? (
@@ -239,7 +264,6 @@ export const UpdateForm = () => {
                         id="none"
                         label="Keine"
                         {...register("eatingHabits")}
-                        defaultChecked
                       />
                       <Radio
                         id="vegetarian"
@@ -304,9 +328,9 @@ export const UpdateForm = () => {
                           index === 0
                             ? "Medikamente"
                             : {
-                              value: "Medikamente",
-                              visibility: "hidden",
-                            }
+                                value: "Medikamente",
+                                visibility: "hidden",
+                              }
                         }
                         icon={
                           medicationsFields.length - index === 1 ? (
@@ -371,24 +395,6 @@ export const UpdateForm = () => {
                     {...register("groupWith")}
                   />
                   <Checkbox
-                    label={
-                      <>
-                        Hiermit melde ich mein Kind für das Zeltlager 2024 an
-                        und akzeptiere damit die{" "}
-                        <Link
-                          href="/teilnahmebedingungen"
-                          className="underline font-bold"
-                          target="_blank"
-                        >
-                          Teilnahmebedingungen
-                        </Link>
-                        .
-                      </>
-                    }
-                    className="col-span-12"
-                    {...register("acceptTerms", { required: true })}
-                  />
-                  <Checkbox
                     label="KjG - Mitglied"
                     className="col-span-12"
                     {...register("kjgMember")}
@@ -436,12 +442,14 @@ export const UpdateForm = () => {
           <Modal>
             <div>
               <div
-                className={`mx-auto flex items-center justify-center h-12 w-12 rounded-full ${status === "success" ? "bg-green-100" : "bg-yellow-100"
-                  }`}
+                className={`mx-auto flex items-center justify-center h-12 w-12 rounded-full ${
+                  status === "success" ? "bg-green-100" : "bg-yellow-100"
+                }`}
               >
                 <svg
-                  className={`h-6 w-6 ${status === "success" ? "text-green-600" : "text-yellow-600"
-                    }`}
+                  className={`h-6 w-6 ${
+                    status === "success" ? "text-green-600" : "text-yellow-600"
+                  }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -468,15 +476,13 @@ export const UpdateForm = () => {
                   className="text-lg font-medium leading-6 text-gray-900"
                   id="modal-headline"
                 >
-                  {status === "success"
-                    ? "Anmeldung erfolgreich"
-                    : "Anmeldung auf der Warteliste"}
+                  Änderung wurde übernommen
                 </h3>
                 <div className="mt-2">
                   <p className="text-sm leading-5 text-gray-500">
                     {status === "success"
-                      ? "Ihre Anmeldung war erfolgreich. Sie erhalten weitere Informationen per Email."
-                      : "Zur Zeit sind alle Plätze belegt, daher wurde Ihre Anmeldung der Warteliste hinzugefügt. Sie erhalten weitere Informationen per Email."}
+                      ? "Sie haben die Anmeldung erfolgreich geändert."
+                      : "Es gab ein Problem bei der Änderung der Anmeldung. Bitte versuchen Sie es erneut."}
                   </p>
                 </div>
               </div>
@@ -487,7 +493,7 @@ export const UpdateForm = () => {
                   onClick={() => setStatus("closed")}
                   className="inline-flex justify-center w-full px-4 py-2 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-500 focus:outline-none focus:border-primary-700 focus:shadow-outline-primary sm:text-sm sm:leading-5"
                 >
-                  Zurück zum Anmelden
+                  Zurück zu Anmeldung ändern
                 </button>
               </span>
             </div>

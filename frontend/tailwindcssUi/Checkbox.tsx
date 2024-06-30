@@ -1,4 +1,11 @@
-import { DetailedHTMLProps, InputHTMLAttributes, ReactNode, forwardRef } from "react"
+"use client"
+
+import {
+  DetailedHTMLProps,
+  InputHTMLAttributes,
+  ReactNode,
+  forwardRef,
+} from "react"
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   ({ name, label, description, className, ...props }: CheckboxProps, ref) => (

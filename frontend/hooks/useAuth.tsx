@@ -16,6 +16,8 @@ export function useAuth() {
     try {
       const { exp } = decode(accessToken)
       if (Date.now() / 1000 > exp) throw Error
+
+      setAccessTokenState(accessToken)
     } catch {
       axios
         .get("/api/auth/access")

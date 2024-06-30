@@ -1,3 +1,5 @@
+"use client"
+
 import { DetailedHTMLProps, InputHTMLAttributes, forwardRef } from "react"
 
 export const Radio = forwardRef<HTMLInputElement, RadioProps>(

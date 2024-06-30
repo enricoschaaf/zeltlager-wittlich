@@ -1,12 +1,12 @@
-"use client";
+"use client"
 import axios from "axios"
 import { AnimatePresence } from "framer-motion"
-import { useAuth } from "hooks/useAuth";
+import { useAuth } from "hooks/useAuth"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useMutation, useQuery } from "react-query"
-import { Button, Input, Modal } from "tailwindcss/ui"
+import { Button, Input, Modal } from "tailwindcssUi"
 import { setAccessToken } from "utils/accessToken"
 import { emailRegex } from "utils/regex"
 
@@ -17,7 +17,7 @@ async function signInMutation(email: string) {
   return data
 }
 
-async function refreshQuery({queryKey}: {queryKey: string}) {
+async function refreshQuery({ queryKey }: { queryKey: string }) {
   try {
     const { data } = await axios.get("/api/auth/refresh/" + queryKey)
     return data
@@ -33,7 +33,12 @@ export const LoginForm = () => {
   const { push } = useRouter()
   const params = useSearchParams()
   const [email, setEmail] = useState<string>("")
-  const { register, handleSubmit, formState: {errors}, setError } = useForm<{email: string}>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm<{ email: string }>()
   const { data, isLoading, mutate } = useMutation(signInMutation, {
     onSuccess: () => {
       setInterval(500)

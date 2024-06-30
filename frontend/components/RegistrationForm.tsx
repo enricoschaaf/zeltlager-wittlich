@@ -6,9 +6,9 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { useMutation } from "react-query"
-import { Button, Checkbox, Input, Modal, Radio, Dropdown } from "tailwindcss/ui"
-import { InputWithButton } from "tailwindcss/ui/InputWithButton"
-import { Textarea } from "tailwindcss/ui/Textarea"
+import { Button, Checkbox, Input, Modal, Radio, Dropdown } from "tailwindcssUi"
+import { InputWithButton } from "tailwindcssUi/InputWithButton"
+import { Textarea } from "tailwindcssUi/Textarea"
 import { emailRegex, postalCodeRegex } from "utils/regex"
 
 async function registerMutation(body: any) {
@@ -176,7 +176,7 @@ export const RegistrationForm = () => {
                             ? appendPhoneNumber({ value: "" })
                             : removePhoneNumber(index)
                         }
-description=""
+                        description=""
                         label={
                           index === 0
                             ? "Telefonnummer zur Erreichbarkeit während des Zeltlagers (gerne mehrere angeben)"

@@ -5,7 +5,10 @@ import { authTableName, publicKey, tableName } from "utils/env"
 import { dynamo } from "utils/dynamo"
 import { config } from "project.config"
 
-export async function getRegistrations(accessToken: string) {
+export async function getRegistration(
+  accessToken: string,
+  registrationId: string,
+) {
   try {
     const { userId }: any = verify(accessToken, publicKey, {
       algorithms: ["RS256"],
@@ -19,26 +22,22 @@ export async function getRegistrations(accessToken: string) {
 
     if (!Item?.email) return { error: "NOT_FOUND" }
 
-    const { Items } = await dynamo.query({
+    const { Item: registration } = await dynamo.get({
       TableName: tableName,
-      KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
-      ExpressionAttributeValues: {
-        ":pk": "REGISTRATIONS#" + config.year,
-        ":sk": "REGISTRATION#",
+      Key: {
+        PK: `REGISTRATIONS#${config.year}`,
+        SK: `REGISTRATION#${registrationId}`,
       },
     })
 
-    // .filter((r) => {
-    //   return r.email.toLowerCase() === Item.email.toLowerCase()
-    // })
+    if (!registration) return { error: "NOT_FOUND" }
+
+    // if (registration.email.toLowerCase() !== Item.email.toLowerCase()) {
+    //   return { error: "PERMISSION_ERROR" }
+    // }
 
     return {
-      data:
-        Items?.map((item) => ({
-          id: item.registrationId,
-          name: `${item.firstName} ${item.lastName}`,
-          email: item.email,
-        })) ?? [],
+      data: registration,
     }
   } catch (err) {
     console.error(err)

@@ -1,3 +1,5 @@
+"use client"
+
 import { DetailedHTMLProps, TextareaHTMLAttributes, forwardRef } from "react"
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(

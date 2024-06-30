@@ -10,8 +10,6 @@ const Registrations = () => {
   const accessToken = useAuth()
   const [registrations, setRegistrations] = useState<any[]>([])
 
-  console.log(registrations)
-
   useEffect(() => {
     if (accessToken) {
       getRegistrations(accessToken).then((registrations) => {
@@ -32,12 +30,10 @@ const Registrations = () => {
         {registrations.map((registration) => (
           <Link
             className="no-underline"
+            key={registration.id}
             href={`/anmeldungen/${registration.id}`}
           >
-            <li
-              key={registration.id}
-              className="flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6 my-0"
-            >
+            <li className="flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6 my-0">
               <p className="text-md font-semibold text-gray-900">
                 {registration.name}
               </p>
