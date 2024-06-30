@@ -76,7 +76,14 @@ const signInHandler: APIGatewayProxyHandlerV2 = async ({ body }) => {
           Message: {
             Body: {
               Text: {
-                Data: `https://${baseUrl}/bestaetigen/${confirm}`,
+                Data: `Hallo,
+
+Sie haben sich angemeldet, um die Informationen Ihres Kindes für das Zeltlager zu ändern.
+Mit dem Klicken auf den folgenden Link bestätigen Sie die Anmeldung: https://${baseUrl}/bestaetigen/${confirm}
+Sie können die Änderungen anschließend in dem Browserfenster vornehmen, in dem Sie die Anmeldung begonnen haben.
+
+Viele Grüße
+Das Zeltlager der Pfarrei im Wittlicher Tal St. Anna`,
               },
             },
             Subject: {

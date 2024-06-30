@@ -8,7 +8,7 @@ export const config = {
   maxParticipationFee: 220,
   reducedMinParticipationFee: 140,
   reducedMaxParticipationFee: 180,
-  maxParticipants: Infinity,
+  maxParticipants: 55,
   year: "2024",
   iban: "DE69 5875 1230 0032 7144 61",
   leadershipMembers: [

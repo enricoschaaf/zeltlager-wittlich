@@ -199,9 +199,7 @@ export async function POST(request: Request) {
     }
 
     const status =
-      data.gender === "W" || data.gender === "D"
-        ? "success"
-        : ("waiting" as const)
+      count < config.maxParticipants ? "success" : ("waiting" as const)
 
     const email =
       status === "success" ? successfulRegistration(data) : waitingList()

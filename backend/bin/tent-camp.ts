@@ -13,17 +13,17 @@ const account = process.env.ACCOUNT
 
 const app = new cdk.App()
 
-// const authTable = new TentCampAuthStack(app, "TentCampAuthStack", {
-//   env: { region: "eu-central-1", account },
-// }).authTable
+const authTable = new TentCampAuthStack(app, "TentCampAuthStack", {
+  env: { region: "eu-central-1", account },
+}).authTable
 
 // new TentCampImageStack(app, "TentCampImageStack", {
 //   env: { region: "eu-central-1", account },
 // })
 
-const table = new TentCampStack(app, "TentCampStack", {
-  env: { region: "eu-central-1", account },
-}).table
+// const table = new TentCampStack(app, "TentCampStack", {
+//   env: { region: "eu-central-1", account },
+// }).table
 
 // new TentCampMailingListsStack(app, "TentCampMailingListsStack", {
 //   env: { region: "eu-west-1", account },
