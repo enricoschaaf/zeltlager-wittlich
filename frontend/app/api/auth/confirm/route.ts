@@ -1,14 +1,16 @@
 import { dynamo } from "utils/dynamo"
-import { authTableName } from "utils/env"
 
-export async function confirmSignIn({
-  confirm,
-}: {
-  confirm: string
-}): Promise<{ status: "success" } | { status: "error" }> {
+const tableName = process.env.TABLE_NAME
+
+export async function POST(request: Request) {
   try {
+    const { confirm } = await request.json()
+
+    if (typeof confirm !== "string")
+      return new Response(undefined, { status: 400 })
+
     const { Items } = await dynamo.query({
-      TableName: authTableName,
+      TableName: tableName,
       IndexName: "GSI2",
       ProjectionExpression: "PK, SK",
       KeyConditionExpression: "GSI2PK = :pk AND GSI2SK > :sk",
@@ -18,20 +20,21 @@ export async function confirmSignIn({
       },
     })
 
-    if (!(Items && Items[0].PK && Items[0].SK)) return { status: "error" }
+    if (!(Items && Items[0].PK && Items[0].SK))
+      return new Response(undefined, { status: 400 })
 
     const { PK, SK } = Items[0]
 
     await dynamo.update({
-      TableName: authTableName,
+      TableName: tableName,
       Key: { PK, SK },
       UpdateExpression: "SET confirmed = :true REMOVE expiresAt",
       ExpressionAttributeValues: { ":true": true },
     })
 
-    return { status: "success" }
+    return new Response()
   } catch (err) {
     console.error(err)
-    return { status: "error" }
+    return new Response(undefined, { status: 500 })
   }
 }

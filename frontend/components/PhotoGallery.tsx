@@ -1,6 +1,6 @@
-"use client";
+"use client"
 import { Image } from "components/Image"
-import { useAuth } from "hooks/useAuth";
+import { useAuth } from "hooks/useAuth"
 import { useEffect, useRef, useState } from "react"
 import { useInfiniteQuery } from "react-query"
 import { instance } from "utils/axios"
@@ -18,11 +18,11 @@ export const PhotoGallery = () => {
   const threeColAspectRatios = useRef([0, 0, 0])
   const { status, data, fetchNextPage, hasNextPage } = useInfiniteQuery(
     "photos",
-    async ({queryKey}) => {
-        const { data } = await instance.get(
-          "/api/photos" + (queryKey ? `?cursor=${queryKey}` : ""),
-        )
-  return data
+    async ({ queryKey }) => {
+      const { data } = await instance.get(
+        "/api/photos" + (queryKey ? `?cursor=${queryKey}` : ""),
+      )
+      return data
     },
     {
       getNextPageParam: ({ cursor }) => cursor,
@@ -38,7 +38,8 @@ export const PhotoGallery = () => {
       threeCols.current = [[], [], []]
       twoColAspectRatios.current = [0, 0]
       threeColAspectRatios.current = [0, 0, 0]
-      data.pages.flatMap(page => page)
+      data.pages
+        .flatMap((page) => page)
         .map(({ photos }: { photos: Photo }) => photos)
         .flat()
         .map((photo) => {

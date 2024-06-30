@@ -123,12 +123,14 @@ export const UpdateForm = () => {
                   <Dropdown
                     label="Geschlecht"
                     className="col-span-3 sm:col-span-2"
+                    disabled={true}
                     {...register("gender")}
                   />
                   <Input
                     label="Geburtsdatum"
                     className="col-span-9 sm:col-span-4"
                     autoComplete="bday"
+                    disabled={true}
                     errors={errors}
                     {...register("birthDate", {
                       required:

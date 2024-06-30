@@ -5,6 +5,8 @@ export const metadata = {
   title: formatTitle("Anmeldungen"),
 }
 
-const Anmeldungen = () => <Registrations />
+const Anmeldungen = () => {
+  return <Registrations />
+}
 
 export default Anmeldungen
