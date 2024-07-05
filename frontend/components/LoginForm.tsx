@@ -1,4 +1,5 @@
 "use client"
+import { signIn } from "actions/signIn"
 import axios from "axios"
 import { AnimatePresence } from "framer-motion"
 import { useAuth } from "hooks/useAuth"
@@ -11,15 +12,14 @@ import { setAccessToken } from "utils/accessToken"
 import { emailRegex } from "utils/regex"
 
 async function signInMutation(email: string) {
-  const { data } = await axios.post("/api/auth/signin", {
-    email,
-  })
-  return data
+  const { tokenId } = await signIn({ email })
+  return { tokenId }
 }
 
-async function refreshQuery({ queryKey }: { queryKey: string }) {
+async function refreshQuery({ queryKey }: { queryKey: string[] }) {
+  console.log(queryKey)
   try {
-    const { data } = await axios.get("/api/auth/refresh/" + queryKey)
+    const { data } = await axios.get("/api/auth/refresh/" + queryKey[0])
     return data
   } catch (err) {
     if ((err as any).response.status) return { expired: true }
@@ -56,19 +56,23 @@ export const LoginForm = () => {
 
   const redirect = params.get("redirect")
 
-  const { data: refreshData } = useQuery(data?.tokenId, refreshQuery, {
-    refetchInterval: interval,
-    refetchOnWindowFocus: interval ? true : false,
-    refetchOnReconnect: true,
-    enabled: !!data,
-    useErrorBoundary: true,
-    onSuccess: ({ accessToken }) => {
-      if (accessToken) {
-        setAccessToken(data.accessToken)
-        push(typeof redirect === "string" ? redirect : "/anmeldungen")
-      }
+  const { data: refreshData } = useQuery(
+    data?.tokenId as string,
+    refreshQuery,
+    {
+      refetchInterval: interval,
+      refetchOnWindowFocus: interval ? true : false,
+      refetchOnReconnect: true,
+      enabled: !!data,
+      useErrorBoundary: true,
+      onSuccess: ({ accessToken }) => {
+        if (accessToken) {
+          setAccessToken(accessToken)
+          push(typeof redirect === "string" ? redirect : "/anmeldungen")
+        }
+      },
     },
-  })
+  )
 
   async function onSubmit({ email }: { email: string }) {
     setEmail(email)
