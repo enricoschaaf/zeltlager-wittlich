@@ -1,5 +1,5 @@
 import * as apiGateway from "@aws-cdk/aws-apigatewayv2"
-import { LambdaProxyIntegration } from "@aws-cdk/aws-apigatewayv2-integrations"
+import { HttpLambdaIntegration } from "@aws-cdk/aws-apigatewayv2-integrations"
 import * as dynamo from "@aws-cdk/aws-dynamodb"
 import * as iam from "@aws-cdk/aws-iam"
 import * as lambda from "@aws-cdk/aws-lambda"
@@ -8,7 +8,7 @@ import * as nodejs from "@aws-cdk/aws-lambda-nodejs"
 import * as s3 from "@aws-cdk/aws-s3"
 import * as cdk from "@aws-cdk/core"
 import { config } from "dotenv"
-import { readFileSync } from "fs"
+
 config()
 
 export class TentCampImageStack extends cdk.Stack {
@@ -24,7 +24,7 @@ export class TentCampImageStack extends cdk.Stack {
         name: "SK",
         type: dynamo.AttributeType.STRING,
       },
-      billingMode: dynamo.BillingMode.PAY_PER_REQUEST,
+      billingMode: dynamo.BillingMode.PROVISIONED,
     })
 
     tentCampImageTable.addGlobalSecondaryIndex({
@@ -136,7 +136,7 @@ export class TentCampImageStack extends cdk.Stack {
       environment: {
         TABLE_NAME: tentCampImageTable.tableName,
         BASE_URL: process.env.BASE_URL,
-        PUBLIC_KEY: readFileSync("public.pem").toString(),
+        PUBLIC_KEY: process.env.PUBLIC_KEY as string,
       },
     })
     tentCampImageTable.grant(photosLambda, "dynamodb:Query")
@@ -146,17 +146,16 @@ export class TentCampImageStack extends cdk.Stack {
     tentCampImageApi.addRoutes({
       path: "/photos/{id+}",
       methods: [apiGateway.HttpMethod.GET],
-      integration: new LambdaProxyIntegration({
-        handler: imageTransformLambda,
-      }),
+      integration: new HttpLambdaIntegration(
+        "imageTransform",
+        imageTransformLambda,
+      ),
     })
 
     tentCampImageApi.addRoutes({
       path: "/api/photos",
       methods: [apiGateway.HttpMethod.GET],
-      integration: new LambdaProxyIntegration({
-        handler: photosLambda,
-      }),
+      integration: new HttpLambdaIntegration("photos", photosLambda),
     })
   }
 }

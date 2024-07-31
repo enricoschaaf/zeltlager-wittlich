@@ -1,8 +1,5 @@
-import { HttpLambdaIntegration } from "@aws-cdk/aws-apigatewayv2-integrations"
-import * as apiGateway from "@aws-cdk/aws-apigatewayv2"
 import * as dynamo from "@aws-cdk/aws-dynamodb"
 import { StreamViewType } from "@aws-cdk/aws-dynamodb"
-import * as iam from "@aws-cdk/aws-iam"
 import { StartingPosition } from "@aws-cdk/aws-lambda"
 import * as eventSource from "@aws-cdk/aws-lambda-event-sources"
 import * as lambda from "@aws-cdk/aws-lambda-nodejs"
@@ -15,11 +12,6 @@ export class TentCampStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
-    const authTable = dynamo.Table.fromTableArn(
-      this,
-      "authTable",
-      "arn:aws:dynamodb:eu-central-1:411166291189:table/TentCampAuthStack-tentCampAuthTable8D573192-VF1MK5TUA5AP",
-    )
     const tentCampTable = new dynamo.Table(this, "tentCampTable", {
       partitionKey: {
         name: "PK",
@@ -29,7 +21,7 @@ export class TentCampStack extends cdk.Stack {
         name: "SK",
         type: dynamo.AttributeType.STRING,
       },
-      billingMode: dynamo.BillingMode.PAY_PER_REQUEST,
+      billingMode: dynamo.BillingMode.PROVISIONED,
       tableName: cdk.PhysicalName.GENERATE_IF_NEEDED,
       stream: StreamViewType.NEW_AND_OLD_IMAGES,
     })

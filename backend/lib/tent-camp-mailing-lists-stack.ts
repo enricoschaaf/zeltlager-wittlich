@@ -6,6 +6,7 @@ import * as ses from "@aws-cdk/aws-ses"
 import * as actions from "@aws-cdk/aws-ses-actions"
 import * as cdk from "@aws-cdk/core"
 import { config } from "dotenv"
+
 config()
 
 interface TentCampMailingListsStackProps extends cdk.StackProps {

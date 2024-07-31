@@ -3,7 +3,7 @@ import { DynamoDB } from "aws-sdk"
 import { createAccessToken } from "../utils/createAccessToken"
 
 const tableName = process.env.TABLE_NAME
-const privatKey = process.env.PRIVAT_KEY
+const privateKey = process.env.PRIVATE_KEY
 const dynamo = new DynamoDB.DocumentClient()
 
 const accessHandler: APIGatewayProxyHandlerV2 = async ({ cookies }) => {
@@ -22,7 +22,7 @@ const accessHandler: APIGatewayProxyHandlerV2 = async ({ cookies }) => {
     const userId = Item?.userId
     if (!userId) return { statusCode: 401 }
     return {
-      accessToken: createAccessToken(userId, privatKey),
+      accessToken: createAccessToken(userId, privateKey),
     }
   } catch (err) {
     console.error(err)

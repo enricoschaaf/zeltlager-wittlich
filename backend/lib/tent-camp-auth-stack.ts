@@ -23,7 +23,7 @@ export class TentCampAuthStack extends cdk.Stack {
         name: "SK",
         type: dynamo.AttributeType.STRING,
       },
-      billingMode: dynamo.BillingMode.PAY_PER_REQUEST,
+      billingMode: dynamo.BillingMode.PROVISIONED,
       timeToLiveAttribute: "expiresAt",
     })
 
@@ -66,21 +66,11 @@ export class TentCampAuthStack extends cdk.Stack {
     })
     tentCampAuthTable.grant(signOutLambda, "dynamodb:DeleteItem")
 
-    const refreshLambda = new lambda.NodejsFunction(this, "refreshLambda", {
-      entry: "lambda/refresh.ts",
-      environment: {
-        TABLE_NAME: tentCampAuthTable.tableName,
-        PRIVAT_KEY: readFileSync("private.pem").toString(),
-      },
-      memorySize: 1024,
-    })
-    tentCampAuthTable.grant(refreshLambda, "dynamodb:Query")
-
     const accessLambda = new lambda.NodejsFunction(this, "accessLambda", {
       entry: "lambda/access.ts",
       environment: {
         TABLE_NAME: tentCampAuthTable.tableName,
-        PRIVAT_KEY: readFileSync("private.pem").toString(),
+        PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY as string,
       },
       memorySize: 1024,
     })
@@ -90,7 +80,7 @@ export class TentCampAuthStack extends cdk.Stack {
       entry: "lambda/profile.ts",
       environment: {
         TABLE_NAME: tentCampAuthTable.tableName,
-        PUBLIC_KEY: readFileSync("public.pem").toString(),
+        PUBLIC_KEY: process.env.PUBLIC_KEY as string,
       },
       memorySize: 1024,
     })
@@ -124,7 +114,7 @@ export class TentCampAuthStack extends cdk.Stack {
         environment: {
           FUNCTION_NAME: asyncChangeEmailLambda.functionName,
           TABLE_NAME: tentCampAuthTable.tableName,
-          PUBLIC_KEY: readFileSync("public.pem").toString(),
+          PUBLIC_KEY: process.env.PUBLIC_KEY as string,
         },
         memorySize: 1024,
       },
@@ -154,57 +144,34 @@ export class TentCampAuthStack extends cdk.Stack {
     tentCampAuthApi.addRoutes({
       path: "/signout",
       methods: [apiGateway.HttpMethod.POST],
-      integration: new HttpLambdaIntegration({
-        handler: signOutLambda,
-      }),
-    })
-
-    tentCampAuthApi.addRoutes({
-      path: "/refresh/{tokenId}",
-      methods: [apiGateway.HttpMethod.GET],
-      integration: new HttpLambdaIntegration({
-        handler: refreshLambda,
-      }),
-    })
-
-    tentCampAuthApi.addRoutes({
-      path: "/confirm",
-      methods: [apiGateway.HttpMethod.POST],
-      integration: new HttpLambdaIntegration({
-        handler: confirmLambda,
-      }),
+      integration: new HttpLambdaIntegration("signOut", signOutLambda),
     })
 
     tentCampAuthApi.addRoutes({
       path: "/access",
       methods: [apiGateway.HttpMethod.GET],
-      integration: new HttpLambdaIntegration({
-        handler: accessLambda,
-      }),
+      integration: new HttpLambdaIntegration("access", accessLambda),
     })
 
     tentCampAuthApi.addRoutes({
       path: "/profile",
       methods: [apiGateway.HttpMethod.GET],
-      integration: new HttpLambdaIntegration({
-        handler: profileLambda,
-      }),
+      integration: new HttpLambdaIntegration("profile", profileLambda),
     })
 
     tentCampAuthApi.addRoutes({
       path: "/email/change",
       methods: [apiGateway.HttpMethod.POST],
-      integration: new HttpLambdaIntegration({
-        handler: changeEmailLambda,
-      }),
+      integration: new HttpLambdaIntegration("changeEmail", changeEmailLambda),
     })
 
     tentCampAuthApi.addRoutes({
       path: "/email/confirm",
       methods: [apiGateway.HttpMethod.POST],
-      integration: new HttpLambdaIntegration({
-        handler: confirmNewEmailLambda,
-      }),
+      integration: new HttpLambdaIntegration(
+        "confirmNewEmail",
+        confirmNewEmailLambda,
+      ),
     })
   }
 }

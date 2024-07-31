@@ -6,7 +6,7 @@ declare namespace NodeJS {
     COMPUTER_VISION_KEY: string
     COMPUTER_VISION_ENDPOINT: string
     BASE_URL: string
-    PRIVAT_KEY: string
+    PRIVATE_KEY: string
     PUBLIC_KEY: string
     FUNCTION_NAME: string
     AUTH_TABLE_NAME: string

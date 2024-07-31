@@ -1,6 +1,6 @@
 import { Handler } from "aws-lambda"
 import { DynamoDB, SES } from "aws-sdk"
-import { nanoid } from "nanoid"
+import { id } from "../utils/id"
 
 const tableName = process.env.TABLE_NAME
 const baseUrl = process.env.BASE_URL
@@ -60,7 +60,7 @@ const asyncChangeEmailHandler: Handler = async ({
   userId: string
 }) => {
   try {
-    const confirm = nanoid()
+    const confirm = id()
     await Promise.all([
       createConfirmationToken(newEmail, confirm, userId),
       sendEmail(newEmail, confirm),

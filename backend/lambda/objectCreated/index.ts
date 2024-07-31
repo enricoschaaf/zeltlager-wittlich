@@ -2,7 +2,7 @@ import { ComputerVisionClient } from "@azure/cognitiveservices-computervision"
 import { CognitiveServicesCredentials } from "@azure/ms-rest-azure-js"
 import { S3Handler } from "aws-lambda"
 import { DynamoDB, Rekognition, S3, Translate } from "aws-sdk"
-import { nanoid } from "nanoid"
+import { id as identifier } from "utils/id"
 import { dirname } from "path"
 import sharp = require("sharp")
 
@@ -26,7 +26,7 @@ const tentCampBucketEventSource: S3Handler = async ({ Records }) => {
   const bucketName = Records[0].s3.bucket.name
   const key = Records[0].s3.object.key
   const path = dirname(Records[0].s3.object.key)
-  const id = nanoid()
+  const id = identifier()
 
   const params = {
     Bucket: bucketName,

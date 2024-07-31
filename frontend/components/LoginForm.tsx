@@ -1,6 +1,6 @@
 "use client"
+import { refresh } from "actions/refresh"
 import { signIn } from "actions/signIn"
-import axios from "axios"
 import { AnimatePresence } from "framer-motion"
 import { useAuth } from "hooks/useAuth"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -17,13 +17,12 @@ async function signInMutation(email: string) {
 }
 
 async function refreshQuery({ queryKey }: { queryKey: string[] }) {
-  console.log(queryKey)
-  try {
-    const { data } = await axios.get("/api/auth/refresh/" + queryKey[0])
-    return data
-  } catch (err) {
-    if ((err as any).response.status) return { expired: true }
+  const data = await refresh(queryKey[0])
+
+  if (data?.error) {
+    return { expired: true }
   }
+  return data
 }
 
 export const LoginForm = () => {
@@ -65,9 +64,9 @@ export const LoginForm = () => {
       refetchOnReconnect: true,
       enabled: !!data,
       useErrorBoundary: true,
-      onSuccess: ({ accessToken }) => {
-        if (accessToken) {
-          setAccessToken(accessToken)
+      onSuccess: (data) => {
+        if (data && "accessToken" in data) {
+          setAccessToken(data.accessToken as string)
           push(typeof redirect === "string" ? redirect : "/anmeldungen")
         }
       },
@@ -80,7 +79,7 @@ export const LoginForm = () => {
   }
 
   useEffect(() => {
-    if (refreshData?.expired) setInterval(undefined)
+    if (refreshData && "error" in refreshData) setInterval(undefined)
   }, [refreshData])
 
   return (
@@ -132,7 +131,7 @@ export const LoginForm = () => {
       <AnimatePresence>
         {modal === "open" ? (
           <Modal>
-            {refreshData?.expired ? (
+            {refreshData && "error" in refreshData ? (
               <>
                 <div>
                   <div className="flex items-center justify-center w-12 h-12 mx-auto bg-yellow-100 rounded-full">
