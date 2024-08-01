@@ -50,7 +50,7 @@ export async function refresh(tokenId: string) {
   } catch (err) {
     console.error(err)
     return {
-      statusCode: 500,
+      statusCode: "INTERNAL_SERVER_ERROR",
     }
   }
 }

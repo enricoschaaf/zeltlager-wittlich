@@ -66,16 +66,6 @@ export class TentCampAuthStack extends cdk.Stack {
     })
     tentCampAuthTable.grant(signOutLambda, "dynamodb:DeleteItem")
 
-    const accessLambda = new lambda.NodejsFunction(this, "accessLambda", {
-      entry: "lambda/access.ts",
-      environment: {
-        TABLE_NAME: tentCampAuthTable.tableName,
-        PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY as string,
-      },
-      memorySize: 1024,
-    })
-    tentCampAuthTable.grant(accessLambda, "dynamodb:GetItem")
-
     const profileLambda = new lambda.NodejsFunction(this, "profileLambda", {
       entry: "lambda/profile.ts",
       environment: {
@@ -145,12 +135,6 @@ export class TentCampAuthStack extends cdk.Stack {
       path: "/signout",
       methods: [apiGateway.HttpMethod.POST],
       integration: new HttpLambdaIntegration("signOut", signOutLambda),
-    })
-
-    tentCampAuthApi.addRoutes({
-      path: "/access",
-      methods: [apiGateway.HttpMethod.GET],
-      integration: new HttpLambdaIntegration("access", accessLambda),
     })
 
     tentCampAuthApi.addRoutes({

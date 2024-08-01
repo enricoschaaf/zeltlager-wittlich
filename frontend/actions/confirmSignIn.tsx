@@ -1,3 +1,5 @@
+"use server"
+
 import { dynamo } from "utils/dynamo"
 import { authTableName } from "utils/env"
 

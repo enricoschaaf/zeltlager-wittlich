@@ -1,4 +1,4 @@
-import axios from "axios"
+import { access } from "actions/access"
 import decode from "jwt-decode"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -15,24 +15,24 @@ export function useAuth() {
   useEffect(() => {
     try {
       const { exp } = decode(accessToken)
-      if (Date.now() / 1000 > exp) throw Error
 
+      if (Date.now() / 1000 > exp) throw Error
       setAccessTokenState(accessToken)
     } catch {
-      axios
-        .get("/api/auth/access")
-        .then(({ data }) => {
+      access().then(({ error, data }) => {
+        if (data?.accessToken) {
           setAccessToken(data.accessToken)
           setAccessTokenState(data.accessToken)
+
           if (pathname === "/login") {
             push(typeof redirect === "string" ? redirect : "/anmeldungen")
           }
-        })
-        .catch(() => {
+        } else {
           if (pathname !== "/login") {
             push("/login?redirect=" + pathname)
           }
-        })
+        }
+      })
     }
   })
 

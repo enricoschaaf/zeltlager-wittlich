@@ -8,6 +8,7 @@ import Link from "next/link"
 
 const Registrations = () => {
   const accessToken = useAuth()
+
   const [registrations, setRegistrations] = useState<any[]>([])
 
   useEffect(() => {

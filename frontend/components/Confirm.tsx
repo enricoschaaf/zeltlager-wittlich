@@ -1,4 +1,4 @@
-import { confirmSignIn } from "hooks/useConfirmSignIn"
+import { confirmSignIn } from "actions/confirmSignIn"
 
 export const Confirm = async ({ confirm }: { confirm: string }) => {
   const { status } = await confirmSignIn({ confirm })
