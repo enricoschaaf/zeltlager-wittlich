@@ -3,6 +3,7 @@ import { PlusIcon, XMarkIcon } from "@heroicons/react/20/solid"
 import axios from "axios"
 import { AnimatePresence } from "framer-motion"
 import Link from "next/link"
+import { config } from "project.config"
 import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { useMutation } from "react-query"
@@ -125,10 +126,23 @@ export const RegistrationForm = () => {
                         "Bitte geben Sie das Geburtsdatum Ihres Kindes an.",
                       validate: (value) => {
                         const [day, month, year] = value.split(".")
-                        if (
-                          isNaN(new Date(`${month}/${day}/${year}`).getTime())
-                        ) {
-                          return "Das angegebene Geburtsdatum hat nicht das richtige Format."
+                        const birthDate = new Date(`${month}/${day}/${year}`)
+
+                        if (!birthDate.getTime()) {
+                          return "Das angegebene Geburtsdatum hat nicht das richtige Format. Bitte geben Sie das Geburtsdatum im Format TT.MM.JJJJ an."
+                        }
+
+                        const age =
+                          (new Date(config.startDate).getTime() -
+                            birthDate.getTime()) /
+                          (1000 * 60 * 60 * 24 * 365.25)
+
+                        if (age < 8) {
+                          return "Das Mindestalter ist 8 Jahre. Ihr Kind ist leider noch zu jung."
+                        }
+
+                        if (age >= 17) {
+                          return "Das Maximalalter ist 16 Jahre. Ihr Kind ist leider zu alt."
                         }
                       },
                     })}
@@ -369,8 +383,8 @@ export const RegistrationForm = () => {
                   <Checkbox
                     label={
                       <>
-                        Hiermit melde ich mein Kind für das Zeltlager 2024 an
-                        und akzeptiere damit die{" "}
+                        Hiermit melde ich mein Kind für das Zeltlager{" "}
+                        {config.year} an und akzeptiere damit die{" "}
                         <Link
                           href="/teilnahmebedingungen"
                           className="underline font-bold"
