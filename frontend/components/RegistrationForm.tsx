@@ -137,8 +137,8 @@ export const RegistrationForm = () => {
                             birthDate.getTime()) /
                           (1000 * 60 * 60 * 24 * 365.25)
 
-                        if (age < 8) {
-                          return "Das Mindestalter ist 8 Jahre. Ihr Kind ist leider noch zu jung."
+                        if (age < 9) {
+                          return "Das Mindestalter ist 9 Jahre. Ihr Kind ist leider noch zu jung."
                         }
 
                         if (age >= 17) {
