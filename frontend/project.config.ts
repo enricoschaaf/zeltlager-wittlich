@@ -10,7 +10,7 @@ export const config = {
   reducedMaxParticipationFee: 190,
   //TODO to be increased to 57
   maxParticipants: 52,
-  year: "2025",
+  year: "2026",
   iban: "DE69 5875 1230 0032 7144 61",
   leadershipMembers: [
     "Lena Ehlen",

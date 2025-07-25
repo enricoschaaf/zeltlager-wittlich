@@ -55,9 +55,9 @@ const ParticipationTermsConditions = () => (
         Kinder werden wenn nötig in Privatautos von Betreuenden transportiert.
       </li>
       <li>
-        Sollte die Veranstaltung aus Gründen abgesagt werden müssen, erfolgt
-        keine Betreuung der Kinder und es besteht kein Anspruch auf
-        Schadensersatz.
+        Sollte die Veranstaltung aus unvorhersehbaren Gründen abgesagt werden
+        müssen, erfolgt keine Betreuung der Kinder und es besteht kein Anspruch
+        auf Schadensersatz.
       </li>
     </ul>
   </div>
