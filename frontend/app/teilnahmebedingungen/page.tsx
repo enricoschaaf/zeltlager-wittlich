@@ -47,8 +47,17 @@ const ParticipationTermsConditions = () => (
       <li>Alle Mahlzeiten werden gemeinsam eingenommen.</li>
       <li>Rauchen und Alkohol sind verboten.</li>
       <li>
-        Unterhaltungselektronik wie Handys oder Spielekonsolen, Gaskocher und-  lampen sowie Messer mit feststehender oder feststellbarer Klinge dürfen
+        Unterhaltungselektronik wie Handys oder Spielekonsolen, Gaskocher und-
+        lampen sowie Messer mit feststehender oder feststellbarer Klinge dürfen
         nicht mitgebracht werden
+      </li>
+      <li>
+        Kinder werden wenn nötig in Privatautos von Betreuenden transportiert.
+      </li>
+      <li>
+        Sollte die Veranstaltung aus Gründen abgesagt werden müssen, erfolgt
+        keine Betreuung der Kinder und es besteht kein Anspruch auf
+        Schadensersatz.
       </li>
     </ul>
   </div>

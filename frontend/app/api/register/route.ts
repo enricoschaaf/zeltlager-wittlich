@@ -13,7 +13,7 @@ import { ses } from "utils/ses"
 const tableName = process.env.TABLE_NAME
 const authTableName = process.env.AUTH_TABLE_NAME
 
-const successfulRegistration = ({
+export const successfulRegistration = ({
   firstName,
   lastName,
 }: {

@@ -41,11 +41,11 @@ const Index = () => {
               Familien zeigen sich mit Familien solidarisch, deshalb bezahlen
               Sie, was Sie geben können. Werden mehrere Kinder einer Familie
               angemeldet, so wird ab dem zweiten Kind ein reduzierter Beitrag
-              zwischen {config.minParticipationFee}€ und{" "}
-              {config.maxParticipationFee}€ erhoben. KjG - Mitglieder zahlen 11€
-              weniger. Enthalten sind sämtliche anfallenden Kosten für Anreise,
-              Unterbringung, Vollverpflegung, Eintritte, Fahrkarten etc. Die
-              Unterbringung erfolgt in zeltlagereigenen Gruppenzelten.
+              zwischen {config.reducedMinParticipationFee}€ und{" "}
+              {config.reducedMaxParticipationFee}€ erhoben. KjG - Mitglieder
+              zahlen 11€ weniger. Enthalten sind sämtliche anfallenden Kosten
+              für Anreise, Unterbringung, Vollverpflegung, Eintritte, Fahrkarten
+              etc. Die Unterbringung erfolgt in zeltlagereigenen Gruppenzelten.
               <br />
               <br />
               Wir sind sehr dankbar für die zusätzliche Unterstützung, falls
@@ -55,9 +55,14 @@ const Index = () => {
               angesprochen werden, die Anfrage wird vertraulich behandelt.
               <br />
               <br />
-              Ihre Ansprechpartner für das Zeltlager sind Enrico Schaaf und
-              Niklas Sips. Weitere Informationen und Antworten auf Rückfragen
-              gibt es per E-Mail unter{" "}
+              Ihre Ansprechpartner für das Zeltlager sind{" "}
+              {config.leadershipMembers.length > 1
+                ? config.leadershipMembers.slice(0, -1).join(", ") +
+                  " und " +
+                  config.leadershipMembers.at(-1)
+                : config.leadershipMembers[0]}
+              . Weitere Informationen und Antworten auf Rückfragen gibt es per
+              E-Mail unter{" "}
               <a
                 href="mailto:mail@zeltlager-wittlich.de"
                 rel="noreferrer"

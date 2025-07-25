@@ -285,7 +285,7 @@ export const UpdateForm = ({ registrationId }: { registrationId: string }) => {
                   />
                   <Checkbox
                     label="Schwimmen"
-                    description="Unser Kind ist Schwimmer/in und kann ohne Aufsicht schwimmen."
+                    description="Unser Kind ist Schwimmer/in"
                     className="col-span-12"
                     {...register("canSwim")}
                   />
